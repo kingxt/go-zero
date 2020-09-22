@@ -136,7 +136,7 @@ func apiFormat(data string) (string, error) {
 
 	var result string
 	if len(strings.TrimSpace(info)) > 0 {
-		result += strings.TrimSpace(info) + "\n\n"
+		result += strings.TrimSpace(info) + "\n"
 	}
 	if len(strings.TrimSpace(apiStruct.Imports)) > 0 {
 		result += strings.TrimSpace(apiStruct.Imports) + "\n\n"
