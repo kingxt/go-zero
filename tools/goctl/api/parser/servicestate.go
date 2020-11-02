@@ -93,15 +93,14 @@ func (p *serviceEntityParser) parseLine(line string, api *spec.ApiSpec, annos []
 			builder.WriteRune(ch)
 		}
 	}
-
 	if len(fields) < 2 {
 		return defaultErr
 	}
+
 	method := fields[0]
 	path := fields[1]
 	var req string
 	var resp string
-
 	if len(fields) > 2 {
 		req = fields[2]
 	}
