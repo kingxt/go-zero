@@ -196,11 +196,11 @@ service A-api {
   @handler NormalHandler
   get /greet/from/:name(Request) returns (Response)
   @handler NoResponseHandler
-  get /greet/from/:sex(Request)
+  get /greet/from/:name(Request)
   @handler NoRequestHandler
-  get /greet/from/request returns (Response)
+  get /greet/from/:name returns (Response)
   @handler NoRequestNoResponseHandler
-  get /greet/from
+  get /greet/from/:name
 }
 `
 
