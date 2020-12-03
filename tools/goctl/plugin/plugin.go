@@ -3,10 +3,11 @@ package plugin
 import (
 	"encoding/json"
 	"errors"
-	"flag"
+	"github.com/urfave/cli"
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -18,42 +19,41 @@ import (
 
 const defaultPluginName = "_plugin"
 
-func Do(args []string, osArgs []string) error {
+func Do(c *cli.Context) error {
+	apiFile := c.String("api")
+	dir := c.String("dir")
+	namingStyle := c.String("style")
+	plgArg := c.String("plugin")
 
-	var plugin = flag.String("plugin", "", "")
-
-	pluginArgs, err:= prepareArgs()
+	pluginArgs, err := prepareArgs(apiFile, dir, namingStyle)
 	if err != nil {
 		return err
 	}
 
-	if len(*plugin) == 0 {
-		return errors.New("missing plugin")
-	}
-
-	bin, download, err := getCommand(args[1])
+	bin, download, err := getCommand(plgArg)
 	if err != nil {
 		return err
 	}
 	if download {
-		defer os.Remove(bin)
+		defer func() {
+			_ = os.Remove(bin)
+		}()
 	}
 
 	var commands []string
 	commands = append(commands, bin)
-	commands = append(commands, args[2:]...)
-	commands = append(commands, osArgs[1:]...)
 	commands = append(commands, pluginArgs...)
 
-	_, err = execx.Run(strings.Join(commands, " "), "")
+	cmd := strings.Join(commands, " ")
+	println(cmd)
+	_, err = execx.Run(cmd, "")
 	return err
 }
 
-func prepareArgs() ([]string, error) {
+func prepareArgs(apiPath, dir, namingStyle string) ([]string, error) {
 	var pluginArgs []string
-	var apiPath = flag.String("api", "", "")
-	if len(*apiPath) > 0 && util.FileExists(*apiPath) {
-		p, err := parser.NewParser(*apiPath)
+	if len(apiPath) > 0 && util.FileExists(apiPath) {
+		p, err := parser.NewParser(apiPath)
 		if err != nil {
 			return nil, err
 		}
@@ -71,9 +71,8 @@ func prepareArgs() ([]string, error) {
 		pluginArgs = append(pluginArgs, string(data))
 	}
 
-	var dir = flag.String("-dir", "", "")
-	if len(*dir) > 0 {
-		abs, err := filepath.Abs(*dir)
+	if len(dir) > 0 {
+		abs, err := filepath.Abs(dir)
 		if err != nil {
 			return nil, err
 		}
@@ -95,16 +94,16 @@ func prepareArgs() ([]string, error) {
 }
 
 func getCommand(arg string) (string, bool, error) {
-	if util.FileExists(arg) {
-		return arg,false, nil
+	if _, err := exec.LookPath(arg); err == nil {
+		return arg, false, nil
 	}
 
 	if strings.HasPrefix(arg, "http") {
 		err := downloadFile(defaultPluginName, arg)
 		if err != nil {
-			return "",false, err
+			return "", false, err
 		}
-		return defaultPluginName,true, nil
+		return defaultPluginName, true, nil
 	}
 	return "", false, errors.New("invalid plugin value " + arg)
 }

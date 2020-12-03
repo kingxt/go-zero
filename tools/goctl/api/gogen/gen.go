@@ -3,6 +3,7 @@ package gogen
 import (
 	"errors"
 	"fmt"
+	"github.com/tal-tech/go-zero/tools/goctl/plugin"
 	"os"
 	"path"
 	"path/filepath"
@@ -29,12 +30,15 @@ func GoCommand(c *cli.Context) error {
 	apiFile := c.String("api")
 	dir := c.String("dir")
 	namingStyle := c.String("style")
-
+	plg := c.String("plugin")
 	if len(apiFile) == 0 {
 		return errors.New("missing -api")
 	}
 	if len(dir) == 0 {
 		return errors.New("missing -dir")
+	}
+	if len(plg) > 0 {
+		return plugin.Do(c)
 	}
 
 	return DoGenProject(apiFile, dir, namingStyle)
