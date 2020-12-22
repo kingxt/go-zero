@@ -61,4 +61,9 @@ func TestImport(t *testing.T) {
 		"user.api"
 	`,
 	)
+
+	test(t, do, nil, true, `import (
+		"user.api"
+		"user.api"
+	)`)
 }

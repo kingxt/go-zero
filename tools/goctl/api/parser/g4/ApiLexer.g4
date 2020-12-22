@@ -37,6 +37,7 @@ IMPORT:             'import';
 ATSERVER:           '@server';
 ATDOC:              '@doc';
 ATHANDLER:          '@handler';
+SUMMARY:            'summary';
 
 HTTPMETHOD:         GET
                     |HEAD

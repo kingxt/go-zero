@@ -52,6 +52,11 @@ func TestInfo(t *testing.T) {
 		bar"		
 	)`)
 
+	test(t, do, nil, true, `info(
+	title: ""
+	title: ""
+	)`)
+
 	test(t, do, nil, true, `info`)
 	test(t, do, nil, true, `info (`)
 }

@@ -16,9 +16,53 @@ const handlerKey = "handler"
 type (
 	ApiVisitor struct {
 		parser.BaseApiParserVisitor
-		apiSpec spec.ApiSpec
+		apiSpec    spec.ApiSpec
+		importSet  map[string]importAst
+		infoAst    infoAst
+		typeMap    map[string]structAst
+		serviceMap map[string]serviceAst
 	}
+
+	ast struct {
+		line   int
+		column int
+	}
+
+	importAst struct {
+		ast
+		v string
+	}
+
+	infoAst struct {
+		ast
+		flag bool
+		v    spec.Info
+	}
+
+	structAst struct {
+		ast
+		v spec.Type
+	}
+
+	serviceAst struct {
+		ast
+		name       string
+		handlerMap map[string]handlerAst
+		routeMap   map[string]routeAst
+	}
+
+	handlerAst struct {
+		ast
+		name string
+	}
+
+	routeAst struct {
+		ast
+		Route
+	}
+
 	kv struct {
+		ast
 		key   string
 		value string
 	}
@@ -35,7 +79,11 @@ type (
 )
 
 func NewApiVisitor() *ApiVisitor {
-	return &ApiVisitor{}
+	return &ApiVisitor{
+		importSet:  make(map[string]importAst),
+		typeMap:    make(map[string]structAst),
+		serviceMap: make(map[string]serviceAst),
+	}
 }
 
 func (v *ApiVisitor) VisitApi(ctx *parser.ApiContext) interface{} {
@@ -43,35 +91,23 @@ func (v *ApiVisitor) VisitApi(ctx *parser.ApiContext) interface{} {
 	iSyntaxLitContext := ctx.SyntaxLit()
 	iBodyContexts := ctx.AllBody()
 	if iSyntaxLitContext != nil {
-		syntaxLitContext, ok := iSyntaxLitContext.(*parser.SyntaxLitContext)
-		if ok {
-			syntaxLit := v.VisitSyntaxLit(syntaxLitContext)
-			syntax, ok := syntaxLit.(*spec.ApiSyntax)
-			if ok {
-				api.Syntax = *syntax
-			}
-		}
+		api.Syntax = iSyntaxLitContext.Accept(v).(spec.ApiSyntax)
 	}
 
 	for _, item := range iBodyContexts {
-		bodyContext, ok := item.(*parser.BodyContext)
-		if !ok {
-			continue
-		}
-
-		body := v.VisitBody(bodyContext)
+		body := item.Accept(v)
 		if body == nil {
 			continue
 		}
 
 		switch v := body.(type) {
-		case *spec.ApiImport:
+		case spec.ApiImport:
 			api.Import.List = append(api.Import.List, v.List...)
-		case *spec.Info:
-			api.Info = *v
-		case *spec.Type:
-			api.Types = append(api.Types, *v)
-		case *spec.Service:
+		case spec.Info:
+			api.Info = v
+		case []spec.Type:
+			api.Types = append(api.Types, v...)
+		case spec.Service:
 			api.Service.Name = v.Name
 			api.Service.Groups = append(api.Service.Groups, v.Groups...)
 		default:
@@ -88,33 +124,13 @@ func (v *ApiVisitor) VisitBody(ctx *parser.BodyContext) interface{} {
 	iTypeBlockContext := ctx.TypeBlock()
 	iServiceBlockContext := ctx.ServiceBlock()
 	if iImportSpecContext != nil {
-		importSpecContext, ok := iImportSpecContext.(*parser.ImportSpecContext)
-		if !ok {
-			return nil
-		}
-
-		return v.VisitImportSpec(importSpecContext)
+		return iImportSpecContext.Accept(v)
 	} else if iInfoBlockContext != nil {
-		infoBlockContext, ok := iInfoBlockContext.(*parser.InfoBlockContext)
-		if !ok {
-			return nil
-		}
-
-		return v.VisitInfoBlock(infoBlockContext)
+		return iInfoBlockContext.Accept(v)
 	} else if iTypeBlockContext != nil {
-		typeBlockContext, ok := iTypeBlockContext.(*parser.TypeBlockContext)
-		if !ok {
-			return nil
-		}
-
-		return v.VisitTypeBlock(typeBlockContext)
+		return iTypeBlockContext.Accept(v)
 	} else if iServiceBlockContext != nil {
-		serviceBlockContext, ok := iServiceBlockContext.(*parser.ServiceBlockContext)
-		if !ok {
-			return nil
-		}
-
-		return v.VisitServiceBlock(serviceBlockContext)
+		return iServiceBlockContext.Accept(v)
 	} else {
 		return nil
 	}
@@ -122,7 +138,7 @@ func (v *ApiVisitor) VisitBody(ctx *parser.BodyContext) interface{} {
 
 func (v *ApiVisitor) VisitSyntaxLit(ctx *parser.SyntaxLitContext) interface{} {
 	version := v.getTokenText(ctx.GetVersion(), true)
-	return &spec.ApiSyntax{Version: version}
+	return spec.ApiSyntax{Version: version}
 }
 
 func (v *ApiVisitor) VisitImportSpec(ctx *parser.ImportSpecContext) interface{} {
@@ -130,33 +146,35 @@ func (v *ApiVisitor) VisitImportSpec(ctx *parser.ImportSpecContext) interface{} 
 	iImportLitGroupContext := ctx.ImportLitGroup()
 	var list []string
 	if iImportLitContext != nil {
-		importLitContext, ok := iImportLitContext.(*parser.ImportLitContext)
-		if ok {
-			result := v.VisitImportLit(importLitContext)
-			importValue, ok := result.(*spec.ApiImport)
-			if ok {
-				list = append(list, importValue.List...)
-			}
-		}
+		importValue := iImportLitContext.Accept(v).(spec.ApiImport)
+		list = append(list, importValue.List...)
 	}
 
 	if iImportLitGroupContext != nil {
-		importGroupContext, ok := iImportLitGroupContext.(*parser.ImportLitGroupContext)
-		if ok {
-			result := v.VisitImportLitGroup(importGroupContext)
-			importValue, ok := result.(*spec.ApiImport)
-			if ok {
-				list = append(list, importValue.List...)
-			}
-		}
+		importValue := iImportLitGroupContext.Accept(v).(spec.ApiImport)
+		list = append(list, importValue.List...)
 	}
-	return &spec.ApiImport{List: list}
+
+	return spec.ApiImport{List: list}
 }
 
 func (v *ApiVisitor) VisitImportLit(ctx *parser.ImportLitContext) interface{} {
 	importPath := v.getTokenText(ctx.GetImportPath(), true)
+	line := ctx.GetImportPath().GetLine()
+	column := ctx.GetImportPath().GetColumn()
+	if _, ok := v.importSet[importPath]; ok {
+		panic(fmt.Errorf(`line %d:%d duplicate import "%s"`, line, column, importPath))
+	}
 
-	return &spec.ApiImport{
+	v.importSet[importPath] = importAst{
+		ast: ast{
+			line:   line,
+			column: column,
+		},
+		v: importPath,
+	}
+
+	return spec.ApiImport{
 		List: []string{importPath},
 	}
 }
@@ -166,10 +184,22 @@ func (v *ApiVisitor) VisitImportLitGroup(ctx *parser.ImportLitGroupContext) inte
 	var list []string
 	for _, node := range nodes {
 		importPath := v.getNodeText(node, true)
-
+		line := node.GetSymbol().GetLine()
+		column := node.GetSymbol().GetColumn()
+		if _, ok := v.importSet[importPath]; ok {
+			panic(fmt.Errorf(`line %d:%d duplicate import "%s"`, line, column, importPath))
+		}
+		v.importSet[importPath] = importAst{
+			ast: ast{
+				line:   line,
+				column: column,
+			},
+			v: importPath,
+		}
 		list = append(list, importPath)
 	}
-	return &spec.ApiImport{List: list}
+
+	return spec.ApiImport{List: list}
 }
 
 func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
@@ -177,47 +207,39 @@ func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
 	info.Proterties = make(map[string]string)
 	iKvLitContexts := ctx.AllKvLit()
 	for _, each := range iKvLitContexts {
-		kvLitContext, ok := each.(*parser.KvLitContext)
-		if !ok {
-			continue
-		}
-
-		r := v.VisitKvLit(kvLitContext)
-		kv, ok := r.(*kv)
-		if !ok {
-			continue
+		kv := each.Accept(v).(kv)
+		if _, ok := info.Proterties[kv.key]; ok {
+			panic(fmt.Errorf(`line %d:%d duplicate info key "%s"`, kv.line, kv.column, kv.key))
 		}
 		info.Proterties[kv.key] = kv.value
-
 	}
-	return &info
+
+	symbol := ctx.INFO().GetSymbol()
+	line := symbol.GetLine()
+	column := symbol.GetColumn()
+
+	if v.infoAst.flag {
+		panic(fmt.Errorf("line %d:%d duplicate info block", line, column))
+	}
+
+	v.infoAst.flag = true
+	v.infoAst.v = info
+	v.infoAst.ast = ast{
+		line:   line,
+		column: column,
+	}
+	return info
 }
 
 func (v *ApiVisitor) VisitTypeBlock(ctx *parser.TypeBlockContext) interface{} {
 	iTypeLitContext := ctx.TypeLit()
 	iTypeGroupContext := ctx.TypeGroup()
-	var list []*spec.Type
+	var list []spec.Type
 	if iTypeLitContext != nil {
-		typeLitContext, ok := iTypeLitContext.(*parser.TypeLitContext)
-		if !ok {
-			return list
-		}
-
-		typeLit := v.VisitTypeLit(typeLitContext)
-		tp := typeLit.(*spec.Type)
+		tp := iTypeLitContext.Accept(v).(spec.Type)
 		list = append(list, tp)
 	} else if iTypeGroupContext != nil {
-		typeGroupContext, ok := iTypeGroupContext.(*parser.TypeGroupContext)
-		if !ok {
-			return list
-		}
-
-		typeGroup := v.VisitTypeGroup(typeGroupContext)
-		types, ok := typeGroup.([]*spec.Type)
-		if !ok {
-			return list
-		}
-
+		types := iTypeGroupContext.Accept(v).([]spec.Type)
 		list = append(list, types...)
 	}
 
@@ -225,36 +247,15 @@ func (v *ApiVisitor) VisitTypeBlock(ctx *parser.TypeBlockContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitTypeLit(ctx *parser.TypeLitContext) interface{} {
-	var tp spec.Type
 	iTypeSpecContext := ctx.TypeSpec()
-	typeSpecContext, ok := iTypeSpecContext.(*parser.TypeSpecContext)
-	if !ok {
-		return tp
-	}
-
-	typeSpec := v.VisitTypeSpec(typeSpecContext)
-	result, ok := typeSpec.(*spec.Type)
-	if !ok {
-		return tp
-	}
-	return result
+	return iTypeSpecContext.Accept(v).(spec.Type)
 }
 
 func (v *ApiVisitor) VisitTypeGroup(ctx *parser.TypeGroupContext) interface{} {
 	iTypeSpecContexts := ctx.AllTypeSpec()
-	var list []*spec.Type
+	var list []spec.Type
 	for _, each := range iTypeSpecContexts {
-		typeSpecContext, ok := each.(*parser.TypeSpecContext)
-		if !ok {
-			continue
-		}
-
-		typeSpec := v.VisitTypeSpec(typeSpecContext)
-		tp, ok := typeSpec.(*spec.Type)
-		if !ok {
-			continue
-		}
-
+		tp := each.Accept(v).(spec.Type)
 		list = append(list, tp)
 	}
 	return list
@@ -265,21 +266,11 @@ func (v *ApiVisitor) VisitTypeSpec(ctx *parser.TypeSpecContext) interface{} {
 	iTypeAliasContext := ctx.TypeAlias()
 	iTypeStructContext := ctx.TypeStruct()
 	if iTypeAliasContext != nil {
-		typeAliasContext, ok := iTypeAliasContext.(*parser.TypeAliasContext)
-		if !ok {
-			return &tp
-		}
-
-		return v.VisitTypeAlias(typeAliasContext)
+		return iTypeAliasContext.Accept(v)
 	} else if iTypeStructContext != nil {
-		structContext, ok := iTypeStructContext.(*parser.TypeStructContext)
-		if !ok {
-			return &tp
-		}
-
-		return v.VisitTypeStruct(structContext)
+		return iTypeStructContext.Accept(v)
 	}
-	return &tp
+	return tp
 }
 
 func (v *ApiVisitor) VisitTypeAlias(ctx *parser.TypeAliasContext) interface{} {
@@ -292,41 +283,48 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *parser.TypeAliasContext) interface{} {
 func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} {
 	var tp spec.Type
 	tp.Name = v.getTokenText(ctx.GetName(), false)
-	iTypeFieldContexts := ctx.AllTypeField()
-	for _, each := range iTypeFieldContexts {
-		fieldContext, ok := each.(*parser.TypeFieldContext)
-		if !ok {
-			continue
-		}
-
-		field := v.VisitTypeField(fieldContext)
-		member, ok := field.(*spec.Member)
-		if !ok {
-			continue
-		}
-
-		tp.Members = append(tp.Members, *member)
+	line := ctx.GetName().GetLine()
+	column := ctx.GetName().GetColumn()
+	if _, ok := v.typeMap[tp.Name]; ok {
+		panic(fmt.Errorf(`line %d:%d duplicate type "%s"`, line, column, tp.Name))
 	}
-	return &tp
+
+	iTypeFieldContexts := ctx.AllTypeField()
+	set := make(map[string]struct{})
+	for _, each := range iTypeFieldContexts {
+		member := each.Accept(v).(spec.Member)
+		typeFieldContext := each.(*parser.TypeFieldContext)
+		line := typeFieldContext.GetName().GetLine()
+		column := typeFieldContext.GetName().GetColumn()
+		if _, ok := set[member.Name]; ok {
+			panic(fmt.Errorf(`line %d:%d duplicate filed "%s"`, line, column, member.Name))
+		}
+
+		set[member.Name] = struct{}{}
+		tp.Members = append(tp.Members, member)
+	}
+
+	v.typeMap[tp.Name] = structAst{
+		ast: ast{
+			line:   line,
+			column: column,
+		},
+		v: tp,
+	}
+
+	return tp
 }
 
 func (v *ApiVisitor) VisitTypeField(ctx *parser.TypeFieldContext) interface{} {
 	var member spec.Member
 	iFiledContext := ctx.Filed()
 	if iFiledContext != nil {
-		filedContext, ok := iFiledContext.(*parser.FiledContext)
-		if ok {
-			fieldResult := v.VisitFiled(filedContext)
-			m, ok := fieldResult.(*spec.Member)
-			if ok {
-				member = *m
-			}
-		}
+		member = iFiledContext.Accept(v).(spec.Member)
 	} else { // anonymousType
 		member.IsInline = true
 	}
 	member.Name = v.getTokenText(ctx.GetName(), false)
-	return &member
+	return member
 }
 
 func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
@@ -337,45 +335,40 @@ func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
 	// todo: tag valid?
 	var tp interface{}
 	if iDataTypeContext != nil {
-		dataTypeContext, ok := iDataTypeContext.(*parser.DataTypeContext)
-		if !ok {
-			return tp
-		}
-
-		dataTypeResult := v.VisitDataType(dataTypeContext)
-		filed := &spec.Member{}
+		dataTypeResult := iDataTypeContext.Accept(v)
+		filed := spec.Member{}
 		switch v := dataTypeResult.(type) {
-		case *spec.BasicType:
+		case spec.BasicType:
 			filed.Type = v.Name
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
-		case *spec.PointerType:
+		case spec.PointerType:
 			filed.Type = v.StringExpr
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
-		case *spec.MapType:
+		case spec.MapType:
 			filed.Type = v.StringExpr
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
-		case *spec.ArrayType:
+		case spec.ArrayType:
 			filed.Type = v.StringExpr
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
-		case *spec.InterfaceType:
+		case spec.InterfaceType:
 			filed.Type = v.StringExpr
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
-		case *spec.TimeType:
+		case spec.TimeType:
 			filed.Type = v.StringExpr
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
-		case *spec.Type:
+		case spec.Type:
 			filed.Type = v.Name
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
@@ -384,36 +377,16 @@ func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
 			return tp
 		}
 	} else if iInnerStructContext != nil {
-		innerStructContext, ok := iInnerStructContext.(*parser.InnerStructContext)
-		if !ok {
-			return tp
-		}
-		symbol := innerStructContext.LBRACE().GetSymbol()
-		line := symbol.GetLine()
-		column := symbol.GetColumn()
-		panic(fmt.Errorf("line %d:%d nested type is not supported", line, column))
+		iInnerStructContext.Accept(v)
 	}
 	return tp
 }
 
 func (v *ApiVisitor) VisitInnerStruct(ctx *parser.InnerStructContext) interface{} {
-	var list []*spec.Member
-	iTypeFieldContexts := ctx.AllTypeField()
-	for _, each := range iTypeFieldContexts {
-		typeFieldContext, ok := each.(*parser.TypeFieldContext)
-		if !ok {
-			continue
-		}
-
-		result := v.VisitTypeField(typeFieldContext)
-		field, ok := result.(*spec.Member)
-		if !ok {
-			continue
-		}
-
-		list = append(list, field)
-	}
-	return list
+	symbol := ctx.LBRACE().GetSymbol()
+	line := symbol.GetLine()
+	column := symbol.GetColumn()
+	panic(fmt.Errorf("line %d:%d nested type is not supported", line, column))
 }
 
 func (v *ApiVisitor) VisitDataType(ctx *parser.DataTypeContext) interface{} {
@@ -423,55 +396,31 @@ func (v *ApiVisitor) VisitDataType(ctx *parser.DataTypeContext) interface{} {
 	interfaceNode := ctx.INTERFACE()
 	var tp interface{}
 	if iPointerContext != nil {
-		pointerContext, ok := iPointerContext.(*parser.PointerContext)
-		if !ok {
-			return tp
-		}
-
-		return v.VisitPointer(pointerContext)
+		return iPointerContext.Accept(v)
 	} else if iMapTypeContext != nil {
-		mapTypeContext, ok := iMapTypeContext.(*parser.MapTypeContext)
-		if !ok {
-			return tp
-		}
-
-		return v.VisitMapType(mapTypeContext)
+		return iMapTypeContext.Accept(v)
 	} else if iArrayTypeContext != nil {
-		arrayTypeContext, ok := iArrayTypeContext.(*parser.ArrayTypeContext)
-		if !ok {
-			return tp
-		}
-
-		return v.VisitArrayType(arrayTypeContext)
+		return iArrayTypeContext.Accept(v)
 	} else if interfaceNode != nil {
-		return &spec.InterfaceType{StringExpr: ctx.GetText()}
+		return spec.InterfaceType{StringExpr: ctx.GetText()}
 	}
 	return tp
 }
 
 func (v *ApiVisitor) VisitMapType(ctx *parser.MapTypeContext) interface{} {
-	tp := &spec.MapType{}
-	key := v.getTokenText(ctx.GetKey(), false)
+	tp := spec.MapType{}
+	tp.Key = v.getTokenText(ctx.GetKey(), false)
 	iDataTypeContext := ctx.DataType()
-	dataTypeContext, ok := iDataTypeContext.(*parser.DataTypeContext)
-	if ok {
-		dt := v.VisitDataType(dataTypeContext)
-		tp.Key = key
-		tp.Value = dt
-		tp.StringExpr = ctx.GetText()
-	}
+	tp.Value = iDataTypeContext.Accept(v)
+	tp.StringExpr = ctx.GetText()
 	return tp
 }
 
 func (v *ApiVisitor) VisitArrayType(ctx *parser.ArrayTypeContext) interface{} {
-	tp := &spec.ArrayType{}
+	tp := spec.ArrayType{}
 	iDataTypeContext := ctx.DataType()
-	dataTypeContext, ok := iDataTypeContext.(*parser.DataTypeContext)
-	if ok {
-		dt := v.VisitDataType(dataTypeContext)
-		tp.ArrayType = dt
-		tp.StringExpr = ctx.GetText()
-	}
+	tp.ArrayType = iDataTypeContext.Accept(v)
+	tp.StringExpr = ctx.GetText()
 	return tp
 }
 
@@ -480,17 +429,17 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 		if ctx.GOTYPE() != nil {
 			text := v.getNodeText(ctx.GOTYPE(), false)
 			if text == "time.Time" {
-				tp := &spec.TimeType{}
+				tp := spec.TimeType{}
 				tp.StringExpr = text
 				return tp
 			} else {
-				tp := &spec.BasicType{}
+				tp := spec.BasicType{}
 				tp.StringExpr = ctx.GetText()
 				tp.Name = text
 				return tp
 			}
 		} else if ctx.ID() != nil {
-			tp := &spec.Type{}
+			tp := spec.Type{}
 			tp.Name = v.getNodeText(ctx.ID(), false)
 			if tp.Name == "interface" {
 				symbol := ctx.ID().GetSymbol()
@@ -518,17 +467,17 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 	if ctx.GOTYPE() != nil {
 		text := v.getNodeText(ctx.GOTYPE(), false)
 		if text == "time.Time" {
-			tp := &spec.TimeType{}
+			tp := spec.TimeType{}
 			tp.StringExpr = text
 			tmp.Star = tp
 		} else {
-			tp := &spec.BasicType{}
+			tp := spec.BasicType{}
 			tp.StringExpr = text
 			tp.Name = text
 			tmp.Star = tp
 		}
 	} else if ctx.ID() != nil {
-		tp := &spec.Type{}
+		tp := spec.Type{}
 		tp.Name = v.getNodeText(ctx.ID(), false)
 		if tp.Name == "interface" {
 			symbol := ctx.ID().GetSymbol()
@@ -536,23 +485,26 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 		}
 		tmp.Star = tp
 	}
-	return parent
+	return *parent
 }
 
 func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interface{} {
 	var serviceGroup spec.Group
 	if ctx.ServerMeta() != nil {
-		serviceGroup.Annotation = ctx.ServerMeta().Accept(v).(spec.Annotation)
+		annotation := ctx.ServerMeta().Accept(v).(spec.Annotation)
+		serviceGroup.Annotation = annotation
 	}
+
 	body := ctx.ServiceBody().Accept(v).(serviceBody)
 	serviceGroup.Routes = body.routes
 	if len(v.apiSpec.Service.Name) > 0 && body.name != v.apiSpec.Service.Name {
-		v.apiSpec.Service.Name = body.name
 		panic(fmt.Sprintf("multi service name [%s, %s] should name equal", v.apiSpec.Service.Name, body.name))
 	}
 
-	v.apiSpec.Service.Groups = append(v.apiSpec.Service.Groups, serviceGroup)
-	return serviceGroup
+	return spec.Service{
+		Name:   body.name,
+		Groups: []spec.Group{serviceGroup},
+	}
 }
 
 func (v *ApiVisitor) VisitServerMeta(ctx *parser.ServerMetaContext) interface{} {
@@ -585,13 +537,15 @@ func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{
 	var body serviceBody
 	name := strings.TrimSpace(ctx.ServiceName().GetText())
 	if len(name) == 0 {
-		panic("service name should notnull")
+		panic("service name should not null")
 	}
 
-	body.name = strings.TrimSpace(ctx.ServiceName().GetText())
+	body.name = name
 	for _, item := range ctx.AllServiceRoute() {
-		body.routes = append(body.routes, item.Accept(v).(spec.Route))
+		r := item.Accept(v).(spec.Route)
+		body.routes = append(body.routes, r)
 	}
+
 	return body
 }
 
@@ -601,73 +555,78 @@ func (v *ApiVisitor) VisitServiceName(ctx *parser.ServiceNameContext) interface{
 
 func (v *ApiVisitor) VisitServiceRoute(ctx *parser.ServiceRouteContext) interface{} {
 	var route spec.Route
-	if ctx.RouteHandler() != nil {
-		route.Handler = ctx.RouteHandler().Accept(v).(string)
-	}
-	if ctx.RouteDoc() != nil {
-		route.Docs = ctx.RouteDoc().Accept(v).(spec.Doc)
-	}
-	if ctx.ServerMeta() != nil {
-		route.Annotation = ctx.ServerMeta().Accept(v).(spec.Annotation)
-	}
-	if len(route.Handler) == 0 {
-		route.Handler = route.Annotation.Properties[handlerKey]
-	}
-	if len(route.Handler) == 0 {
-		panic(fmt.Sprintf("route [%s] handler missing", route.Path))
+	iRouteDocContext := ctx.RouteDoc()
+	iServerMetaContext := ctx.ServerMeta()
+	iRouteHandlerContext := ctx.RouteHandler()
+	iRoutePathContext := ctx.RoutePath()
+	if iRouteDocContext != nil {
+		route.Docs = []string{iRouteDocContext.Accept(v).(string)}
 	}
 
-	var routePath = ctx.RoutePath().Accept(v).(Route)
-	route.Method = routePath.method
-	route.Path = routePath.path
-	for _, ty := range v.apiSpec.Types {
-		if ty.Name == routePath.request {
-			route.RequestType = ty
+	if iServerMetaContext != nil {
+		annotation := iServerMetaContext.Accept(v).(spec.Annotation)
+		route.Annotation = annotation
+		route.Handler = annotation.Properties[handlerKey]
+	} else if iRouteHandlerContext != nil {
+		route.Handler = iRouteHandlerContext.Accept(v).(string)
+	}
+
+	if iRoutePathContext != nil {
+		r := iRoutePathContext.Accept(v).(Route)
+		route.Method = r.method
+		route.Path = r.path
+		route.RequestType = spec.Type{
+			Name: r.request,
 		}
-		if ty.Name == routePath.response {
-			route.ResponseType = ty
+		route.ResponseType = spec.Type{
+			Name: r.response,
 		}
 	}
+
 	return route
 }
 
 func (v *ApiVisitor) VisitRouteDoc(ctx *parser.RouteDocContext) interface{} {
-	var doc spec.Doc
-	if ctx.LineDoc() != nil {
-		doc = append(doc, ctx.LineDoc().Accept(v).(string))
+	iLineDocContext := ctx.LineDoc()
+	iDocContext := ctx.Doc()
+	if iLineDocContext != nil {
+		return iLineDocContext.Accept(v).(string)
+	} else if iDocContext != nil {
+		return iDocContext.Accept(v).(string)
 	}
-	if ctx.Doc() != nil {
-		doc = append(doc, ctx.Doc().Accept(v).(spec.Doc)...)
-	}
-	return doc
+
+	return ""
 }
 
 func (v *ApiVisitor) VisitDoc(ctx *parser.DocContext) interface{} {
-	var doc spec.Doc
-	for _, item := range ctx.AllKvLit() {
-		doc = append(doc, item.GetValue().GetText())
-	}
-	return doc
+	return v.getNodeText(ctx.STRING_LIT(), true)
 }
 
 func (v *ApiVisitor) VisitLineDoc(ctx *parser.LineDocContext) interface{} {
-	return ctx.STRING_LIT().GetText()
+	return v.getNodeText(ctx.STRING_LIT(), true)
 }
 
 func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interface{} {
-	return ctx.ID().GetText()
+	return v.getNodeText(ctx.ID(), false)
 }
 
 func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
 	var routePath Route
-	routePath.method = ctx.HTTPMETHOD().GetText()
-	routePath.path = ctx.Path().GetText()
-	if ctx.Request() != nil {
-		routePath.request = ctx.Request().GetText()
+	routePath.method = v.getNodeText(ctx.HTTPMETHOD(), false)
+	if ctx.Path() != nil {
+		routePath.path = ctx.Path().GetText()
 	}
-	if ctx.Reply() != nil {
-		routePath.request = ctx.Reply().GetText()
+
+	iRequestContext := ctx.Request()
+	iReplyContext := ctx.Reply()
+	if iRequestContext != nil {
+		routePath.request = iRequestContext.Accept(v).(string)
 	}
+
+	if iReplyContext != nil {
+		routePath.response = iReplyContext.Accept(v).(string)
+	}
+
 	return routePath
 }
 func (v *ApiVisitor) VisitPath(ctx *parser.PathContext) interface{} {
@@ -675,18 +634,22 @@ func (v *ApiVisitor) VisitPath(ctx *parser.PathContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitRequest(ctx *parser.RequestContext) interface{} {
-	return v.VisitChildren(ctx)
+	return v.getNodeText(ctx.ID(), false)
 }
 
 func (v *ApiVisitor) VisitReply(ctx *parser.ReplyContext) interface{} {
-	return v.VisitChildren(ctx)
+	return v.getNodeText(ctx.ID(), false)
 }
 
 func (v *ApiVisitor) VisitKvLit(ctx *parser.KvLitContext) interface{} {
 	key := v.getTokenText(ctx.GetKey(), false)
 	value := v.getTokenText(ctx.GetValue(), true)
 
-	return &kv{
+	return kv{
+		ast: ast{
+			line:   ctx.GetKey().GetLine(),
+			column: ctx.GetKey().GetColumn(),
+		},
 		key:   key,
 		value: value,
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
 )
 
-var logEnable = false
+var logEnable = true
 
 func test(t *testing.T, do func(p *ast.Parser, visitor *ast.ApiVisitor) interface{}, expected interface{}, expectedErr bool, content string) {
 	defer func() {

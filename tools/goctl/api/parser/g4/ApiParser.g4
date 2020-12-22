@@ -45,7 +45,7 @@ serviceBody:        SERVICE serviceName '{' routes=serviceRoute* '}';
 serviceName:        ID ('-' ID)?;
 serviceRoute:       routeDoc? (serverMeta|routeHandler) routePath ;
 routeDoc:       doc|lineDoc;
-doc:        ATDOC '(' kvLit* ')';
+doc:        ATDOC '(' SUMMARY COLON STRING_LIT? ')';
 lineDoc:        ATDOC STRING_LIT;
 routeHandler:       ATHANDLER ID;
 routePath:      HTTPMETHOD path request? reply?;
