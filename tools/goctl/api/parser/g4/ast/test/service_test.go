@@ -21,7 +21,7 @@ func TestServiceAnnotation(t *testing.T) {
 }
 
 func TestServiceBody(t *testing.T) {
-	p := ast.NewParser(ast.WithErrorCallback(func(err error) {
+	p := ast.NewParser(ast.WithErrorCallback("", func(err error) {
 		assert.Nil(t, err)
 	}))
 	result, err := p.Accept(`
@@ -53,7 +53,7 @@ func TestServiceBody(t *testing.T) {
 }
 
 func testServiceAnnotation(t *testing.T, content, key, value string) {
-	p := ast.NewParser(ast.WithErrorCallback(func(err error) {
+	p := ast.NewParser(ast.WithErrorCallback("", func(err error) {
 		assert.Nil(t, err)
 	}))
 	result, err := p.Accept(content, func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {

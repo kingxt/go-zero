@@ -1,7 +1,6 @@
 package ast
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -21,6 +20,7 @@ type (
 		infoAst    infoAst
 		typeMap    map[string]structAst
 		serviceAst serviceAst
+		filename   string
 	}
 
 	ast struct {
@@ -69,7 +69,7 @@ type (
 	}
 )
 
-func NewApiVisitor() *ApiVisitor {
+func NewApiVisitor(filename string) *ApiVisitor {
 	return &ApiVisitor{
 		importSet: make(map[string]importAst),
 		typeMap:   make(map[string]structAst),
@@ -77,6 +77,7 @@ func NewApiVisitor() *ApiVisitor {
 			handlerMap: map[string]struct{}{},
 			routeMap:   map[string]struct{}{},
 		},
+		filename: filename,
 	}
 }
 
@@ -157,7 +158,10 @@ func (v *ApiVisitor) VisitImportLit(ctx *parser.ImportLitContext) interface{} {
 	line := ctx.GetImportPath().GetLine()
 	column := ctx.GetImportPath().GetColumn()
 	if _, ok := v.importSet[importPath]; ok {
-		panic(fmt.Errorf(`line %d:%d duplicate import "%s"`, line, column, importPath))
+		panic(v.wrapError(
+			ast{line: line, column: column},
+			`duplicate import "%s"`, importPath),
+		)
 	}
 
 	v.importSet[importPath] = importAst{
@@ -181,8 +185,12 @@ func (v *ApiVisitor) VisitImportLitGroup(ctx *parser.ImportLitGroupContext) inte
 		line := node.GetSymbol().GetLine()
 		column := node.GetSymbol().GetColumn()
 		if _, ok := v.importSet[importPath]; ok {
-			panic(fmt.Errorf(`line %d:%d duplicate import "%s"`, line, column, importPath))
+			panic(v.wrapError(ast{
+				line:   line,
+				column: column,
+			}, fmt.Sprintf(`duplicate import "%s"`, importPath)))
 		}
+
 		v.importSet[importPath] = importAst{
 			ast: ast{
 				line:   line,
@@ -203,8 +211,9 @@ func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
 	for _, each := range iKvLitContexts {
 		kv := each.Accept(v).(kv)
 		if _, ok := info.Proterties[kv.key]; ok {
-			panic(fmt.Errorf(`line %d:%d duplicate info key "%s"`, kv.line, kv.column, kv.key))
+			panic(v.wrapError(kv.ast, fmt.Sprintf(`duplicate info key "%s"`, kv.key)))
 		}
+
 		info.Proterties[kv.key] = kv.value
 	}
 
@@ -213,7 +222,10 @@ func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
 	column := symbol.GetColumn()
 
 	if v.infoAst.flag {
-		panic(fmt.Errorf("line %d:%d duplicate info block", line, column))
+		panic(v.wrapError(ast{
+			line:   line,
+			column: column,
+		}, "duplicate info block"))
 	}
 
 	v.infoAst.flag = true
@@ -271,7 +283,10 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *parser.TypeAliasContext) interface{} {
 	line := ctx.GetAlias().GetLine()
 	column := ctx.GetAlias().GetColumn()
 	// todo: to support the alias types in the feature
-	panic(fmt.Errorf("line %d:%d unsupport alias", line, column))
+	panic(v.wrapError(ast{
+		line:   line,
+		column: column,
+	}, "unsupport alias"))
 }
 
 func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} {
@@ -280,7 +295,10 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} 
 	line := ctx.GetName().GetLine()
 	column := ctx.GetName().GetColumn()
 	if _, ok := v.typeMap[tp.Name]; ok {
-		panic(fmt.Errorf(`line %d:%d duplicate type "%s"`, line, column, tp.Name))
+		panic(v.wrapError(ast{
+			line:   line,
+			column: column,
+		}, `duplicate type "%s"`, tp.Name))
 	}
 
 	iTypeFieldContexts := ctx.AllTypeField()
@@ -291,7 +309,10 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} 
 		line := typeFieldContext.GetName().GetLine()
 		column := typeFieldContext.GetName().GetColumn()
 		if _, ok := set[member.Name]; ok {
-			panic(fmt.Errorf(`line %d:%d duplicate filed "%s"`, line, column, member.Name))
+			panic(v.wrapError(ast{
+				line:   line,
+				column: column,
+			}, `duplicate filed "%s"`, member.Name))
 		}
 
 		set[member.Name] = struct{}{}
@@ -380,7 +401,10 @@ func (v *ApiVisitor) VisitInnerStruct(ctx *parser.InnerStructContext) interface{
 	symbol := ctx.LBRACE().GetSymbol()
 	line := symbol.GetLine()
 	column := symbol.GetColumn()
-	panic(fmt.Errorf("line %d:%d nested type is not supported", line, column))
+	panic(v.wrapError(ast{
+		line:   line,
+		column: column,
+	}, "nested type is not supported"))
 }
 
 func (v *ApiVisitor) VisitDataType(ctx *parser.DataTypeContext) interface{} {
@@ -437,7 +461,10 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 			tp.Name = v.getNodeText(ctx.ID(), false)
 			if tp.Name == "interface" {
 				symbol := ctx.ID().GetSymbol()
-				panic(fmt.Errorf("line %d:%d expected '{'", symbol.GetLine(), symbol.GetColumn()))
+				panic(v.wrapError(ast{
+					line:   symbol.GetLine(),
+					column: symbol.GetColumn(),
+				}, "expected '{'"))
 			}
 			return tp
 		}
@@ -475,7 +502,10 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 		tp.Name = v.getNodeText(ctx.ID(), false)
 		if tp.Name == "interface" {
 			symbol := ctx.ID().GetSymbol()
-			panic(fmt.Errorf("line %d:%d unexpected interface", symbol.GetLine(), symbol.GetColumn()))
+			panic(v.wrapError(ast{
+				line:   symbol.GetLine(),
+				column: symbol.GetColumn(),
+			}, "unexpected interface"))
 		}
 		tmp.Star = tp
 	}
@@ -492,7 +522,7 @@ func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interfac
 	body := ctx.ServiceBody().Accept(v).(serviceBody)
 	serviceGroup.Routes = body.routes
 	if v.serviceAst.name != "" && body.name != v.serviceAst.name {
-		panic(fmt.Errorf(`line %d:%d multiple service name "%s"`, body.line, body.column, body.name))
+		panic(v.wrapError(body.ast, `multiple service name "%s"`, body.name))
 	}
 
 	v.serviceAst.name = body.name
@@ -513,7 +543,7 @@ func (v *ApiVisitor) VisitServerMeta(ctx *parser.ServerMetaContext) interface{} 
 	for _, anno := range annos {
 		kv := anno.Accept(v).(kv)
 		if _, ok := duplicate[kv.key]; ok {
-			panic(fmt.Errorf(`line %d:%d duplicate key "%s"`, kv.line, kv.column, kv.key))
+			panic(v.wrapError(kv.ast, `duplicate key "%s"`, kv.key))
 		}
 
 		duplicate[kv.key] = struct{}{}
@@ -527,7 +557,10 @@ func (v *ApiVisitor) VisitAnnotation(ctx *parser.AnnotationContext) interface{} 
 	key := v.getTokenText(ctx.GetKey(), true)
 
 	if len(key) == 0 || ctx.GetValue() == nil {
-		panic(errors.New("empty annotation key or value"))
+		panic(v.wrapError(ast{
+			line:   ctx.GetKey().GetLine(),
+			column: ctx.GetKey().GetColumn(),
+		}, "empty annotation key or value"))
 	}
 
 	line := ctx.GetKey().GetLine()
@@ -548,7 +581,7 @@ func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{
 	var body serviceBody
 	name := strings.TrimSpace(ctx.ServiceName().GetText())
 	if len(name) == 0 {
-		panic("service name should not null")
+		panic(v.filename + " service name should not null")
 	}
 
 	serviceNameContext := ctx.ServiceName().(*parser.ServiceNameContext)
@@ -626,7 +659,10 @@ func (v *ApiVisitor) VisitLineDoc(ctx *parser.LineDocContext) interface{} {
 func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interface{} {
 	text := v.getNodeText(ctx.ID(), false)
 	if _, ok := v.serviceAst.handlerMap[text]; ok {
-		panic(fmt.Errorf(`line %d:%d duplicate handler "%s"`, ctx.ID().GetSymbol().GetLine(), ctx.ID().GetSymbol().GetColumn(), text))
+		panic(v.wrapError(ast{
+			line:   ctx.ID().GetSymbol().GetLine(),
+			column: ctx.ID().GetSymbol().GetColumn(),
+		}, `duplicate handler "%s"`, text))
 	}
 
 	v.serviceAst.handlerMap[text] = struct{}{}
@@ -642,7 +678,10 @@ func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
 		line := pathContext.ID(0).GetSymbol().GetLine()
 		column := pathContext.ID(0).GetSymbol().GetColumn()
 		if _, ok := v.serviceAst.routeMap[routePath.method+path]; ok {
-			panic(fmt.Errorf(`line %d:%d duplicate route path "%s"`, line, column, routePath.method+" "+path))
+			panic(v.wrapError(ast{
+				line:   line,
+				column: column,
+			}, `duplicate route path "%s"`, routePath.method+" "+path))
 		}
 
 		v.serviceAst.routeMap[routePath.method+path] = struct{}{}
@@ -745,4 +784,11 @@ func (v *ApiVisitor) trimQuote(text string) string {
 	text = strings.ReplaceAll(text, `'`, "")
 	text = strings.ReplaceAll(text, "`", "")
 	return text
+}
+
+func (v *ApiVisitor) wrapError(ast ast, format string, a ...interface{}) error {
+	if v.filename == "" {
+		return fmt.Errorf("line %d:%d %s", ast.line, ast.column, fmt.Sprintf(format, a...))
+	}
+	return fmt.Errorf("%s line %d:%d %s", v.filename, ast.line, ast.column, fmt.Sprintf(format, a...))
 }
