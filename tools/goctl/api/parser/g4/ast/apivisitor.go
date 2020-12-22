@@ -39,7 +39,8 @@ func NewApiVisitor() *ApiVisitor {
 }
 
 func (v *ApiVisitor) VisitApi(ctx *parser.ApiContext) interface{} {
-	return v.VisitChildren(ctx)
+	v.VisitChildren(ctx)
+	return v.apiSpec
 }
 
 func (v *ApiVisitor) VisitBody(ctx *parser.BodyContext) interface{} {
