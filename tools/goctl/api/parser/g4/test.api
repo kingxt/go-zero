@@ -71,8 +71,6 @@ type (
         VStruct Foo `json:"vStruct"`
         VStructPointer *Foo `json:"vStructPointer"`
         VInterface interface{} `json:"vInterface"`
-        VInnerStruct {
-        } `json:"VInnerStruct"`
         T time.Time
     }
 )

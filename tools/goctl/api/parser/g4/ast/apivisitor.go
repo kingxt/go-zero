@@ -309,7 +309,7 @@ func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
 		symbol := innerStructContext.LBRACE().GetSymbol()
 		line := symbol.GetLine()
 		column := symbol.GetColumn()
-		panic(fmt.Errorf("line %d:%d nested type not supported", line, column))
+		panic(fmt.Errorf("line %d:%d nested type is not supported", line, column))
 	}
 	return tp
 }

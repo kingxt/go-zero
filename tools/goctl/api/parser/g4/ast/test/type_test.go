@@ -10,6 +10,8 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
+const structLit = "Foo {\n        VString string `json:\"vString\"`\n        VBool bool `json:\"vBool\"`\n        VInt8 int8 `json:\"vInt8\"`\n        VInt16 int16 `json:\"vInt16\"`\n        VInt32 int32 `json:\"vInt32\"`\n        VInt64 int64 `json:\"vInt64\"`\n        VInt int `json:\"vInt\"`\n        VUInt8 uint8 `json:\"vUint8\"`\n        VUInt16 uint16 `json:\"vuInt16\"`\n        VUInt32 uint32 `json:\"vuInt32\"`\n        VUInt64 uint64 `json:\"vuInt64\"`\n        VFloat32 float32 `json:\"vFloat32\"`\n        VFloat64 float64 `json:\"vFloat64\"`\n        VByte byte `json:\"vByte\"`\n        VRune rune `json:\"vRune\"`\n        VMap map[string]int `json:\"vMap\"`\n        VArray []int `json:\"vArray\"`\n        VStruct Foo `json:\"vStruct\"`\n        VStructPointer *Foo `json:\"vStructPointer\"`\n        VInterface interface{} `json:\"vInterface\"`\n        T time.Time\n    }"
+
 func TestPointer(t *testing.T) {
 	do := func(p *ast.Parser, v *ast.ApiVisitor) interface{} {
 		return p.Pointer().Accept(v)
@@ -283,6 +285,255 @@ func TestField(t *testing.T) {
 		},
 		Tag: "",
 	}, false, `Name string`)
+
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeField().Accept(visitor)
+	}, spec.Member{
+		Name: "Name",
+		Type: "int",
+		Expr: spec.BasicType{
+			StringExpr: "int",
+			Name:       "int",
+		},
+		Tag: "",
+	}, false, `Name int`)
+
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeField().Accept(visitor)
+	}, spec.Member{
+		Name: "Name",
+		Type: "map[string]int",
+		Expr: spec.MapType{
+			StringExpr: "map[string]int",
+			Key:        "string",
+			Value: spec.BasicType{
+				StringExpr: "int",
+				Name:       "int",
+			},
+		},
+		Tag: "",
+	}, false, `Name map[string]int`)
+
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeField().Accept(visitor)
+	}, spec.Member{
+		Name:     "User",
+		IsInline: true,
+	}, false, `User`)
+
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeField().Accept(visitor)
+	}, nil, true, `User{}`)
+
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeField().Accept(visitor)
+	}, nil, true, `User struct{}`)
+}
+
+func TestStruct(t *testing.T) {
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeStruct().Accept(visitor)
+	}, spec.Type{
+		Name: "User",
+	}, false, `User {}`)
+
+	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeStruct().Accept(visitor)
+	}, spec.Type{
+		Name: "Foo",
+		Members: []spec.Member{
+			{
+				Name: "VString",
+				Type: "string",
+				Expr: spec.BasicType{
+					StringExpr: "string",
+					Name:       "string",
+				},
+				Tag: `json:"vString"`,
+			},
+			{
+				Name: "VBool",
+				Type: "bool",
+				Expr: spec.BasicType{
+					StringExpr: "bool",
+					Name:       "bool",
+				},
+				Tag: `json:"vBool"`,
+			},
+			{
+				Name: "VInt8",
+				Type: "int8",
+				Expr: spec.BasicType{
+					StringExpr: "int8",
+					Name:       "int8",
+				},
+				Tag: `json:"vInt8"`,
+			},
+			{
+				Name: "VInt16",
+				Type: "int16",
+				Expr: spec.BasicType{
+					StringExpr: "int16",
+					Name:       "int16",
+				},
+				Tag: `json:"vInt16"`,
+			},
+			{
+				Name: "VInt32",
+				Type: "int32",
+				Expr: spec.BasicType{
+					StringExpr: "int32",
+					Name:       "int32",
+				},
+				Tag: `json:"vInt32"`,
+			},
+			{
+				Name: "VInt64",
+				Type: "int64",
+				Expr: spec.BasicType{
+					StringExpr: "int64",
+					Name:       "int64",
+				},
+				Tag: `json:"vInt64"`,
+			},
+			{
+				Name: "VInt",
+				Type: "int",
+				Expr: spec.BasicType{
+					StringExpr: "int",
+					Name:       "int",
+				},
+				Tag: `json:"vInt"`,
+			},
+			{
+				Name: "VUInt8",
+				Type: "uint8",
+				Expr: spec.BasicType{
+					StringExpr: "uint8",
+					Name:       "uint8",
+				},
+				Tag: `json:"vUInt8"`,
+			},
+			{
+				Name: "VUInt16",
+				Type: "uint16",
+				Expr: spec.BasicType{
+					StringExpr: "uint16",
+					Name:       "uint16",
+				},
+				Tag: `json:"vUInt16"`,
+			},
+			{
+				Name: "VUInt32",
+				Type: "uint32",
+				Expr: spec.BasicType{
+					StringExpr: "uint32",
+					Name:       "uint32",
+				},
+				Tag: `json:"vUInt32"`,
+			},
+			{
+				Name: "VUInt64",
+				Type: "uint64",
+				Expr: spec.BasicType{
+					StringExpr: "uint64",
+					Name:       "uint64",
+				},
+				Tag: `json:"vUInt64"`,
+			},
+			{
+				Name: "VFloat32",
+				Type: "float32",
+				Expr: spec.BasicType{
+					StringExpr: "float32",
+					Name:       "float32",
+				},
+				Tag: `json:"vFloat32"`,
+			},
+			{
+				Name: "VFloat64",
+				Type: "float64",
+				Expr: spec.BasicType{
+					StringExpr: "float64",
+					Name:       "float64",
+				},
+				Tag: `json:"vFloat64"`,
+			},
+			{
+				Name: "VByte",
+				Type: "byte",
+				Expr: spec.BasicType{
+					StringExpr: "byte",
+					Name:       "byte",
+				},
+				Tag: `json:"vByte"`,
+			},
+			{
+				Name: "VRune",
+				Type: "rune",
+				Expr: spec.BasicType{
+					StringExpr: "rune",
+					Name:       "rune",
+				},
+				Tag: `json:"vRune"`,
+			},
+			{
+				Name: "VMap",
+				Type: "map[string]int",
+				Expr: spec.MapType{
+					StringExpr: "map[string]int",
+					Key:        "string",
+					Value: spec.BasicType{
+						StringExpr: "int",
+						Name:       "int",
+					},
+				},
+				Tag: `json:"vMap"`,
+			},
+			{
+				Name: "VArray",
+				Type: "[]int",
+				Expr: spec.ArrayType{
+					StringExpr: "[]int",
+					ArrayType: spec.BasicType{
+						StringExpr: "int",
+						Name:       "int",
+					},
+				},
+				Tag: `json:"vArray"`,
+			},
+			{
+				Name: "VStruct",
+				Type: "Foo",
+				Expr: spec.Type{
+					Name: "Foo",
+				},
+				Tag: `json:"vStruct"`,
+			},
+			{
+				Name: "VStructPointer",
+				Type: "*Foo",
+				Expr: spec.PointerType{
+					StringExpr: "*Foo",
+					Star: spec.Type{
+						Name: "Foo",
+					},
+				},
+				Tag: `json:"vStructPointer"`,
+			},
+			{
+				Name: "VInterface",
+				Type: "interface{}",
+				Expr: spec.InterfaceType{StringExpr: "interface{}"},
+				Tag:  `json:"vInterface"`,
+			},
+			{
+				Name: "T",
+				Type: "time.Time",
+				Expr: spec.TimeType{StringExpr: "time.Time"},
+			},
+		},
+	}, false, structLit)
 }
 
 func test(t *testing.T, do func(p *ast.Parser, visitor *ast.ApiVisitor) interface{}, expected interface{}, expectedErr bool, content string) {
