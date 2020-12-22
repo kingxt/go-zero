@@ -58,3 +58,103 @@ func testServiceAnnotation(t *testing.T, content, key, value string) {
 	assert.True(t, ok)
 	assert.Equal(t, group.Annotation.Properties[key], value)
 }
+
+func TestServerMeta(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.ServerMeta().Accept(visitor)
+	}
+	test(t, do, spec.Annotation{
+		Properties: map[string]string{
+			"jwt":   "Foo",
+			"group": "foo/bar",
+			"key":   "value",
+		},
+	}, false, `@server(
+		jwt: Foo
+		group: foo/bar
+		key: value
+	)
+	service user-api{}
+	`)
+
+	test(t, do, nil, true, `@server(
+		jwt: Foo
+		jwt: Bar
+		group: foo/bar
+		key: value
+	)
+	service foo-api{}
+	`)
+
+}
+
+func TestServiceBlock(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.ServiceBlock().Accept(visitor)
+	}
+
+	test(t, do, nil, true, `@server(
+		jwt: Foo
+		group: foo/bar
+		key: value
+	)
+	service foo-api{
+		@handler foo
+		post /foo
+		
+		@handler foo
+		post /bar
+	}
+	`)
+
+	test(t, do, spec.Service{
+		Name: "foo-api",
+		Groups: []spec.Group{
+			{
+				Annotation: spec.Annotation{Properties: map[string]string{
+					"jwt":   "Foo",
+					"group": "foo/bar",
+					"key":   "value",
+				}},
+				Routes: []spec.Route{
+					{
+						Method:  "post",
+						Path:    "/foo",
+						Handler: "foo",
+					},
+					{
+						Method:  "get",
+						Path:    "/foo",
+						Handler: "bar",
+					},
+				},
+			},
+		},
+	}, false, `@server(
+		jwt: Foo
+		group: foo/bar
+		key: value
+	)
+	service foo-api{
+		@handler foo
+		post /foo
+		
+		@handler bar
+		get /foo
+	}
+	`)
+
+	test(t, do, nil, true, `@server(
+		jwt: Foo
+		group: foo/bar
+		key: value
+	)
+	service foo-api{
+		@handler foo
+		post /foo
+		
+		@handler bar
+		post /foo
+	}
+	`)
+}

@@ -36,6 +36,13 @@ type (
 )
 `
 
+const duplicateServiceBlock = `
+syntax = "v1"
+
+service foo-api{}
+service bar-api{}
+`
+
 func TestApi(t *testing.T) {
 	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
 		return p.Api().Accept(visitor)
@@ -45,4 +52,5 @@ func TestApi(t *testing.T) {
 	test(t, do, nil, true, duplicateImport)
 	test(t, do, nil, true, duplicateTypeLit)
 	test(t, do, nil, true, duplicateTypeInGroup)
+	test(t, do, nil, true, duplicateServiceBlock)
 }

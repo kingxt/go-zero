@@ -20,7 +20,7 @@ type (
 		importSet  map[string]importAst
 		infoAst    infoAst
 		typeMap    map[string]structAst
-		serviceMap map[string]serviceAst
+		serviceAst serviceAst
 	}
 
 	ast struct {
@@ -47,18 +47,8 @@ type (
 	serviceAst struct {
 		ast
 		name       string
-		handlerMap map[string]handlerAst
-		routeMap   map[string]routeAst
-	}
-
-	handlerAst struct {
-		ast
-		name string
-	}
-
-	routeAst struct {
-		ast
-		Route
+		handlerMap map[string]struct{}
+		routeMap   map[string]struct{}
 	}
 
 	kv struct {
@@ -67,7 +57,8 @@ type (
 		value string
 	}
 	serviceBody struct {
-		name   string
+		name string
+		ast
 		routes []spec.Route
 	}
 	Route struct {
@@ -80,9 +71,12 @@ type (
 
 func NewApiVisitor() *ApiVisitor {
 	return &ApiVisitor{
-		importSet:  make(map[string]importAst),
-		typeMap:    make(map[string]structAst),
-		serviceMap: make(map[string]serviceAst),
+		importSet: make(map[string]importAst),
+		typeMap:   make(map[string]structAst),
+		serviceAst: serviceAst{
+			handlerMap: map[string]struct{}{},
+			routeMap:   map[string]struct{}{},
+		},
 	}
 }
 
@@ -497,10 +491,13 @@ func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interfac
 
 	body := ctx.ServiceBody().Accept(v).(serviceBody)
 	serviceGroup.Routes = body.routes
-	if len(v.apiSpec.Service.Name) > 0 && body.name != v.apiSpec.Service.Name {
-		panic(fmt.Sprintf("multi service name [%s, %s] should name equal", v.apiSpec.Service.Name, body.name))
+	if v.serviceAst.name != "" && body.name != v.serviceAst.name {
+		panic(fmt.Errorf(`line %d:%d multiple service name "%s"`, body.line, body.column, body.name))
 	}
 
+	v.serviceAst.name = body.name
+	v.serviceAst.line = body.line
+	v.serviceAst.column = body.column
 	return spec.Service{
 		Name:   body.name,
 		Groups: []spec.Group{serviceGroup},
@@ -511,8 +508,15 @@ func (v *ApiVisitor) VisitServerMeta(ctx *parser.ServerMetaContext) interface{} 
 	var annotation spec.Annotation
 	annotation.Properties = make(map[string]string, 0)
 	annos := ctx.AllAnnotation()
+
+	duplicate := make(map[string]struct{})
 	for _, anno := range annos {
 		kv := anno.Accept(v).(kv)
+		if _, ok := duplicate[kv.key]; ok {
+			panic(fmt.Errorf(`line %d:%d duplicate key "%s"`, kv.line, kv.column, kv.key))
+		}
+
+		duplicate[kv.key] = struct{}{}
 		annotation.Properties[kv.key] = kv.value
 	}
 
@@ -526,7 +530,14 @@ func (v *ApiVisitor) VisitAnnotation(ctx *parser.AnnotationContext) interface{} 
 		panic(errors.New("empty annotation key or value"))
 	}
 
-	return kv{key: key, value: ctx.GetValue().GetText()}
+	line := ctx.GetKey().GetLine()
+	column := ctx.GetKey().GetColumn()
+
+	return kv{
+		key:   key,
+		value: ctx.GetValue().GetText(),
+		ast:   ast{line: line, column: column},
+	}
 }
 
 func (v *ApiVisitor) VisitAnnotationKeyValue(ctx *parser.AnnotationKeyValueContext) interface{} {
@@ -540,6 +551,12 @@ func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{
 		panic("service name should not null")
 	}
 
+	serviceNameContext := ctx.ServiceName().(*parser.ServiceNameContext)
+	line := serviceNameContext.ID(0).GetSymbol().GetLine()
+	column := serviceNameContext.ID(0).GetSymbol().GetColumn()
+
+	body.line = line
+	body.column = column
 	body.name = name
 	for _, item := range ctx.AllServiceRoute() {
 		r := item.Accept(v).(spec.Route)
@@ -607,14 +624,29 @@ func (v *ApiVisitor) VisitLineDoc(ctx *parser.LineDocContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interface{} {
-	return v.getNodeText(ctx.ID(), false)
+	text := v.getNodeText(ctx.ID(), false)
+	if _, ok := v.serviceAst.handlerMap[text]; ok {
+		panic(fmt.Errorf(`line %d:%d duplicate handler "%s"`, ctx.ID().GetSymbol().GetLine(), ctx.ID().GetSymbol().GetColumn(), text))
+	}
+
+	v.serviceAst.handlerMap[text] = struct{}{}
+	return text
 }
 
 func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
 	var routePath Route
 	routePath.method = v.getNodeText(ctx.HTTPMETHOD(), false)
 	if ctx.Path() != nil {
-		routePath.path = ctx.Path().GetText()
+		path := ctx.Path().GetText()
+		pathContext := ctx.Path().(*parser.PathContext)
+		line := pathContext.ID(0).GetSymbol().GetLine()
+		column := pathContext.ID(0).GetSymbol().GetColumn()
+		if _, ok := v.serviceAst.routeMap[routePath.method+path]; ok {
+			panic(fmt.Errorf(`line %d:%d duplicate route path "%s"`, line, column, routePath.method+" "+path))
+		}
+
+		v.serviceAst.routeMap[routePath.method+path] = struct{}{}
+		routePath.path = path
 	}
 
 	iRequestContext := ctx.Request()
@@ -644,11 +676,12 @@ func (v *ApiVisitor) VisitReply(ctx *parser.ReplyContext) interface{} {
 func (v *ApiVisitor) VisitKvLit(ctx *parser.KvLitContext) interface{} {
 	key := v.getTokenText(ctx.GetKey(), false)
 	value := v.getTokenText(ctx.GetValue(), true)
-
+	line := ctx.GetKey().GetLine()
+	column := ctx.GetKey().GetColumn()
 	return kv{
 		ast: ast{
-			line:   ctx.GetKey().GetLine(),
-			column: ctx.GetKey().GetColumn(),
+			line:   line,
+			column: column,
 		},
 		key:   key,
 		value: value,
