@@ -1,10 +1,10 @@
 package spec
 
 type (
+	Doc []string
+
 	Annotation struct {
-		Name       string
 		Properties map[string]string
-		Value      string
 	}
 
 	ApiSyntax struct {
@@ -60,16 +60,18 @@ type (
 		// 成员尾部注释说明
 		Comments []string
 		// 成员头顶注释说明
-		Docs     []string
+		Docs     Doc
 		IsInline bool
 	}
 
 	Route struct {
-		Annotations  []Annotation
+		Annotation   Annotation
 		Method       string
 		Path         string
 		RequestType  Type
 		ResponseType Type
+		Docs         Doc
+		Handler      string
 	}
 
 	Service struct {

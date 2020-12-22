@@ -11,7 +11,7 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
-const serverAnnotationName = "server"
+const handlerKey = "handler"
 
 type (
 	ApiVisitor struct {
@@ -459,7 +459,6 @@ func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interfac
 
 func (v *ApiVisitor) VisitServerMeta(ctx *parser.ServerMetaContext) interface{} {
 	var annotation spec.Annotation
-	annotation.Name = serverAnnotationName
 	annotation.Properties = make(map[string]string, 0)
 	annos := ctx.AllAnnotation()
 	for _, anno := range annos {
@@ -505,8 +504,21 @@ func (v *ApiVisitor) VisitServiceName(ctx *parser.ServiceNameContext) interface{
 func (v *ApiVisitor) VisitServiceRoute(ctx *parser.ServiceRouteContext) interface{} {
 	var route spec.Route
 	if ctx.RouteHandler() != nil {
-		route.Annotations = append(route.Annotations, ctx.RouteHandler().Accept(v).(spec.Annotation))
+		route.Handler = ctx.RouteHandler().Accept(v).(string)
 	}
+	if ctx.RouteDoc() != nil {
+		route.Docs = ctx.RouteDoc().Accept(v).(spec.Doc)
+	}
+	if ctx.ServerMeta() != nil {
+		route.Annotation = ctx.ServerMeta().Accept(v).(spec.Annotation)
+	}
+	if len(route.Handler) == 0 {
+		route.Handler = route.Annotation.Properties[handlerKey]
+	}
+	if len(route.Handler) == 0 {
+		panic(fmt.Sprintf("route [%s] handler missing", route.Path))
+	}
+
 	var routePath = ctx.RoutePath().Accept(v).(Route)
 	route.Method = routePath.method
 	route.Path = routePath.path
@@ -522,19 +534,30 @@ func (v *ApiVisitor) VisitServiceRoute(ctx *parser.ServiceRouteContext) interfac
 }
 
 func (v *ApiVisitor) VisitRouteDoc(ctx *parser.RouteDocContext) interface{} {
-	return v.VisitChildren(ctx)
+	var doc spec.Doc
+	if ctx.LineDoc() != nil {
+		doc = append(doc, ctx.LineDoc().Accept(v).(string))
+	}
+	if ctx.Doc() != nil {
+		doc = append(doc, ctx.Doc().Accept(v).(spec.Doc)...)
+	}
+	return doc
 }
 
 func (v *ApiVisitor) VisitDoc(ctx *parser.DocContext) interface{} {
-	return v.VisitChildren(ctx)
+	var doc spec.Doc
+	for _, item := range ctx.AllKvLit() {
+		doc = append(doc, item.GetValue().GetText())
+	}
+	return doc
 }
 
 func (v *ApiVisitor) VisitLineDoc(ctx *parser.LineDocContext) interface{} {
-	return v.VisitChildren(ctx)
+	return ctx.STRING_LIT().GetText()
 }
 
 func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interface{} {
-	return spec.Annotation{Name: "handler", Value: ctx.GetText()}
+	return ctx.ID().GetText()
 }
 
 func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
@@ -609,7 +632,6 @@ func (v *ApiVisitor) getNodeInt(node antlr.TerminalNode) (int64, error) {
 	}
 
 	return vInt, nil
-
 }
 
 func (v *ApiVisitor) getNodeText(node antlr.TerminalNode, trimQuote bool) string {

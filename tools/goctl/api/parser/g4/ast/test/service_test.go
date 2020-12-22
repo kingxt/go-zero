@@ -30,6 +30,9 @@ func TestServiceBody(t *testing.T) {
 				anotherKey: anotherValue
 			)
     		post /api/foo1 (SingleExample)
+
+			@handler fooHandler3
+    		post /api/foo3/:id returns (SingleExample2)
 		}
 	`, ast.WithErrorCallback(func(err error) {
 		assert.Nil(t, err)
@@ -38,9 +41,11 @@ func TestServiceBody(t *testing.T) {
 	result := p.ServiceBlock().Accept(visitor)
 	group, ok := result.(spec.Group)
 	assert.True(t, ok)
-	assert.Equal(t, len(group.Routes), 1)
+	assert.Equal(t, len(group.Routes), 2)
 	assert.Equal(t, group.Routes[0].Path, "/api/foo1")
 	assert.Equal(t, group.Routes[0].Method, "post")
+
+	assert.Equal(t, group.Routes[1].Handler, "fooHandler3")
 }
 
 func testServiceAnnotation(t *testing.T, content, key, value string) {
