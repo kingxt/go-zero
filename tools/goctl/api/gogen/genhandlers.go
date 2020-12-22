@@ -134,8 +134,8 @@ func genHandlerImports(group spec.Group, route spec.Route, parentPkg string) str
 }
 
 func getHandlerBaseName(route spec.Route) (string, error) {
-	handler, ok := apiutil.GetAnnotationValue(route.Annotations, "server", "handler")
-	if !ok {
+	handler := route.Handler
+	if len(handler) == 0 {
 		return "", fmt.Errorf("missing handler annotation for %q", route.Path)
 	}
 
@@ -153,10 +153,10 @@ func getHandlerBaseName(route spec.Route) (string, error) {
 }
 
 func getHandlerFolderPath(group spec.Group, route spec.Route) string {
-	folder, ok := apiutil.GetAnnotationValue(route.Annotations, "server", groupProperty)
-	if !ok {
-		folder, ok = apiutil.GetAnnotationValue(group.Annotations, "server", groupProperty)
-		if !ok {
+	folder := route.GetAnnotation(groupProperty)
+	if len(folder) == 0 {
+		folder = group.GetAnnotation(groupProperty)
+		if len(folder) == 0 {
 			return handlerDir
 		}
 	}

@@ -116,3 +116,21 @@ func (t Type) GetNonBodyMembers() []Member {
 	}
 	return result
 }
+
+func (r Route) JoinedDoc() string {
+	return strings.Join(r.Docs, " ")
+}
+
+func (r Route) GetAnnotation(key string) string {
+	if r.Annotation.Properties == nil {
+		return ""
+	}
+	return r.Annotation.Properties[key]
+}
+
+func (g Group) GetAnnotation(key string) string {
+	if g.Annotation.Properties == nil {
+		return ""
+	}
+	return g.Annotation.Properties[key]
+}

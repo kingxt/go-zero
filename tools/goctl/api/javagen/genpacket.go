@@ -87,11 +87,11 @@ func genPacket(dir, packetName string, api *spec.ApiSpec) error {
 }
 
 func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName string) error {
-	packet, ok := apiutil.GetAnnotationValue(route.Annotations, "server", "handler")
-	packet = strings.Replace(packet, "Handler", "Packet", 1)
-	if !ok {
+	packet := route.Handler
+	if len(packet) == 0 {
 		return fmt.Errorf("missing packet annotation for %q", route.Path)
 	}
+	packet = strings.Replace(packet, "Handler", "Packet", 1)
 
 	javaFile := packet + ".java"
 	fp, created, err := apiutil.MaybeCreateFile(dir, "", javaFile)

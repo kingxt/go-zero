@@ -42,11 +42,13 @@ func writeProperty(writer io.Writer, name, tp, tag, comment string, indent int) 
 func getAuths(api *spec.ApiSpec) []string {
 	authNames := collection.NewSet()
 	for _, g := range api.Service.Groups {
-		if value, ok := util.GetAnnotationValue(g.Annotations, "server", "jwt"); ok {
-			authNames.Add(value)
+		jwt := g.GetAnnotation("jwt")
+		if len(jwt) > 0 {
+			authNames.Add(jwt)
 		}
-		if value, ok := util.GetAnnotationValue(g.Annotations, "server", "signature"); ok {
-			authNames.Add(value)
+		signature := g.GetAnnotation("signature")
+		if len(signature) > 0 {
+			authNames.Add(signature)
 		}
 	}
 	return authNames.KeysStr()
@@ -55,8 +57,9 @@ func getAuths(api *spec.ApiSpec) []string {
 func getMiddleware(api *spec.ApiSpec) []string {
 	result := collection.NewSet()
 	for _, g := range api.Service.Groups {
-		if value, ok := util.GetAnnotationValue(g.Annotations, "server", "middleware"); ok {
-			for _, item := range strings.Split(value, ",") {
+		middleware := g.GetAnnotation("middleware")
+		if len(middleware) > 0 {
+			for _, item := range strings.Split(middleware, ",") {
 				result.Add(strings.TrimSpace(item))
 			}
 		}

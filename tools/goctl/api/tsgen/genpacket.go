@@ -122,10 +122,11 @@ func genTypes(localTypes []spec.Type, inlineType func(string) (*spec.Type, error
 func genApi(api *spec.ApiSpec, localTypes []spec.Type, caller string, prefixForType func(string) string) (string, error) {
 	var builder strings.Builder
 	for _, route := range api.Service.Routes() {
-		handler, ok := apiutil.GetAnnotationValue(route.Annotations, "server", "handler")
-		if !ok {
+		handler := route.Handler
+		if len(handler) == 0 {
 			return "", fmt.Errorf("missing handler annotation for route %q", route.Path)
 		}
+
 		handler = util.Untitle(handler)
 		handler = strings.Replace(handler, "Handler", "", 1)
 		comment := commentForRoute(route)
@@ -171,7 +172,7 @@ func paramsForRoute(route spec.Route, prefixForType func(string) string) string 
 
 func commentForRoute(route spec.Route) string {
 	var builder strings.Builder
-	comment, _ := apiutil.GetAnnotationValue(route.Annotations, "doc", "summary")
+	comment := route.JoinedDoc()
 	builder.WriteString("/**")
 	builder.WriteString("\n * @description " + comment)
 	hasParams := pathHasParams(route)

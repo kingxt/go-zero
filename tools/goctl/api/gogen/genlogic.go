@@ -118,11 +118,11 @@ func genLogicByRoute(dir string, cfg *config.Config, group spec.Group, route spe
 }
 
 func getLogicFolderPath(group spec.Group, route spec.Route) string {
-	folder, ok := util.GetAnnotationValue(route.Annotations, "server", groupProperty)
-	if !ok {
-		folder, ok = util.GetAnnotationValue(group.Annotations, "server", groupProperty)
-		if !ok {
-			return logicDir
+	folder := route.GetAnnotation(groupProperty)
+	if len(folder) == 0 {
+		folder = group.GetAnnotation(groupProperty)
+		if len(folder) == 0 {
+			return handlerDir
 		}
 	}
 	folder = strings.TrimPrefix(folder, "/")
