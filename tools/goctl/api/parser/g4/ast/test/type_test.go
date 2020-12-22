@@ -1,16 +1,13 @@
 package test
 
 import (
-	"encoding/json"
-	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
-const structLit = "Foo {\n        VString string `json:\"vString\"`\n        VBool bool `json:\"vBool\"`\n        VInt8 int8 `json:\"vInt8\"`\n        VInt16 int16 `json:\"vInt16\"`\n        VInt32 int32 `json:\"vInt32\"`\n        VInt64 int64 `json:\"vInt64\"`\n        VInt int `json:\"vInt\"`\n        VUInt8 uint8 `json:\"vUint8\"`\n        VUInt16 uint16 `json:\"vuInt16\"`\n        VUInt32 uint32 `json:\"vuInt32\"`\n        VUInt64 uint64 `json:\"vuInt64\"`\n        VFloat32 float32 `json:\"vFloat32\"`\n        VFloat64 float64 `json:\"vFloat64\"`\n        VByte byte `json:\"vByte\"`\n        VRune rune `json:\"vRune\"`\n        VMap map[string]int `json:\"vMap\"`\n        VArray []int `json:\"vArray\"`\n        VStruct Foo `json:\"vStruct\"`\n        VStructPointer *Foo `json:\"vStructPointer\"`\n        VInterface interface{} `json:\"vInterface\"`\n        T time.Time\n    }"
+const structLit = "Foo {\n        VString string `json:\"vString\"`\n        VBool bool `json:\"vBool\"`\n        VInt8 int8 `json:\"vInt8\"`\n        VInt16 int16 `json:\"vInt16\"`\n        VInt32 int32 `json:\"vInt32\"`\n        VInt64 int64 `json:\"vInt64\"`\n        VInt int `json:\"vInt\"`\n        VUInt8 uint8 `json:\"vUInt8\"`\n        VUInt16 uint16 `json:\"vUInt16\"`\n        VUInt32 uint32 `json:\"vUInt32\"`\n        VUInt64 uint64 `json:\"vUInt64\"`\n        VFloat32 float32 `json:\"vFloat32\"`\n        VFloat64 float64 `json:\"vFloat64\"`\n        VByte byte `json:\"vByte\"`\n        VRune rune `json:\"vRune\"`\n        VMap map[string]int `json:\"vMap\"`\n        VArray []int `json:\"vArray\"`\n        VStruct Foo `json:\"vStruct\"`\n        VStructPointer *Foo `json:\"vStructPointer\"`\n        VInterface interface{} `json:\"vInterface\"`\n        T time.Time\n    }"
 
 func TestPointer(t *testing.T) {
 	do := func(p *ast.Parser, v *ast.ApiVisitor) interface{} {
@@ -202,31 +199,23 @@ func TestMapType(t *testing.T) {
 }
 
 func TestInterface(t *testing.T) {
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
 		return p.DataType().Accept(visitor)
-	}, spec.InterfaceType{StringExpr: "interface{}"}, false, `interface{}`)
+	}
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, nil, true, `interface`)
-
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, nil, true, `*interface`)
-
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, nil, true, `interface{ }`)
-
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, nil, true, `interface{`)
+	test(t, do, spec.InterfaceType{StringExpr: "interface{}"}, false, `interface{}`)
+	test(t, do, nil, true, `interface`)
+	test(t, do, nil, true, `*interface`)
+	test(t, do, nil, true, `interface{ }`)
+	test(t, do, nil, true, `interface{`)
 }
 
 func TestDataType(t *testing.T) {
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
 		return p.DataType().Accept(visitor)
-	}, spec.PointerType{
+	}
+
+	test(t, do, spec.PointerType{
 		StringExpr: "*int",
 		Star: spec.BasicType{
 			StringExpr: "int",
@@ -234,22 +223,16 @@ func TestDataType(t *testing.T) {
 		},
 	}, false, `*int`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, spec.BasicType{
+	test(t, do, spec.BasicType{
 		StringExpr: "int",
 		Name:       "int",
 	}, false, `int`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, spec.Type{
+	test(t, do, spec.Type{
 		Name: "User",
 	}, false, `User`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, spec.MapType{
+	test(t, do, spec.MapType{
 		StringExpr: "map[string]int",
 		Key:        "string",
 		Value: spec.BasicType{
@@ -258,9 +241,7 @@ func TestDataType(t *testing.T) {
 		},
 	}, false, `map[string]int`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, spec.ArrayType{
+	test(t, do, spec.ArrayType{
 		StringExpr: "[]int",
 		ArrayType: spec.BasicType{
 			StringExpr: "int",
@@ -268,15 +249,15 @@ func TestDataType(t *testing.T) {
 		},
 	}, false, `[]int`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.DataType().Accept(visitor)
-	}, spec.InterfaceType{StringExpr: "interface{}"}, false, `interface{}`)
+	test(t, do, spec.InterfaceType{StringExpr: "interface{}"}, false, `interface{}`)
 }
 
 func TestField(t *testing.T) {
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeField().Accept(visitor)
-	}, spec.Member{
+	}
+
+	test(t, do, spec.Member{
 		Name: "Name",
 		Type: "string",
 		Expr: spec.BasicType{
@@ -286,9 +267,7 @@ func TestField(t *testing.T) {
 		Tag: "",
 	}, false, `Name string`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.TypeField().Accept(visitor)
-	}, spec.Member{
+	test(t, do, spec.Member{
 		Name: "Name",
 		Type: "int",
 		Expr: spec.BasicType{
@@ -298,9 +277,7 @@ func TestField(t *testing.T) {
 		Tag: "",
 	}, false, `Name int`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.TypeField().Accept(visitor)
-	}, spec.Member{
+	test(t, do, spec.Member{
 		Name: "Name",
 		Type: "map[string]int",
 		Expr: spec.MapType{
@@ -314,32 +291,25 @@ func TestField(t *testing.T) {
 		Tag: "",
 	}, false, `Name map[string]int`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.TypeField().Accept(visitor)
-	}, spec.Member{
+	test(t, do, spec.Member{
 		Name:     "User",
 		IsInline: true,
 	}, false, `User`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.TypeField().Accept(visitor)
-	}, nil, true, `User{}`)
-
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.TypeField().Accept(visitor)
-	}, nil, true, `User struct{}`)
+	test(t, do, nil, true, `User{}`)
+	test(t, do, nil, true, `User struct{}`)
 }
 
 func TestStruct(t *testing.T) {
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeStruct().Accept(visitor)
-	}, spec.Type{
+	}
+
+	test(t, do, spec.Type{
 		Name: "User",
 	}, false, `User {}`)
 
-	test(t, func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
-		return p.TypeStruct().Accept(visitor)
-	}, spec.Type{
+	test(t, do, spec.Type{
 		Name: "Foo",
 		Members: []spec.Member{
 			{
@@ -536,23 +506,70 @@ func TestStruct(t *testing.T) {
 	}, false, structLit)
 }
 
-func test(t *testing.T, do func(p *ast.Parser, visitor *ast.ApiVisitor) interface{}, expected interface{}, expectedErr bool, content string) {
-	defer func() {
-		p := recover()
-		if expectedErr {
-			if logEnable {
-				fmt.Printf("%+v\n", p)
-			}
-			assert.NotNil(t, p)
-			return
-		}
-		assert.Nil(t, p)
-	}()
+func TestAlias(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeAlias().Accept(visitor)
+	}
 
-	p := ast.NewParser(content)
-	visitor := ast.NewApiVisitor()
-	result := do(p, visitor)
-	expectedJson, _ := json.Marshal(expected)
-	actualJson, _ := json.Marshal(result)
-	assert.JSONEq(t, string(expectedJson), string(actualJson))
+	test(t, do, nil, true, `Gender int`)
+}
+
+func TestTypeSpec(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeSpec().Accept(visitor)
+	}
+
+	test(t, do, spec.Type{
+		Name: "User",
+	}, false, `User {}`)
+
+	test(t, do, nil, true, `Gender int`)
+}
+
+func TestTypeLit(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeLit().Accept(visitor)
+	}
+
+	test(t, do, spec.Type{
+		Name: "User",
+	}, false, `type User {}`)
+
+	test(t, do, nil, true, `type Gender int`)
+}
+
+func TestTypeGroup(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeGroup().Accept(visitor)
+	}
+
+	test(t, do, []spec.Type{
+		{
+			Name: "User",
+		},
+	}, false, `type (
+		User {}
+	)`)
+
+	test(t, do, nil, true, `type (
+		Gender int
+	)`)
+}
+
+func TestTypeBlock(t *testing.T) {
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeBlock().Accept(visitor)
+	}
+
+	test(t, do, []spec.Type{
+		{
+			Name: "User",
+		},
+	}, false, `type (
+		User {}
+	)`)
+
+	test(t, do, nil, true, `type (
+		Gender int
+	)`)
 }

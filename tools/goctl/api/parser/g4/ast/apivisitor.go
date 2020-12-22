@@ -39,17 +39,89 @@ func NewApiVisitor() *ApiVisitor {
 }
 
 func (v *ApiVisitor) VisitApi(ctx *parser.ApiContext) interface{} {
-	v.VisitChildren(ctx)
-	return v.apiSpec
+	var api spec.ApiSpec
+	iSyntaxLitContext := ctx.SyntaxLit()
+	iBodyContexts := ctx.AllBody()
+	if iSyntaxLitContext != nil {
+		syntaxLitContext, ok := iSyntaxLitContext.(*parser.SyntaxLitContext)
+		if ok {
+			syntaxLit := v.VisitSyntaxLit(syntaxLitContext)
+			syntax, ok := syntaxLit.(*spec.ApiSyntax)
+			if ok {
+				api.Syntax = *syntax
+			}
+		}
+	}
+
+	for _, item := range iBodyContexts {
+		bodyContext, ok := item.(*parser.BodyContext)
+		if !ok {
+			continue
+		}
+
+		body := v.VisitBody(bodyContext)
+		if body == nil {
+			continue
+		}
+
+		switch v := body.(type) {
+		case *spec.ApiImport:
+			api.Import.List = append(api.Import.List, v.List...)
+		case *spec.Info:
+			api.Info = *v
+		case *spec.Type:
+			api.Types = append(api.Types, *v)
+		case *spec.Service:
+			api.Service.Name = v.Name
+			api.Service.Groups = append(api.Service.Groups, v.Groups...)
+		default:
+			continue
+		}
+	}
+
+	return &api
 }
 
 func (v *ApiVisitor) VisitBody(ctx *parser.BodyContext) interface{} {
-	return v.VisitChildren(ctx)
+	iImportSpecContext := ctx.ImportSpec()
+	iInfoBlockContext := ctx.InfoBlock()
+	iTypeBlockContext := ctx.TypeBlock()
+	iServiceBlockContext := ctx.ServiceBlock()
+	if iImportSpecContext != nil {
+		importSpecContext, ok := iImportSpecContext.(*parser.ImportSpecContext)
+		if !ok {
+			return nil
+		}
+
+		return v.VisitImportSpec(importSpecContext)
+	} else if iInfoBlockContext != nil {
+		infoBlockContext, ok := iInfoBlockContext.(*parser.InfoBlockContext)
+		if !ok {
+			return nil
+		}
+
+		return v.VisitInfoBlock(infoBlockContext)
+	} else if iTypeBlockContext != nil {
+		typeBlockContext, ok := iTypeBlockContext.(*parser.TypeBlockContext)
+		if !ok {
+			return nil
+		}
+
+		return v.VisitTypeBlock(typeBlockContext)
+	} else if iServiceBlockContext != nil {
+		serviceBlockContext, ok := iServiceBlockContext.(*parser.ServiceBlockContext)
+		if !ok {
+			return nil
+		}
+
+		return v.VisitServiceBlock(serviceBlockContext)
+	} else {
+		return nil
+	}
 }
 
 func (v *ApiVisitor) VisitSyntaxLit(ctx *parser.SyntaxLitContext) interface{} {
 	version := v.getTokenText(ctx.GetVersion(), true)
-
 	return &spec.ApiSyntax{Version: version}
 }
 
@@ -298,6 +370,16 @@ func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
 			filed.Expr = dataTypeResult
 			filed.Tag = tag
 			return filed
+		case *spec.TimeType:
+			filed.Type = v.StringExpr
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
+		case *spec.Type:
+			filed.Type = v.Name
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
 		default:
 			return tp
 		}
@@ -396,10 +478,17 @@ func (v *ApiVisitor) VisitArrayType(ctx *parser.ArrayTypeContext) interface{} {
 func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 	if len(ctx.AllSTAR()) == 0 { // basic type
 		if ctx.GOTYPE() != nil {
-			tp := &spec.BasicType{}
-			tp.StringExpr = ctx.GetText()
-			tp.Name = v.getNodeText(ctx.GOTYPE(), false)
-			return tp
+			text := v.getNodeText(ctx.GOTYPE(), false)
+			if text == "time.Time" {
+				tp := &spec.TimeType{}
+				tp.StringExpr = text
+				return tp
+			} else {
+				tp := &spec.BasicType{}
+				tp.StringExpr = ctx.GetText()
+				tp.Name = text
+				return tp
+			}
 		} else if ctx.ID() != nil {
 			tp := &spec.Type{}
 			tp.Name = v.getNodeText(ctx.ID(), false)
@@ -427,10 +516,17 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 	}
 
 	if ctx.GOTYPE() != nil {
-		tp := &spec.BasicType{}
-		tp.StringExpr = v.getNodeText(ctx.GOTYPE(), false)
-		tp.Name = v.getNodeText(ctx.GOTYPE(), false)
-		tmp.Star = tp
+		text := v.getNodeText(ctx.GOTYPE(), false)
+		if text == "time.Time" {
+			tp := &spec.TimeType{}
+			tp.StringExpr = text
+			tmp.Star = tp
+		} else {
+			tp := &spec.BasicType{}
+			tp.StringExpr = text
+			tp.Name = text
+			tmp.Star = tp
+		}
 	} else if ctx.ID() != nil {
 		tp := &spec.Type{}
 		tp.Name = v.getNodeText(ctx.ID(), false)

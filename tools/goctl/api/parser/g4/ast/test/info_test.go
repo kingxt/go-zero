@@ -3,7 +3,6 @@ package test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
@@ -16,51 +15,43 @@ info(
 `
 
 func TestInfo(t *testing.T) {
-	testInfo(t, map[string]string{
-		"title": "foo",
-		"desc":  "bar",
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.InfoBlock().Accept(visitor)
+	}
+	test(t, do, spec.Info{
+		Proterties: map[string]string{
+			"title": "foo",
+			"desc":  "bar",
+		},
 	}, false, `info(
 		title: "foo"
 		desc: "bar"
 	)`)
 
-	testInfo(t, map[string]string{}, false, `info()`)
-	testInfo(t, map[string]string{
-		"title": "",
-		"desc":  "",
-	}, false, `info(
+	test(t, do, spec.Info{
+		Proterties: map[string]string{},
+	}, false, `info()`)
+
+	test(t, do, spec.Info{
+		Proterties: map[string]string{
+			"title": "",
+			"desc":  "",
+		}}, false, `info(
 		title:
 		desc:
 	)`)
 
-	testInfo(t, map[string]string{
-		"title": "foo",
-		"desc":  "foo\n\t\tbar",
+	test(t, do, spec.Info{
+		Proterties: map[string]string{
+			"title": "foo",
+			"desc":  "foo\n\t\tbar",
+		},
 	}, false, `info(
 		title: "foo"
 		desc: "foo
 		bar"		
 	)`)
 
-	testInfo(t, nil, true, `info`)
-	testInfo(t, nil, true, `info (`)
-}
-
-func testInfo(t *testing.T, expected interface{}, expectedErr bool, content string) {
-	defer func() {
-		p := recover()
-		if expectedErr {
-			assert.NotNil(t, p)
-			return
-		}
-		assert.Nil(t, p)
-	}()
-
-	p := ast.NewParser(content)
-	visitor := ast.NewApiVisitor()
-	result := p.InfoBlock().Accept(visitor)
-
-	imp, ok := result.(*spec.Info)
-	assert.True(t, ok)
-	assert.Equal(t, expected, imp.Proterties)
+	test(t, do, nil, true, `info`)
+	test(t, do, nil, true, `info (`)
 }

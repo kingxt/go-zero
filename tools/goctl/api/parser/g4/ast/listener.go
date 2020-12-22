@@ -30,6 +30,5 @@ func (listener *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendin
 		return
 	}
 	errString := fmt.Sprintf(lineHeader + ", " + msg)
-	fmt.Println(errString)
 	panic(errors.New(errString))
 }

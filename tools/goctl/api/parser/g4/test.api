@@ -58,10 +58,10 @@ type (
         VInt32 int32 `json:"vInt32"`
         VInt64 int64 `json:"vInt64"`
         VInt int `json:"vInt"`
-        VUInt8 uint8 `json:"vUint8"`
-        VUInt16 uint16 `json:"vuInt16"`
-        VUInt32 uint32 `json:"vuInt32"`
-        VUInt64 uint64 `json:"vuInt64"`
+        VUInt8 uint8 `json:"vUInt8"`
+        VUInt16 uint16 `json:"vUInt16"`
+        VUInt32 uint32 `json:"vUInt32"`
+        VUInt64 uint64 `json:"vUInt64"`
         VFloat32 float32 `json:"vFloat32"`
         VFloat64 float64 `json:"vFloat64"`
         VByte byte `json:"vByte"`

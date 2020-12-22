@@ -1,10 +1,8 @@
 package test
 
 import (
-	"sort"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
@@ -20,58 +18,47 @@ import (
 `
 
 func TestImport(t *testing.T) {
-	testImport(t, []string{"foo.api"}, false, importLit)
-	testImport(t, []string{"foo.api", "bar.api", "foo/bar.api"}, false, importGroup)
-	testImport(t, nil, false, `import ()`)
-	testImport(t, nil, true, `import`)
-	testImport(t, nil, true, `import user.api`)
-	testImport(t, nil, true, `import "user.api "`)
-	testImport(t, nil, true, `import "/"`)
-	testImport(t, nil, true, `import " "`)
-	testImport(t, nil, true, `import "user-.api"`)
-	testImport(t, nil, true, ``)
-	testImport(t, nil, true, `
+	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+		return p.ImportSpec().Accept(visitor)
+	}
+
+	test(t, do, spec.ApiImport{
+		List: []string{"foo.api"},
+	}, false, importLit)
+
+	test(t, do, spec.ApiImport{
+		List: []string{"foo.api", "bar.api", "foo/bar.api"},
+	}, false, importGroup)
+
+	test(t, do, spec.ApiImport{}, false, `import ()`)
+	test(t, do, nil, true, `import`)
+	test(t, do, nil, true, `import user.api`)
+	test(t, do, nil, true, `import "user.api "`)
+	test(t, do, nil, true, `import "/"`)
+	test(t, do, nil, true, `import " "`)
+	test(t, do, nil, true, `import "user-.api"`)
+	test(t, do, nil, true, ``)
+	test(t, do, nil, true, `
 	import (
 		"user"
 	)`,
 	)
 
-	testImport(t, nil, true, `
+	test(t, do, nil, true, `
 	import (
 		"user.ap"
 	)`,
 	)
 
-	testImport(t, nil, true, `
+	test(t, do, nil, true, `
 	import (
 		"user\user.api"
 	)`,
 	)
 
-	testImport(t, nil, true, `
+	test(t, do, nil, true, `
 	import (
 		"user.api"
 	`,
 	)
-}
-
-func testImport(t *testing.T, expected []string, expectedErr bool, content string) {
-	defer func() {
-		p := recover()
-		if expectedErr {
-			assert.NotNil(t, p)
-			return
-		}
-		assert.Nil(t, p)
-	}()
-
-	p := ast.NewParser(content)
-	visitor := ast.NewApiVisitor()
-	result := p.ImportSpec().Accept(visitor)
-
-	imp, ok := result.(*spec.ApiImport)
-	assert.True(t, ok)
-	sort.Strings(imp.List)
-	sort.Strings(expected)
-	assert.Equal(t, expected, imp.List)
 }
