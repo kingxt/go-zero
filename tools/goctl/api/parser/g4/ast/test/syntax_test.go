@@ -20,10 +20,10 @@ func TestSyntaxLit(t *testing.T) {
 	testSyntax(t, "", true, `syntax = "v0"`)
 }
 
-func testSyntax(t *testing.T, expected interface{}, expectErr bool, content string) {
+func testSyntax(t *testing.T, expected interface{}, expectedErr bool, content string) {
 	defer func() {
 		p := recover()
-		if expectErr {
+		if expectedErr {
 			assert.NotNil(t, p)
 			return
 		}

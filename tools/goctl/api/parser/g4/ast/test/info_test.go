@@ -46,10 +46,10 @@ func TestInfo(t *testing.T) {
 	testInfo(t, nil, true, `info (`)
 }
 
-func testInfo(t *testing.T, expected interface{}, expectErr bool, content string) {
+func testInfo(t *testing.T, expected interface{}, expectedErr bool, content string) {
 	defer func() {
 		p := recover()
-		if expectErr {
+		if expectedErr {
 			assert.NotNil(t, p)
 			return
 		}

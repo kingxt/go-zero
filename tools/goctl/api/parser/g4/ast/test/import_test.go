@@ -55,10 +55,10 @@ func TestImport(t *testing.T) {
 	)
 }
 
-func testImport(t *testing.T, expected []string, expectErr bool, content string) {
+func testImport(t *testing.T, expected []string, expectedErr bool, content string) {
 	defer func() {
 		p := recover()
-		if expectErr {
+		if expectedErr {
 			assert.NotNil(t, p)
 			return
 		}

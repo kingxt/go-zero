@@ -2,6 +2,7 @@ package ast
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -111,55 +112,325 @@ func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitTypeBlock(ctx *parser.TypeBlockContext) interface{} {
-	return v.VisitChildren(ctx)
+	iTypeLitContext := ctx.TypeLit()
+	iTypeGroupContext := ctx.TypeGroup()
+	var list []*spec.Type
+	if iTypeLitContext != nil {
+		typeLitContext, ok := iTypeLitContext.(*parser.TypeLitContext)
+		if !ok {
+			return list
+		}
+
+		typeLit := v.VisitTypeLit(typeLitContext)
+		tp := typeLit.(*spec.Type)
+		list = append(list, tp)
+	} else if iTypeGroupContext != nil {
+		typeGroupContext, ok := iTypeGroupContext.(*parser.TypeGroupContext)
+		if !ok {
+			return list
+		}
+
+		typeGroup := v.VisitTypeGroup(typeGroupContext)
+		types, ok := typeGroup.([]*spec.Type)
+		if !ok {
+			return list
+		}
+
+		list = append(list, types...)
+	}
+
+	return list
 }
 
 func (v *ApiVisitor) VisitTypeLit(ctx *parser.TypeLitContext) interface{} {
-	return v.VisitChildren(ctx)
+	var tp spec.Type
+	iTypeSpecContext := ctx.TypeSpec()
+	typeSpecContext, ok := iTypeSpecContext.(*parser.TypeSpecContext)
+	if !ok {
+		return tp
+	}
+
+	typeSpec := v.VisitTypeSpec(typeSpecContext)
+	result, ok := typeSpec.(*spec.Type)
+	if !ok {
+		return tp
+	}
+	return result
 }
 
 func (v *ApiVisitor) VisitTypeGroup(ctx *parser.TypeGroupContext) interface{} {
-	return v.VisitChildren(ctx)
+	iTypeSpecContexts := ctx.AllTypeSpec()
+	var list []*spec.Type
+	for _, each := range iTypeSpecContexts {
+		typeSpecContext, ok := each.(*parser.TypeSpecContext)
+		if !ok {
+			continue
+		}
+
+		typeSpec := v.VisitTypeSpec(typeSpecContext)
+		tp, ok := typeSpec.(*spec.Type)
+		if !ok {
+			continue
+		}
+
+		list = append(list, tp)
+	}
+	return list
 }
 
 func (v *ApiVisitor) VisitTypeSpec(ctx *parser.TypeSpecContext) interface{} {
-	return v.VisitChildren(ctx)
+	var tp spec.Type
+	iTypeAliasContext := ctx.TypeAlias()
+	iTypeStructContext := ctx.TypeStruct()
+	if iTypeAliasContext != nil {
+		typeAliasContext, ok := iTypeAliasContext.(*parser.TypeAliasContext)
+		if !ok {
+			return &tp
+		}
+
+		return v.VisitTypeAlias(typeAliasContext)
+	} else if iTypeStructContext != nil {
+		structContext, ok := iTypeStructContext.(*parser.TypeStructContext)
+		if !ok {
+			return &tp
+		}
+
+		return v.VisitTypeStruct(structContext)
+	}
+	return &tp
 }
 
 func (v *ApiVisitor) VisitTypeAlias(ctx *parser.TypeAliasContext) interface{} {
-	return v.VisitChildren(ctx)
+	line := ctx.GetAlias().GetLine()
+	column := ctx.GetAlias().GetColumn()
+	// todo: to support the alias types in the feature
+	panic(fmt.Errorf("line %d:%d unsupport alias", line, column))
 }
 
 func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} {
-	return v.VisitChildren(ctx)
+	var tp spec.Type
+	tp.Name = v.getTokenText(ctx.GetName(), false)
+	iTypeFieldContexts := ctx.AllTypeField()
+	for _, each := range iTypeFieldContexts {
+		fieldContext, ok := each.(*parser.TypeFieldContext)
+		if !ok {
+			continue
+		}
+
+		field := v.VisitTypeField(fieldContext)
+		member, ok := field.(*spec.Member)
+		if !ok {
+			continue
+		}
+
+		tp.Members = append(tp.Members, *member)
+	}
+	return &tp
 }
 
 func (v *ApiVisitor) VisitTypeField(ctx *parser.TypeFieldContext) interface{} {
-	return v.VisitChildren(ctx)
+	var member spec.Member
+	iFiledContext := ctx.Filed()
+	if iFiledContext != nil {
+		filedContext, ok := iFiledContext.(*parser.FiledContext)
+		if ok {
+			fieldResult := v.VisitFiled(filedContext)
+			m, ok := fieldResult.(*spec.Member)
+			if ok {
+				member = *m
+			}
+		}
+	} else { // anonymousType
+		member.IsInline = true
+	}
+	member.Name = v.getTokenText(ctx.GetName(), false)
+	return &member
 }
 
 func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
-	return v.VisitChildren(ctx)
+	iDataTypeContext := ctx.DataType()
+	iInnerStructContext := ctx.InnerStruct()
+	tag := v.getTokenText(ctx.GetTag(), false)
+	tag = strings.ReplaceAll(tag, "`", "")
+	// todo: tag valid?
+	var tp interface{}
+	if iDataTypeContext != nil {
+		dataTypeContext, ok := iDataTypeContext.(*parser.DataTypeContext)
+		if !ok {
+			return tp
+		}
+
+		dataTypeResult := v.VisitDataType(dataTypeContext)
+		filed := &spec.Member{}
+		switch v := dataTypeResult.(type) {
+		case *spec.BasicType:
+			filed.Type = v.Name
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
+		case *spec.PointerType:
+			filed.Type = v.StringExpr
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
+		case *spec.MapType:
+			filed.Type = v.StringExpr
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
+		case *spec.ArrayType:
+			filed.Type = v.StringExpr
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
+		case *spec.InterfaceType:
+			filed.Type = v.StringExpr
+			filed.Expr = dataTypeResult
+			filed.Tag = tag
+			return filed
+		default:
+			return tp
+		}
+	} else if iInnerStructContext != nil {
+		innerStructContext, ok := iInnerStructContext.(*parser.InnerStructContext)
+		if !ok {
+			return tp
+		}
+		symbol := innerStructContext.LBRACE().GetSymbol()
+		line := symbol.GetLine()
+		column := symbol.GetColumn()
+		panic(fmt.Errorf("line %d:%d nested type not supported", line, column))
+	}
+	return tp
 }
 
 func (v *ApiVisitor) VisitInnerStruct(ctx *parser.InnerStructContext) interface{} {
-	return v.VisitChildren(ctx)
+	var list []*spec.Member
+	iTypeFieldContexts := ctx.AllTypeField()
+	for _, each := range iTypeFieldContexts {
+		typeFieldContext, ok := each.(*parser.TypeFieldContext)
+		if !ok {
+			continue
+		}
+
+		result := v.VisitTypeField(typeFieldContext)
+		field, ok := result.(*spec.Member)
+		if !ok {
+			continue
+		}
+
+		list = append(list, field)
+	}
+	return list
 }
 
 func (v *ApiVisitor) VisitDataType(ctx *parser.DataTypeContext) interface{} {
-	return v.VisitChildren(ctx)
+	iPointerContext := ctx.Pointer()
+	iMapTypeContext := ctx.MapType()
+	iArrayTypeContext := ctx.ArrayType()
+	interfaceNode := ctx.INTERFACE()
+	var tp interface{}
+	if iPointerContext != nil {
+		pointerContext, ok := iPointerContext.(*parser.PointerContext)
+		if !ok {
+			return tp
+		}
+
+		return v.VisitPointer(pointerContext)
+	} else if iMapTypeContext != nil {
+		mapTypeContext, ok := iMapTypeContext.(*parser.MapTypeContext)
+		if !ok {
+			return tp
+		}
+
+		return v.VisitMapType(mapTypeContext)
+	} else if iArrayTypeContext != nil {
+		arrayTypeContext, ok := iArrayTypeContext.(*parser.ArrayTypeContext)
+		if !ok {
+			return tp
+		}
+
+		return v.VisitArrayType(arrayTypeContext)
+	} else if interfaceNode != nil {
+		return &spec.InterfaceType{StringExpr: ctx.GetText()}
+	}
+	return tp
 }
 
 func (v *ApiVisitor) VisitMapType(ctx *parser.MapTypeContext) interface{} {
-	return v.VisitChildren(ctx)
+	tp := &spec.MapType{}
+	key := v.getTokenText(ctx.GetKey(), false)
+	iDataTypeContext := ctx.DataType()
+	dataTypeContext, ok := iDataTypeContext.(*parser.DataTypeContext)
+	if ok {
+		dt := v.VisitDataType(dataTypeContext)
+		tp.Key = key
+		tp.Value = dt
+		tp.StringExpr = ctx.GetText()
+	}
+	return tp
 }
 
 func (v *ApiVisitor) VisitArrayType(ctx *parser.ArrayTypeContext) interface{} {
-	return v.VisitChildren(ctx)
+	tp := &spec.ArrayType{}
+	iDataTypeContext := ctx.DataType()
+	dataTypeContext, ok := iDataTypeContext.(*parser.DataTypeContext)
+	if ok {
+		dt := v.VisitDataType(dataTypeContext)
+		tp.ArrayType = dt
+		tp.StringExpr = ctx.GetText()
+	}
+	return tp
 }
 
 func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
-	return v.VisitChildren(ctx)
+	if len(ctx.AllSTAR()) == 0 { // basic type
+		if ctx.GOTYPE() != nil {
+			tp := &spec.BasicType{}
+			tp.StringExpr = ctx.GetText()
+			tp.Name = v.getNodeText(ctx.GOTYPE(), false)
+			return tp
+		} else if ctx.ID() != nil {
+			tp := &spec.Type{}
+			tp.Name = v.getNodeText(ctx.ID(), false)
+			if tp.Name == "interface" {
+				symbol := ctx.ID().GetSymbol()
+				panic(fmt.Errorf("line %d:%d expected '{'", symbol.GetLine(), symbol.GetColumn()))
+			}
+			return tp
+		}
+	}
+
+	// pointer
+	text := ctx.GetText()
+	parent := &spec.PointerType{
+		StringExpr: text,
+	}
+	tmp := parent
+	for index := 1; index < len(ctx.AllSTAR()); index++ {
+		p := &spec.PointerType{
+			StringExpr: text[index:],
+			Star:       nil,
+		}
+		tmp.Star = p
+		tmp = p
+	}
+
+	if ctx.GOTYPE() != nil {
+		tp := &spec.BasicType{}
+		tp.StringExpr = v.getNodeText(ctx.GOTYPE(), false)
+		tp.Name = v.getNodeText(ctx.GOTYPE(), false)
+		tmp.Star = tp
+	} else if ctx.ID() != nil {
+		tp := &spec.Type{}
+		tp.Name = v.getNodeText(ctx.ID(), false)
+		if tp.Name == "interface" {
+			symbol := ctx.ID().GetSymbol()
+			panic(fmt.Errorf("line %d:%d unexpected interface", symbol.GetLine(), symbol.GetColumn()))
+		}
+		tmp.Star = tp
+	}
+	return parent
 }
 
 func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interface{} {
