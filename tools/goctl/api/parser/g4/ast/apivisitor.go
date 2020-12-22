@@ -23,6 +23,12 @@ type (
 		key   string
 		value string
 	}
+	Route struct {
+		method   string
+		path     string
+		request  string
+		response string
+	}
 )
 
 func NewApiVisitor() *ApiVisitor {
@@ -472,15 +478,40 @@ func (v *ApiVisitor) VisitAnnotationKeyValue(ctx *parser.AnnotationKeyValueConte
 }
 
 func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{} {
-	return v.VisitChildren(ctx)
-}
+	name := strings.TrimSpace(ctx.ServiceName().GetText())
+	if len(name) == 0 {
+		panic("service name should notnull")
+	}
 
+	if len(v.apiSpec.Service.Name) > 0 && v.apiSpec.Service.Name != name {
+		panic(fmt.Sprintf("multi service name [%s, %s] should name equal", v.apiSpec.Service.Name, name))
+	}
+
+	v.apiSpec.Service.Name = strings.TrimSpace(ctx.ServiceName().GetText())
+	for _, item := range ctx.AllServiceRoute() {
+		v.serviceGroup.Routes = append(v.serviceGroup.Routes, item.Accept(v).(spec.Route))
+	}
+	return v.serviceGroup
+}
 func (v *ApiVisitor) VisitServiceName(ctx *parser.ServiceNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *ApiVisitor) VisitServiceRoute(ctx *parser.ServiceRouteContext) interface{} {
-	return v.VisitChildren(ctx)
+	var route spec.Route
+	route.Annotations = append(route.Annotations, ctx.RouteHandler().Accept(v).(spec.Annotation))
+	var routePath = ctx.RoutePath().Accept(v).(Route)
+	route.Method = routePath.method
+	route.Path = routePath.path
+	for _, ty := range v.apiSpec.Types {
+		if ty.Name == routePath.request {
+			route.RequestType = ty
+		}
+		if ty.Name == routePath.response {
+			route.ResponseType = ty
+		}
+	}
+	return route
 }
 
 func (v *ApiVisitor) VisitRouteDoc(ctx *parser.RouteDocContext) interface{} {
@@ -500,9 +531,17 @@ func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interfac
 }
 
 func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
-	return v.VisitChildren(ctx)
+	var routePath Route
+	routePath.method = ctx.HTTPMETHOD().GetText()
+	routePath.path = ctx.Path().GetText()
+	if ctx.Request() != nil {
+		routePath.request = ctx.Request().GetText()
+	}
+	if ctx.Reply() != nil {
+		routePath.request = ctx.Reply().GetText()
+	}
+	return routePath
 }
-
 func (v *ApiVisitor) VisitPath(ctx *parser.PathContext) interface{} {
 	return v.VisitChildren(ctx)
 }
