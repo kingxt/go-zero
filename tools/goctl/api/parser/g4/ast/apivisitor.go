@@ -16,12 +16,15 @@ const serverAnnotationName = "server"
 type (
 	ApiVisitor struct {
 		parser.BaseApiParserVisitor
-		serviceGroup *spec.Group
-		apiSpec      spec.ApiSpec
+		apiSpec spec.ApiSpec
 	}
 	kv struct {
 		key   string
 		value string
+	}
+	serviceBody struct {
+		name   string
+		routes []spec.Route
 	}
 	Route struct {
 		method   string
@@ -440,27 +443,31 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interface{} {
-	if v.serviceGroup == nil {
-		v.serviceGroup = new(spec.Group)
-		v.apiSpec.Service.Groups = append(v.apiSpec.Service.Groups, *v.serviceGroup)
+	var serviceGroup spec.Group
+	if ctx.ServerMeta() != nil {
+		serviceGroup.Annotation = ctx.ServerMeta().Accept(v).(spec.Annotation)
 	}
-	return v.VisitChildren(ctx)
+	body := ctx.ServiceBody().Accept(v).(serviceBody)
+	serviceGroup.Routes = body.routes
+	if len(v.apiSpec.Service.Name) > 0 && body.name != v.apiSpec.Service.Name {
+		v.apiSpec.Service.Name = body.name
+		panic(fmt.Sprintf("multi service name [%s, %s] should name equal", v.apiSpec.Service.Name, body.name))
+	}
+
+	return serviceGroup
 }
 
 func (v *ApiVisitor) VisitServerMeta(ctx *parser.ServerMetaContext) interface{} {
-	if v.serviceGroup == nil {
-		v.serviceGroup = new(spec.Group)
-		v.apiSpec.Service.Groups = append(v.apiSpec.Service.Groups, *v.serviceGroup)
-	}
-	v.serviceGroup.Annotation.Name = serverAnnotationName
-	v.serviceGroup.Annotation.Properties = make(map[string]string, 0)
+	var annotation spec.Annotation
+	annotation.Name = serverAnnotationName
+	annotation.Properties = make(map[string]string, 0)
 	annos := ctx.AllAnnotation()
 	for _, anno := range annos {
 		kv := anno.Accept(v).(kv)
-		v.serviceGroup.Annotation.Properties[kv.key] = kv.value
+		annotation.Properties[kv.key] = kv.value
 	}
 
-	return v.serviceGroup.Annotation
+	return annotation
 }
 
 func (v *ApiVisitor) VisitAnnotation(ctx *parser.AnnotationContext) interface{} {
@@ -478,20 +485,17 @@ func (v *ApiVisitor) VisitAnnotationKeyValue(ctx *parser.AnnotationKeyValueConte
 }
 
 func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{} {
+	var body serviceBody
 	name := strings.TrimSpace(ctx.ServiceName().GetText())
 	if len(name) == 0 {
 		panic("service name should notnull")
 	}
 
-	if len(v.apiSpec.Service.Name) > 0 && v.apiSpec.Service.Name != name {
-		panic(fmt.Sprintf("multi service name [%s, %s] should name equal", v.apiSpec.Service.Name, name))
-	}
-
-	v.apiSpec.Service.Name = strings.TrimSpace(ctx.ServiceName().GetText())
+	body.name = strings.TrimSpace(ctx.ServiceName().GetText())
 	for _, item := range ctx.AllServiceRoute() {
-		v.serviceGroup.Routes = append(v.serviceGroup.Routes, item.Accept(v).(spec.Route))
+		body.routes = append(body.routes, item.Accept(v).(spec.Route))
 	}
-	return v.serviceGroup
+	return body
 }
 
 func (v *ApiVisitor) VisitServiceName(ctx *parser.ServiceNameContext) interface{} {

@@ -14,6 +14,8 @@ func TestServiceAnnotation(t *testing.T) {
 		group: foo/bar
 		anotherKey: anotherValue
 	)
+	service example-api {
+	}
 	`, "jwt", "Foo")
 }
 
@@ -44,8 +46,8 @@ func testServiceAnnotation(t *testing.T, content, key, value string) {
 		assert.Nil(t, err)
 	}))
 	visitor := ast.NewApiVisitor()
-	result := p.ServerMeta().Accept(visitor)
-	anno, ok := result.(spec.Annotation)
+	result := p.ServiceBlock().Accept(visitor)
+	group, ok := result.(spec.Group)
 	assert.True(t, ok)
-	assert.Equal(t, anno.Properties[key], value)
+	assert.Equal(t, group.Annotation.Properties[key], value)
 }
