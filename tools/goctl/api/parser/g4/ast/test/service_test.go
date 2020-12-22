@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
+	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
@@ -20,7 +21,10 @@ func TestServiceAnnotation(t *testing.T) {
 }
 
 func TestServiceBody(t *testing.T) {
-	p := ast.NewParser(`
+	p := ast.NewParser(ast.WithErrorCallback(func(err error) {
+		assert.Nil(t, err)
+	}))
+	result, err := p.Accept(`
 		service example-api {
 			@doc(
 				summary: "foo1"
@@ -34,11 +38,11 @@ func TestServiceBody(t *testing.T) {
 			@handler fooHandler3
     		post /api/foo3/:id returns (SingleExample2)
 		}
-	`, ast.WithErrorCallback(func(err error) {
-		assert.Nil(t, err)
-	}))
-	visitor := ast.NewApiVisitor()
-	result := p.ServiceBlock().Accept(visitor)
+	`, func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.ServiceBlock().Accept(visitor)
+	})
+	assert.Nil(t, err)
+
 	group, ok := result.(spec.Group)
 	assert.True(t, ok)
 	assert.Equal(t, len(group.Routes), 2)
@@ -49,18 +53,20 @@ func TestServiceBody(t *testing.T) {
 }
 
 func testServiceAnnotation(t *testing.T, content, key, value string) {
-	p := ast.NewParser(content, ast.WithErrorCallback(func(err error) {
+	p := ast.NewParser(ast.WithErrorCallback(func(err error) {
 		assert.Nil(t, err)
 	}))
-	visitor := ast.NewApiVisitor()
-	result := p.ServiceBlock().Accept(visitor)
+	result, err := p.Accept(content, func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.ServiceBlock().Accept(visitor)
+	})
+	assert.Nil(t, err)
 	group, ok := result.(spec.Group)
 	assert.True(t, ok)
 	assert.Equal(t, group.Annotation.Properties[key], value)
 }
 
 func TestServerMeta(t *testing.T) {
-	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServerMeta().Accept(visitor)
 	}
 	test(t, do, spec.Annotation{
@@ -89,7 +95,7 @@ func TestServerMeta(t *testing.T) {
 }
 
 func TestServiceBlock(t *testing.T) {
-	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServiceBlock().Accept(visitor)
 	}
 

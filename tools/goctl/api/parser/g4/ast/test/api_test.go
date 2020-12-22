@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
+	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
 )
 
 const duplicateInfoBlock = `
@@ -44,7 +45,7 @@ service bar-api{}
 `
 
 func TestApi(t *testing.T) {
-	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.Api().Accept(visitor)
 	}
 

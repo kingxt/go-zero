@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
+	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
@@ -18,7 +19,7 @@ import (
 `
 
 func TestImport(t *testing.T) {
-	do := func(p *ast.Parser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ImportSpec().Accept(visitor)
 	}
 

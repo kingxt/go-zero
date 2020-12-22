@@ -23,7 +23,7 @@ func NewErrorListener(callback ErrCallback) *ErrorListener {
 	}
 }
 
-func (listener *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
+func (listener *ErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, line, column int, msg string, _ antlr.RecognitionException) {
 	lineHeader := "line " + strconv.Itoa(line) + ":" + strconv.Itoa(column)
 	if listener.callback != nil {
 		listener.callback(fmt.Errorf("%s, %s", lineHeader, msg))
