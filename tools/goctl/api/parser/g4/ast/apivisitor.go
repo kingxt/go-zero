@@ -456,7 +456,8 @@ func (v *ApiVisitor) VisitServerMeta(ctx *parser.ServerMetaContext) interface{} 
 	v.serviceGroup.Annotation.Properties = make(map[string]string, 0)
 	annos := ctx.AllAnnotation()
 	for _, anno := range annos {
-		anno.Accept(v)
+		kv := anno.Accept(v).(kv)
+		v.serviceGroup.Annotation.Properties[kv.key] = kv.value
 	}
 
 	return v.serviceGroup.Annotation
@@ -469,8 +470,7 @@ func (v *ApiVisitor) VisitAnnotation(ctx *parser.AnnotationContext) interface{} 
 		panic(errors.New("empty annotation key or value"))
 	}
 
-	v.serviceGroup.Annotation.Properties[key] = ctx.GetValue().GetText()
-	return nil
+	return kv{key: key, value: ctx.GetValue().GetText()}
 }
 
 func (v *ApiVisitor) VisitAnnotationKeyValue(ctx *parser.AnnotationKeyValueContext) interface{} {
@@ -493,13 +493,16 @@ func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{
 	}
 	return v.serviceGroup
 }
+
 func (v *ApiVisitor) VisitServiceName(ctx *parser.ServiceNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *ApiVisitor) VisitServiceRoute(ctx *parser.ServiceRouteContext) interface{} {
 	var route spec.Route
-	route.Annotations = append(route.Annotations, ctx.RouteHandler().Accept(v).(spec.Annotation))
+	if ctx.RouteHandler() != nil {
+		route.Annotations = append(route.Annotations, ctx.RouteHandler().Accept(v).(spec.Annotation))
+	}
 	var routePath = ctx.RoutePath().Accept(v).(Route)
 	route.Method = routePath.method
 	route.Path = routePath.path
@@ -527,7 +530,7 @@ func (v *ApiVisitor) VisitLineDoc(ctx *parser.LineDocContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interface{} {
-	return v.VisitChildren(ctx)
+	return spec.Annotation{Name: "handler", Value: ctx.GetText()}
 }
 
 func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {

@@ -8,13 +8,35 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
-func TestService(t *testing.T) {
+func TestServiceAnnotation(t *testing.T) {
 	testServiceAnnotation(t, `@server(
 		jwt: Foo
 		group: foo/bar
 		anotherKey: anotherValue
 	)
 	`, "jwt", "Foo")
+}
+
+func TestServiceBody(t *testing.T) {
+	p := ast.NewParser(`
+		service example-api {
+			@doc(
+				summary: "foo1"
+			)
+			@server(
+				handler: fooHandler1
+				anotherKey: anotherValue
+			)
+    		post /api/foo1 (SingleExample)
+		}
+	`, ast.WithErrorCallback(func(err error) {
+		assert.Nil(t, err)
+	}))
+	visitor := ast.NewApiVisitor()
+	result := p.ServiceBlock().Accept(visitor)
+	group, ok := result.(spec.Group)
+	assert.True(t, ok)
+	assert.Equal(t, len(group.Routes), 1)
 }
 
 func testServiceAnnotation(t *testing.T, content, key, value string) {
