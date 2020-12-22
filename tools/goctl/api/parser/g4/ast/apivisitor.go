@@ -454,6 +454,7 @@ func (v *ApiVisitor) VisitServiceBlock(ctx *parser.ServiceBlockContext) interfac
 		panic(fmt.Sprintf("multi service name [%s, %s] should name equal", v.apiSpec.Service.Name, body.name))
 	}
 
+	v.apiSpec.Service.Groups = append(v.apiSpec.Service.Groups, serviceGroup)
 	return serviceGroup
 }
 
