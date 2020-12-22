@@ -39,6 +39,8 @@ func TestServiceBody(t *testing.T) {
 	group, ok := result.(spec.Group)
 	assert.True(t, ok)
 	assert.Equal(t, len(group.Routes), 1)
+	assert.Equal(t, group.Routes[0].Path, "/api/foo1")
+	assert.Equal(t, group.Routes[0].Method, "post")
 }
 
 func testServiceAnnotation(t *testing.T, content, key, value string) {
