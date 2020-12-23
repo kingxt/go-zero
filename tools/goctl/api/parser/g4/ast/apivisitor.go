@@ -926,8 +926,8 @@ func (v *ApiVisitor) trimQuote(text string) string {
 }
 
 func (v *ApiVisitor) wrapError(ast ast, format string, a ...interface{}) error {
-	if v.filename == "" {
-		return fmt.Errorf("line %d:%d %s", ast.line, ast.column, fmt.Sprintf(format, a...))
+	if v.filename != "" {
+		v.filename = v.filename + " "
 	}
 	return fmt.Errorf("%s line %d:%d %s", v.filename, ast.line, ast.column, fmt.Sprintf(format, a...))
 }
@@ -935,7 +935,10 @@ func (v *ApiVisitor) wrapError(ast ast, format string, a ...interface{}) error {
 func (v *ApiVisitor) checkToken(token antlr.Token, text string) {
 	tokenText := v.getTokenText(token, false)
 	if tokenText != text {
-		panic(fmt.Errorf("%s %d:%d expected %s, but found %s",
+		if len(v.filename) > 0 {
+			v.filename = v.filename + " "
+		}
+		panic(fmt.Errorf("%sline %d:%d expected %s, but found %s",
 			v.filename, token.GetLine(), token.GetColumn(), text, tokenText))
 	}
 }
@@ -949,7 +952,7 @@ func (v *ApiVisitor) checkHttpMethod(token antlr.Token) {
 	text := v.getTokenText(token, false)
 	_, ok := httpMethodToken[text]
 	if !ok {
-		panic(fmt.Errorf("%s %d:%d expected http method, but found %s",
+		panic(fmt.Errorf("%s line %d:%d expected http method, but found %s",
 			v.filename, token.GetLine(), token.GetColumn(), text))
 	}
 }

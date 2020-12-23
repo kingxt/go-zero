@@ -89,4 +89,5 @@ func TestImportToken(t *testing.T) {
 	}
 	test(t, do, false, true, `imports "user.api"`)
 	test(t, do, false, true, `qw "user.api"`)
+	test(t, do, false, true, `"user.api"`)
 }

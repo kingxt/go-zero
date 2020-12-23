@@ -73,3 +73,10 @@ func TestApi(t *testing.T) {
 		Service: spec.Service{},
 	}, false, oldApi)
 }
+
+func TestToken(t *testing.T) {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.Api().Accept(visitor)
+	}
+	test(t, do, nil, true, `infos ()`)
+}

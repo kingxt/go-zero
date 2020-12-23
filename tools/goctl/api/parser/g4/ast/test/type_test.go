@@ -574,3 +574,10 @@ func TestTypeBlock(t *testing.T) {
 		Gender int
 	)`)
 }
+
+func TestTypeToken(t *testing.T) {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeBlock().Accept(visitor)
+	}
+	test(t, do, nil, true, `types User int`)
+}

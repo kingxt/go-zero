@@ -208,6 +208,7 @@ func (p *Parser) memberFill(apiList []*spec.ApiSpec) *spec.ApiSpec {
 			api.Filename = each.Filename
 			api.Info = each.Info
 			api.Import = each.Import
+			api.Service.Name = each.Service.Name
 		}
 		api.Types = append(api.Types, each.Types...)
 		api.Service.Groups = append(api.Service.Groups, each.Service.Groups...)

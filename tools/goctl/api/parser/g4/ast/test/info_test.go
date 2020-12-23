@@ -62,3 +62,11 @@ func TestInfo(t *testing.T) {
 	test(t, do, nil, true, `info`)
 	test(t, do, nil, true, `info (`)
 }
+
+func TestInfoToken(t *testing.T) {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.InfoBlock().Accept(visitor)
+	}
+	test(t, do, nil, true, `inf ()`)
+	test(t, do, nil, true, `import ()`)
+}
