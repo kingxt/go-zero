@@ -4,7 +4,7 @@ options {
     tokenVocab=ApiLexer;
 }
 
-api:        syntaxLit body* EOF;
+api:        syntaxLit? body* EOF;
 
 body:       importSpec
             |infoBlock

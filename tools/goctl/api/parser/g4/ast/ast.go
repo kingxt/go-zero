@@ -80,13 +80,12 @@ func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	}
 
 	err = p.fillTypeMember(apiSpecs)
+	if err != nil {
+		return nil, err
+	}
 
-	//err = p.memberFill(api, nestedApi)
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	return api, err
+	allApi := p.memberFill(apiSpecs)
+	return allApi, nil
 }
 
 func (p *Parser) parse(filename string) (api *spec.ApiSpec, err error) {
@@ -195,10 +194,19 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 	return nil
 }
 
-func (p *Parser) memberFill(api *spec.ApiSpec, nestedApi *spec.ApiSpec) error {
-	api.Types = append(api.Types, nestedApi.Types...)
-	api.Service.Groups = append(api.Service.Groups, nestedApi.Service.Groups...)
-	return nil
+func (p *Parser) memberFill(apiList []*spec.ApiSpec) *spec.ApiSpec {
+	var api spec.ApiSpec
+	for index, each := range apiList {
+		if index == 0 {
+			api.Syntax = each.Syntax
+			api.Filename = each.Filename
+			api.Info = each.Info
+			api.Import = each.Import
+		}
+		api.Types = append(api.Types, each.Types...)
+		api.Service.Groups = append(api.Service.Groups, each.Service.Groups...)
+	}
+	return &api
 }
 
 func (p *Parser) fillTypeMember(apiList []*spec.ApiSpec) error {

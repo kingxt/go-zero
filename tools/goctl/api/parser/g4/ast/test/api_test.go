@@ -5,6 +5,7 @@ import (
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
 	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
 const duplicateInfoBlock = `
@@ -44,6 +45,12 @@ service foo-api{}
 service bar-api{}
 `
 
+const oldApi = `
+info()
+
+type User {}
+`
+
 func TestApi(t *testing.T) {
 	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.Api().Accept(visitor)
@@ -54,4 +61,15 @@ func TestApi(t *testing.T) {
 	test(t, do, nil, true, duplicateTypeLit)
 	test(t, do, nil, true, duplicateTypeInGroup)
 	test(t, do, nil, true, duplicateServiceBlock)
+	test(t, do, spec.ApiSpec{
+		Info: spec.Info{
+			Proterties: map[string]string{},
+		},
+		Types: []spec.Type{
+			{
+				Name: "User",
+			},
+		},
+		Service: spec.Service{},
+	}, false, oldApi)
 }
