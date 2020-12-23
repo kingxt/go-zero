@@ -56,7 +56,7 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 	return
 }
 
-// Parse parse the api file from root
+// Parse parse the api file from the the root node
 func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	api, err := p.parse(filename)
 	if err != nil {
@@ -67,11 +67,11 @@ func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	var apiSpecs []*spec.ApiSpec
 	apiSpecs = append(apiSpecs, api)
 	for _, imp := range imports {
-		nestedApi, err := p.parse(imp)
+		nestedApi, err := p.parse(imp.Value)
 		if err != nil {
 			return nil, err
 		}
-		err = p.valid(api, imp, nestedApi)
+		err = p.valid(api, imp.Value, nestedApi)
 		if err != nil {
 			return nil, err
 		}
@@ -138,15 +138,18 @@ func WithErrorCallback(filename string, callback ErrCallback) option {
 
 func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.ApiSpec) error {
 	if len(nestedApi.Import.List) > 0 {
-		return fmt.Errorf("%s nested api does not support import", filename)
+		return fmt.Errorf("%s %d:%d nested api does not support import",
+			filename, nestedApi.Import.List[0].Line, nestedApi.Import.List[0].Column)
 	}
 
 	if mainApi.Syntax.Version != nestedApi.Syntax.Version {
-		return fmt.Errorf("%s multiple syntax, expected syntax %s, but found %s", filename, mainApi.Syntax.Version, nestedApi.Syntax.Version)
+		return fmt.Errorf("%s %d:%d multiple syntax, expected syntax %s, but found %s",
+			filename, nestedApi.Syntax.Line, nestedApi.Syntax.Column, mainApi.Syntax.Version, nestedApi.Syntax.Version)
 	}
 
 	if mainApi.Service.Name != nestedApi.Service.Name {
-		return fmt.Errorf("%s expected service name %s, but found %s", filename, mainApi.Service.Name, nestedApi.Service.Name)
+		return fmt.Errorf("%s expected service name %s, but found %s",
+			filename, mainApi.Service.Name, nestedApi.Service.Name)
 	}
 
 	mainHandlerMap := make(map[string]struct{})
@@ -177,18 +180,21 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 	// duplicate route check
 	for _, r := range nestedApi.Service.Routes() {
 		if _, ok := mainHandlerMap[r.Handler]; ok {
-			return fmt.Errorf("%s duplicate handler %s", filename, r.Handler)
+			return fmt.Errorf("%s %d:%d duplicate handler %s",
+				filename, r.HandlerLineColumn.Line, r.HandlerLineColumn.Column, r.Handler)
 		}
 
 		if _, ok := mainRouteMap[r.Method+r.Path]; ok {
-			return fmt.Errorf("%s duplicate route %s", filename, r.Method+" "+r.Path)
+			return fmt.Errorf("%s %d:%d duplicate route %s",
+				filename, r.Line, r.Column, r.Method+" "+r.Path)
 		}
 	}
 
 	// duplicate type check
 	for _, each := range nestedApi.Types {
 		if _, ok := mainTypeMap[each.Name]; ok {
-			return fmt.Errorf("%s duplicate type declaration %s", filename, each.Name)
+			return fmt.Errorf("%s %d:%d duplicate type declaration %s",
+				filename, each.Line, each.Column, each.Name)
 		}
 	}
 	return nil
@@ -234,7 +240,8 @@ func (p *Parser) fillTypeMember(apiList []*spec.ApiSpec) error {
 			if len(each.RequestType.Name) > 0 {
 				r, ok := types[each.RequestType.Name]
 				if !ok {
-					return fmt.Errorf("%s can not found declaration %s in context", prefix, each.RequestType.Name)
+					return fmt.Errorf("%s %d:%d can not found declaration %s in context",
+						prefix, each.RequestType.Line, each.RequestType.Column, each.RequestType.Name)
 				}
 
 				each.RequestType.Members = r.Members
@@ -242,7 +249,8 @@ func (p *Parser) fillTypeMember(apiList []*spec.ApiSpec) error {
 				if len(each.ResponseType.Name) > 0 {
 					r, ok = types[each.ResponseType.Name]
 					if !ok {
-						return fmt.Errorf("%s can not found declaration %s in context", prefix, each.ResponseType.Name)
+						return fmt.Errorf("%s %d:%d can not found declaration %s in context",
+							prefix, each.ResponseType.Line, each.ResponseType.Column, each.ResponseType.Name)
 					}
 
 					each.ResponseType.Members = r.Members
@@ -263,7 +271,8 @@ func (p *Parser) fillType(prefix string, types map[string]spec.Type, expr interf
 		name := v.Name
 		r, ok := types[name]
 		if !ok {
-			return nil, fmt.Errorf("%s can not found declaration %s in context", prefix, name)
+			return nil, fmt.Errorf("%s %d:%d can not found declaration %s in context",
+				prefix, v.Line, v.Column, name)
 		}
 
 		v.Members = r.Members

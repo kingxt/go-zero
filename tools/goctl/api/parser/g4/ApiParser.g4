@@ -12,44 +12,44 @@ body:       importSpec
             |serviceBlock
             ;
 
-syntaxLit:      SYNTAX ASSIGN version=SYNTAX_VERSION;
+syntaxLit:      syntaxToken=ID ASSIGN version=SYNTAX_VERSION;
 importSpec:     importLit|importLitGroup;
-importLit:      IMPORT importPath=IMPORT_PATH;
-importLitGroup:     IMPORT '(' (importPath=IMPORT_PATH)* ')';
+importLit:      importToken=ID importPath=IMPORT_PATH;
+importLitGroup:     importToken=ID '(' (importPath=IMPORT_PATH)* ')';
 
-infoBlock: INFO '(' kvLit* ')';
+infoBlock: infoToken=ID '(' kvLit* ')';
 
 typeBlock:      typeLit|typeGroup;
-typeLit:        TYPE typeSpec;
-typeGroup:      TYPE '(' typeSpec* ')';
+typeLit:        typeToken=ID typeSpec;
+typeGroup:      typeToken=ID '(' typeSpec* ')';
 typeSpec:       typeAlias|typeStruct;
 typeAlias:      alias=ID '='? dataType;
-typeStruct:     name=ID STRUCT? '{' typeField* '}';
+typeStruct:     name=ID structToken=ID? '{' typeField* '}';
 typeField:       name=ID filed?;
 filed:      (dataType|innerStruct) tag=RAW_STRING?;
-innerStruct:        STRUCT? '{' typeField* '}';
+innerStruct:        structToken=ID? '{' typeField* '}';
 dataType:       pointer
                 |mapType
                 |arrayType
                 |INTERFACE
                 ;
-mapType:        MAP '[' key=GOTYPE ']' value=dataType;
+mapType:        mapToken=ID '[' key=ID ']' value=dataType;
 arrayType:      '['']'lit=dataType;
-pointer:        STAR* (GOTYPE|ID);
+pointer:        STAR* ID;
 
 serviceBlock:       serverMeta? serviceBody;
 serverMeta:     ATSERVER '(' annotation* ')';
 annotation: key=ID COLON value=annotationKeyValue?;
 annotationKeyValue:        (ID ('/' ID)?)+;
-serviceBody:        SERVICE serviceName '{' routes=serviceRoute* '}';
+serviceBody:        serviceToken=ID serviceName '{' routes=serviceRoute* '}';
 serviceName:        ID ('-' ID)?;
 serviceRoute:       routeDoc? (serverMeta|routeHandler) routePath ;
 routeDoc:       doc|lineDoc;
-doc:        ATDOC '(' SUMMARY COLON STRING_LIT? ')';
+doc:        ATDOC '(' summaryToken=ID COLON STRING_LIT? ')';
 lineDoc:        ATDOC STRING_LIT;
 routeHandler:       ATHANDLER ID;
-routePath:      HTTPMETHOD path request? reply?;
+routePath:      httpMethodToken=ID path request? reply?;
 path:      ('/' ':'? ID (('?'|'&'|'=') ID)?)+;
 request:       '(' ID ')';
-reply:      RETURNS '(' ID ')';
+reply:      returnToken=ID '(' obj=ID ')';
 kvLit:      key=ID COLON value=STRING_LIT?;

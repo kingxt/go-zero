@@ -19,6 +19,7 @@ func TestInfo(t *testing.T) {
 	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.InfoBlock().Accept(visitor)
 	}
+
 	test(t, do, spec.Info{
 		Proterties: map[string]string{
 			"title": "foo",

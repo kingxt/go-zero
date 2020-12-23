@@ -10,7 +10,54 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
-const handlerKey = "handler"
+const (
+	handlerKey   = "handler"
+	infoToken    = "info"
+	syntaxToken  = "syntax"
+	mapToken     = "map"
+	structToken  = "struct"
+	typeToken    = "type"
+	importToken  = "import"
+	serviceToken = "service"
+	summaryToken = "summary"
+	returnToken  = "returns"
+)
+
+var (
+	goTypeToken = map[string]struct{}{
+		"bool":       struct{}{},
+		"uint8":      struct{}{},
+		"uint16":     struct{}{},
+		"uint32":     struct{}{},
+		"uint64":     struct{}{},
+		"int8":       struct{}{},
+		"int16":      struct{}{},
+		"int32":      struct{}{},
+		"int64":      struct{}{},
+		"int":        struct{}{},
+		"float32":    struct{}{},
+		"float64":    struct{}{},
+		"complex64":  struct{}{},
+		"complex128": struct{}{},
+		"string":     struct{}{},
+		"uint":       struct{}{},
+		"uintptr":    struct{}{},
+		"byte":       struct{}{},
+		"rune":       struct{}{},
+		"time.Time":  struct{}{},
+	}
+	httpMethodToken = map[string]struct{}{
+		"get":     struct{}{},
+		"head":    struct{}{},
+		"post":    struct{}{},
+		"put":     struct{}{},
+		"patch":   struct{}{},
+		"delete":  struct{}{},
+		"connect": struct{}{},
+		"options": struct{}{},
+		"trace":   struct{}{},
+	}
+)
 
 type (
 	ApiVisitor struct {
@@ -61,11 +108,16 @@ type (
 		ast
 		routes []spec.Route
 	}
+
+	ReqReply struct {
+		ast
+		name string
+	}
 	Route struct {
 		method   string
 		path     string
-		request  string
-		response string
+		request  ReqReply
+		response ReqReply
 	}
 )
 
@@ -132,6 +184,7 @@ func (v *ApiVisitor) VisitBody(ctx *parser.BodyContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitSyntaxLit(ctx *parser.SyntaxLitContext) interface{} {
+	v.checkToken(ctx.GetSyntaxToken(), syntaxToken)
 	version := v.getTokenText(ctx.GetVersion(), true)
 	return spec.ApiSyntax{Version: version}
 }
@@ -139,7 +192,7 @@ func (v *ApiVisitor) VisitSyntaxLit(ctx *parser.SyntaxLitContext) interface{} {
 func (v *ApiVisitor) VisitImportSpec(ctx *parser.ImportSpecContext) interface{} {
 	iImportLitContext := ctx.ImportLit()
 	iImportLitGroupContext := ctx.ImportLitGroup()
-	var list []string
+	var list []spec.Import
 	if iImportLitContext != nil {
 		importValue := iImportLitContext.Accept(v).(spec.ApiImport)
 		list = append(list, importValue.List...)
@@ -154,6 +207,7 @@ func (v *ApiVisitor) VisitImportSpec(ctx *parser.ImportSpecContext) interface{} 
 }
 
 func (v *ApiVisitor) VisitImportLit(ctx *parser.ImportLitContext) interface{} {
+	v.checkToken(ctx.GetImportToken(), importToken)
 	importPath := v.getTokenText(ctx.GetImportPath(), true)
 	line := ctx.GetImportPath().GetLine()
 	column := ctx.GetImportPath().GetColumn()
@@ -173,13 +227,22 @@ func (v *ApiVisitor) VisitImportLit(ctx *parser.ImportLitContext) interface{} {
 	}
 
 	return spec.ApiImport{
-		List: []string{importPath},
+		List: []spec.Import{
+			{
+				LineColumn: spec.LineColumn{
+					Line:   line,
+					Column: column,
+				},
+				Value: importPath,
+			},
+		},
 	}
 }
 
 func (v *ApiVisitor) VisitImportLitGroup(ctx *parser.ImportLitGroupContext) interface{} {
+	v.checkToken(ctx.GetImportToken(), importToken)
 	nodes := ctx.AllIMPORT_PATH()
-	var list []string
+	var list []spec.Import
 	for _, node := range nodes {
 		importPath := v.getNodeText(node, true)
 		line := node.GetSymbol().GetLine()
@@ -198,13 +261,20 @@ func (v *ApiVisitor) VisitImportLitGroup(ctx *parser.ImportLitGroupContext) inte
 			},
 			v: importPath,
 		}
-		list = append(list, importPath)
+		list = append(list, spec.Import{
+			LineColumn: spec.LineColumn{
+				Line:   line,
+				Column: column,
+			},
+			Value: importPath,
+		})
 	}
 
 	return spec.ApiImport{List: list}
 }
 
 func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
+	v.checkToken(ctx.GetInfoToken(), infoToken)
 	var info spec.Info
 	info.Proterties = make(map[string]string)
 	iKvLitContexts := ctx.AllKvLit()
@@ -217,9 +287,10 @@ func (v *ApiVisitor) VisitInfoBlock(ctx *parser.InfoBlockContext) interface{} {
 		info.Proterties[kv.key] = kv.value
 	}
 
-	symbol := ctx.INFO().GetSymbol()
-	line := symbol.GetLine()
-	column := symbol.GetColumn()
+	line := ctx.GetInfoToken().GetLine()
+	column := ctx.GetInfoToken().GetColumn()
+	info.Line = line
+	info.Column = column
 
 	if v.infoAst.flag {
 		panic(v.wrapError(ast{
@@ -253,11 +324,13 @@ func (v *ApiVisitor) VisitTypeBlock(ctx *parser.TypeBlockContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitTypeLit(ctx *parser.TypeLitContext) interface{} {
+	v.checkToken(ctx.GetTypeToken(), typeToken)
 	iTypeSpecContext := ctx.TypeSpec()
 	return iTypeSpecContext.Accept(v).(spec.Type)
 }
 
 func (v *ApiVisitor) VisitTypeGroup(ctx *parser.TypeGroupContext) interface{} {
+	v.checkToken(ctx.GetTypeToken(), typeToken)
 	iTypeSpecContexts := ctx.AllTypeSpec()
 	var list []spec.Type
 	for _, each := range iTypeSpecContexts {
@@ -290,10 +363,14 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *parser.TypeAliasContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} {
+	v.checkToken(ctx.GetStructToken(), structToken)
 	var tp spec.Type
 	tp.Name = v.getTokenText(ctx.GetName(), false)
 	line := ctx.GetName().GetLine()
 	column := ctx.GetName().GetColumn()
+	tp.Line = line
+	tp.Column = column
+
 	if _, ok := v.typeMap[tp.Name]; ok {
 		panic(v.wrapError(ast{
 			line:   line,
@@ -308,6 +385,8 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} 
 		typeFieldContext := each.(*parser.TypeFieldContext)
 		line := typeFieldContext.GetName().GetLine()
 		column := typeFieldContext.GetName().GetColumn()
+		member.Line = line
+		member.Column = column
 		if _, ok := set[member.Name]; ok {
 			panic(v.wrapError(ast{
 				line:   line,
@@ -398,6 +477,7 @@ func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitInnerStruct(ctx *parser.InnerStructContext) interface{} {
+	v.checkToken(ctx.GetStructToken(), structToken)
 	symbol := ctx.LBRACE().GetSymbol()
 	line := symbol.GetLine()
 	column := symbol.GetColumn()
@@ -426,11 +506,14 @@ func (v *ApiVisitor) VisitDataType(ctx *parser.DataTypeContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitMapType(ctx *parser.MapTypeContext) interface{} {
+	v.checkToken(ctx.GetMapToken(), mapToken)
 	tp := spec.MapType{}
 	tp.Key = v.getTokenText(ctx.GetKey(), false)
 	iDataTypeContext := ctx.DataType()
 	tp.Value = iDataTypeContext.Accept(v)
 	tp.StringExpr = ctx.GetText()
+	tp.Line = ctx.GetMapToken().GetLine()
+	tp.Column = ctx.GetMapToken().GetColumn()
 	return tp
 }
 
@@ -439,26 +522,36 @@ func (v *ApiVisitor) VisitArrayType(ctx *parser.ArrayTypeContext) interface{} {
 	iDataTypeContext := ctx.DataType()
 	tp.ArrayType = iDataTypeContext.Accept(v)
 	tp.StringExpr = ctx.GetText()
+	tp.Line = ctx.LBRACK().GetSymbol().GetLine()
+	tp.Column = ctx.LBRACK().GetSymbol().GetColumn()
 	return tp
 }
 
 func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
+	idText := v.getNodeText(ctx.ID(), false)
+	line := ctx.ID().GetSymbol().GetLine()
+	column := ctx.ID().GetSymbol().GetColumn()
 	if len(ctx.AllSTAR()) == 0 { // basic type
-		if ctx.GOTYPE() != nil {
-			text := v.getNodeText(ctx.GOTYPE(), false)
-			if text == "time.Time" {
+		if v.isGoType(idText) {
+			if idText == "time.Time" {
 				tp := spec.TimeType{}
-				tp.StringExpr = text
+				tp.StringExpr = idText
+				tp.Line = line
+				tp.Column = column
 				return tp
 			} else {
 				tp := spec.BasicType{}
 				tp.StringExpr = ctx.GetText()
-				tp.Name = text
+				tp.Name = idText
+				tp.Line = line
+				tp.Column = column
 				return tp
 			}
 		} else if ctx.ID() != nil {
 			tp := spec.Type{}
-			tp.Name = v.getNodeText(ctx.ID(), false)
+			tp.Line = ctx.ID().GetSymbol().GetLine()
+			tp.Column = ctx.ID().GetSymbol().GetColumn()
+			tp.Name = idText
 			if tp.Name == "interface" {
 				symbol := ctx.ID().GetSymbol()
 				panic(v.wrapError(ast{
@@ -472,34 +565,46 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 
 	// pointer
 	text := ctx.GetText()
+	line = ctx.STAR(0).GetSymbol().GetLine()
+	column = ctx.STAR(0).GetSymbol().GetColumn()
+
 	parent := &spec.PointerType{
 		StringExpr: text,
 	}
+	parent.Line = line
+	parent.Column = column
 	tmp := parent
 	for index := 1; index < len(ctx.AllSTAR()); index++ {
 		p := &spec.PointerType{
 			StringExpr: text[index:],
 			Star:       nil,
 		}
+		p.Line = line
+		p.Column = column + index
 		tmp.Star = p
 		tmp = p
 	}
 
-	if ctx.GOTYPE() != nil {
-		text := v.getNodeText(ctx.GOTYPE(), false)
-		if text == "time.Time" {
+	if v.isGoType(idText) {
+		if idText == "time.Time" {
 			tp := spec.TimeType{}
-			tp.StringExpr = text
+			tp.StringExpr = idText
+			tp.Line = line
+			tp.Column = column + len(ctx.AllSTAR())
 			tmp.Star = tp
 		} else {
 			tp := spec.BasicType{}
-			tp.StringExpr = text
-			tp.Name = text
+			tp.StringExpr = idText
+			tp.Name = idText
+			tp.Line = line
+			tp.Column = column + len(ctx.AllSTAR())
 			tmp.Star = tp
 		}
 	} else if ctx.ID() != nil {
 		tp := spec.Type{}
-		tp.Name = v.getNodeText(ctx.ID(), false)
+		tp.Name = idText
+		tp.Line = line
+		tp.Column = column + len(ctx.AllSTAR())
 		if tp.Name == "interface" {
 			symbol := ctx.ID().GetSymbol()
 			panic(v.wrapError(ast{
@@ -578,6 +683,7 @@ func (v *ApiVisitor) VisitAnnotationKeyValue(ctx *parser.AnnotationKeyValueConte
 }
 
 func (v *ApiVisitor) VisitServiceBody(ctx *parser.ServiceBodyContext) interface{} {
+	v.checkToken(ctx.GetServiceToken(), serviceToken)
 	var body serviceBody
 	name := strings.TrimSpace(ctx.ServiceName().GetText())
 	if len(name) == 0 {
@@ -614,22 +720,44 @@ func (v *ApiVisitor) VisitServiceRoute(ctx *parser.ServiceRouteContext) interfac
 	}
 
 	if iServerMetaContext != nil {
+		metaContext := iServerMetaContext.(*parser.ServerMetaContext)
+		for _, each := range metaContext.AllAnnotation() {
+			key := v.getTokenText(each.GetKey(), false)
+			if key == handlerKey {
+				route.HandlerLineColumn.Line = each.GetKey().GetLine()
+				route.HandlerLineColumn.Column = each.GetKey().GetColumn()
+			}
+		}
 		annotation := iServerMetaContext.Accept(v).(spec.Annotation)
 		route.Annotation = annotation
 		route.Handler = annotation.Properties[handlerKey]
 	} else if iRouteHandlerContext != nil {
+		handlerContext := iRouteHandlerContext.(*parser.RouteHandlerContext)
+		route.HandlerLineColumn.Line = handlerContext.ID().GetSymbol().GetLine()
+		route.HandlerLineColumn.Column = handlerContext.ID().GetSymbol().GetColumn()
 		route.Handler = iRouteHandlerContext.Accept(v).(string)
 	}
 
 	if iRoutePathContext != nil {
+		routePathContext := iRoutePathContext.(*parser.RoutePathContext)
+		route.Line = routePathContext.GetHttpMethodToken().GetLine()
+		route.Column = routePathContext.GetHttpMethodToken().GetColumn()
 		r := iRoutePathContext.Accept(v).(Route)
 		route.Method = r.method
 		route.Path = r.path
 		route.RequestType = spec.Type{
-			Name: r.request,
+			Name: r.request.name,
+			LineColumn: spec.LineColumn{
+				Line:   r.request.line,
+				Column: r.request.column,
+			},
 		}
 		route.ResponseType = spec.Type{
-			Name: r.response,
+			Name: r.response.name,
+			LineColumn: spec.LineColumn{
+				Line:   r.response.line,
+				Column: r.response.column,
+			},
 		}
 	}
 
@@ -649,6 +777,7 @@ func (v *ApiVisitor) VisitRouteDoc(ctx *parser.RouteDocContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitDoc(ctx *parser.DocContext) interface{} {
+	v.checkToken(ctx.GetSummaryToken(), summaryToken)
 	return v.getNodeText(ctx.STRING_LIT(), true)
 }
 
@@ -670,8 +799,9 @@ func (v *ApiVisitor) VisitRouteHandler(ctx *parser.RouteHandlerContext) interfac
 }
 
 func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
+	v.checkHttpMethod(ctx.GetHttpMethodToken())
 	var routePath Route
-	routePath.method = v.getNodeText(ctx.HTTPMETHOD(), false)
+	routePath.method = v.getTokenText(ctx.GetHttpMethodToken(), false)
 	if ctx.Path() != nil {
 		path := ctx.Path().GetText()
 		pathContext := ctx.Path().(*parser.PathContext)
@@ -691,11 +821,11 @@ func (v *ApiVisitor) VisitRoutePath(ctx *parser.RoutePathContext) interface{} {
 	iRequestContext := ctx.Request()
 	iReplyContext := ctx.Reply()
 	if iRequestContext != nil {
-		routePath.request = iRequestContext.Accept(v).(string)
+		routePath.request = iRequestContext.Accept(v).(ReqReply)
 	}
 
 	if iReplyContext != nil {
-		routePath.response = iReplyContext.Accept(v).(string)
+		routePath.response = iReplyContext.Accept(v).(ReqReply)
 	}
 
 	return routePath
@@ -705,11 +835,20 @@ func (v *ApiVisitor) VisitPath(ctx *parser.PathContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitRequest(ctx *parser.RequestContext) interface{} {
-	return v.getNodeText(ctx.ID(), false)
+	var ret ReqReply
+	ret.name = v.getNodeText(ctx.ID(), false)
+	ret.line = ctx.ID().GetSymbol().GetLine()
+	ret.column = ctx.ID().GetSymbol().GetColumn()
+	return ret
 }
 
 func (v *ApiVisitor) VisitReply(ctx *parser.ReplyContext) interface{} {
-	return v.getNodeText(ctx.ID(), false)
+	v.checkToken(ctx.GetReturnToken(), returnToken)
+	var ret ReqReply
+	ret.name = v.getTokenText(ctx.GetObj(), false)
+	ret.line = ctx.GetObj().GetLine()
+	ret.column = ctx.GetObj().GetColumn()
+	return ret
 }
 
 func (v *ApiVisitor) VisitKvLit(ctx *parser.KvLitContext) interface{} {
@@ -791,4 +930,26 @@ func (v *ApiVisitor) wrapError(ast ast, format string, a ...interface{}) error {
 		return fmt.Errorf("line %d:%d %s", ast.line, ast.column, fmt.Sprintf(format, a...))
 	}
 	return fmt.Errorf("%s line %d:%d %s", v.filename, ast.line, ast.column, fmt.Sprintf(format, a...))
+}
+
+func (v *ApiVisitor) checkToken(token antlr.Token, text string) {
+	tokenText := v.getTokenText(token, false)
+	if tokenText != text {
+		panic(fmt.Errorf("%s %d:%d expected %s, but found %s",
+			v.filename, token.GetLine(), token.GetColumn(), text, tokenText))
+	}
+}
+
+func (v *ApiVisitor) isGoType(text string) bool {
+	_, ok := goTypeToken[text]
+	return ok
+}
+
+func (v *ApiVisitor) checkHttpMethod(token antlr.Token) {
+	text := v.getTokenText(token, false)
+	_, ok := httpMethodToken[text]
+	if !ok {
+		panic(fmt.Errorf("%s %d:%d expected http method, but found %s",
+			v.filename, token.GetLine(), token.GetColumn(), text))
+	}
 }

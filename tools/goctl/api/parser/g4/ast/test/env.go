@@ -24,6 +24,7 @@ func test(t *testing.T, do func(p *parser.ApiParser, visitor *ast.ApiVisitor) in
 	}
 
 	assert.Nil(t, err)
+
 	expectedJson, _ := json.Marshal(expected)
 	actualJson, _ := json.Marshal(result)
 	assert.JSONEq(t, string(expectedJson), string(actualJson))

@@ -7,7 +7,13 @@ type (
 		Properties map[string]string
 	}
 
+	LineColumn struct {
+		Line   int `json:"-"`
+		Column int `json:"-"`
+	}
+
 	ApiSyntax struct {
+		LineColumn
 		Version string
 	}
 
@@ -21,7 +27,12 @@ type (
 	}
 
 	ApiImport struct {
-		List []string
+		List []Import
+	}
+
+	Import struct {
+		LineColumn
+		Value string
 	}
 
 	Group struct {
@@ -39,13 +50,15 @@ type (
 		// Deprecated: use Proterties instead
 		Author string
 		// Deprecated: use Proterties instead
-		Email      string
+		Email string
+		LineColumn
 		Proterties map[string]string
 	}
 
 	Member struct {
 		Annotations []Annotation
-		Name        string
+		LineColumn
+		Name string
 		// 数据类型字面值，如：string、map[int]string、[]int64、[]*User
 		Type string
 		// it can be asserted as BasicType: int、bool、
@@ -66,13 +79,15 @@ type (
 	}
 
 	Route struct {
-		Annotation   Annotation
-		Method       string
-		Path         string
-		RequestType  Type
-		ResponseType Type
-		Docs         Doc
-		Handler      string
+		LineColumn
+		Annotation        Annotation
+		Method            string
+		Path              string
+		RequestType       Type
+		ResponseType      Type
+		Docs              Doc
+		HandlerLineColumn LineColumn `json:"-"`
+		Handler           string
 	}
 
 	Service struct {
@@ -81,7 +96,8 @@ type (
 	}
 
 	Type struct {
-		Name        string
+		Name string
+		LineColumn
 		Annotations []Annotation
 		Members     []Member
 	}
@@ -90,6 +106,7 @@ type (
 	BasicType struct {
 		StringExpr string
 		Name       string
+		LineColumn
 	}
 
 	PointerType struct {
@@ -101,6 +118,7 @@ type (
 		// InterfaceType: interface{}
 		// Type
 		Star interface{}
+		LineColumn
 	}
 
 	MapType struct {
@@ -114,6 +132,7 @@ type (
 		// InterfaceType: interface{}
 		// Type
 		Value interface{}
+		LineColumn
 	}
 	ArrayType struct {
 		StringExpr string
@@ -124,16 +143,20 @@ type (
 		// InterfaceType: interface{}
 		// Type
 		ArrayType interface{}
+		LineColumn
 	}
 	InterfaceType struct {
 		StringExpr string
 		// do nothing,just for assert
+		LineColumn
 	}
 	TimeType struct {
 		StringExpr string
+		LineColumn
 	}
 	StructType struct {
 		StringExpr string
+		LineColumn
 	}
 )
 

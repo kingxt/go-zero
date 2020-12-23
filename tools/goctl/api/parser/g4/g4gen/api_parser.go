@@ -16,7 +16,7 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 40, 318,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 29, 318,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
 	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
 	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 4, 16, 9, 16, 4, 17, 9, 17, 4, 18, 9,
@@ -52,121 +52,118 @@ var parserATN = []uint16{
 	34, 14, 34, 301, 3, 35, 3, 35, 3, 35, 3, 35, 3, 36, 3, 36, 3, 36, 3, 36,
 	3, 36, 3, 37, 3, 37, 3, 37, 5, 37, 316, 10, 37, 3, 37, 2, 2, 38, 2, 4,
 	6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42,
-	44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 2, 4, 4, 2,
-	3, 3, 40, 40, 3, 2, 27, 29, 2, 321, 2, 75, 3, 2, 2, 2, 4, 89, 3, 2, 2,
-	2, 6, 91, 3, 2, 2, 2, 8, 97, 3, 2, 2, 2, 10, 99, 3, 2, 2, 2, 12, 102, 3,
-	2, 2, 2, 14, 112, 3, 2, 2, 2, 16, 124, 3, 2, 2, 2, 18, 126, 3, 2, 2, 2,
-	20, 129, 3, 2, 2, 2, 22, 141, 3, 2, 2, 2, 24, 143, 3, 2, 2, 2, 26, 149,
-	3, 2, 2, 2, 28, 162, 3, 2, 2, 2, 30, 168, 3, 2, 2, 2, 32, 174, 3, 2, 2,
-	2, 34, 189, 3, 2, 2, 2, 36, 191, 3, 2, 2, 2, 38, 197, 3, 2, 2, 2, 40, 204,
-	3, 2, 2, 2, 42, 210, 3, 2, 2, 2, 44, 214, 3, 2, 2, 2, 46, 224, 3, 2, 2,
-	2, 48, 234, 3, 2, 2, 2, 50, 238, 3, 2, 2, 2, 52, 249, 3, 2, 2, 2, 54, 255,
-	3, 2, 2, 2, 56, 265, 3, 2, 2, 2, 58, 267, 3, 2, 2, 2, 60, 276, 3, 2, 2,
-	2, 62, 279, 3, 2, 2, 2, 64, 282, 3, 2, 2, 2, 66, 299, 3, 2, 2, 2, 68, 303,
-	3, 2, 2, 2, 70, 307, 3, 2, 2, 2, 72, 312, 3, 2, 2, 2, 74, 76, 5, 6, 4,
-	2, 75, 74, 3, 2, 2, 2, 75, 76, 3, 2, 2, 2, 76, 80, 3, 2, 2, 2, 77, 79,
-	5, 4, 3, 2, 78, 77, 3, 2, 2, 2, 79, 82, 3, 2, 2, 2, 80, 78, 3, 2, 2, 2,
-	80, 81, 3, 2, 2, 2, 81, 83, 3, 2, 2, 2, 82, 80, 3, 2, 2, 2, 83, 84, 7,
-	2, 2, 3, 84, 3, 3, 2, 2, 2, 85, 90, 5, 8, 5, 2, 86, 90, 5, 14, 8, 2, 87,
-	90, 5, 16, 9, 2, 88, 90, 5, 42, 22, 2, 89, 85, 3, 2, 2, 2, 89, 86, 3, 2,
-	2, 2, 89, 87, 3, 2, 2, 2, 89, 88, 3, 2, 2, 2, 90, 5, 3, 2, 2, 2, 91, 92,
-	7, 4, 2, 2, 92, 93, 7, 29, 2, 2, 93, 94, 7, 36, 2, 2, 94, 7, 3, 2, 2, 2,
-	95, 98, 5, 10, 6, 2, 96, 98, 5, 12, 7, 2, 97, 95, 3, 2, 2, 2, 97, 96, 3,
-	2, 2, 2, 98, 9, 3, 2, 2, 2, 99, 100, 7, 12, 2, 2, 100, 101, 7, 37, 2, 2,
-	101, 11, 3, 2, 2, 2, 102, 103, 7, 12, 2, 2, 103, 107, 7, 18, 2, 2, 104,
-	106, 7, 37, 2, 2, 105, 104, 3, 2, 2, 2, 106, 109, 3, 2, 2, 2, 107, 105,
-	3, 2, 2, 2, 107, 108, 3, 2, 2, 2, 108, 110, 3, 2, 2, 2, 109, 107, 3, 2,
-	2, 2, 110, 111, 7, 19, 2, 2, 111, 13, 3, 2, 2, 2, 112, 113, 7, 5, 2, 2,
-	113, 117, 7, 18, 2, 2, 114, 116, 5, 72, 37, 2, 115, 114, 3, 2, 2, 2, 116,
-	119, 3, 2, 2, 2, 117, 115, 3, 2, 2, 2, 117, 118, 3, 2, 2, 2, 118, 120,
-	3, 2, 2, 2, 119, 117, 3, 2, 2, 2, 120, 121, 7, 19, 2, 2, 121, 15, 3, 2,
-	2, 2, 122, 125, 5, 18, 10, 2, 123, 125, 5, 20, 11, 2, 124, 122, 3, 2, 2,
-	2, 124, 123, 3, 2, 2, 2, 125, 17, 3, 2, 2, 2, 126, 127, 7, 9, 2, 2, 127,
-	128, 5, 22, 12, 2, 128, 19, 3, 2, 2, 2, 129, 130, 7, 9, 2, 2, 130, 134,
-	7, 18, 2, 2, 131, 133, 5, 22, 12, 2, 132, 131, 3, 2, 2, 2, 133, 136, 3,
-	2, 2, 2, 134, 132, 3, 2, 2, 2, 134, 135, 3, 2, 2, 2, 135, 137, 3, 2, 2,
-	2, 136, 134, 3, 2, 2, 2, 137, 138, 7, 19, 2, 2, 138, 21, 3, 2, 2, 2, 139,
-	142, 5, 24, 13, 2, 140, 142, 5, 26, 14, 2, 141, 139, 3, 2, 2, 2, 141, 140,
-	3, 2, 2, 2, 142, 23, 3, 2, 2, 2, 143, 145, 7, 40, 2, 2, 144, 146, 7, 29,
-	2, 2, 145, 144, 3, 2, 2, 2, 145, 146, 3, 2, 2, 2, 146, 147, 3, 2, 2, 2,
-	147, 148, 5, 34, 18, 2, 148, 25, 3, 2, 2, 2, 149, 151, 7, 40, 2, 2, 150,
-	152, 7, 7, 2, 2, 151, 150, 3, 2, 2, 2, 151, 152, 3, 2, 2, 2, 152, 153,
-	3, 2, 2, 2, 153, 157, 7, 20, 2, 2, 154, 156, 5, 28, 15, 2, 155, 154, 3,
-	2, 2, 2, 156, 159, 3, 2, 2, 2, 157, 155, 3, 2, 2, 2, 157, 158, 3, 2, 2,
-	2, 158, 160, 3, 2, 2, 2, 159, 157, 3, 2, 2, 2, 160, 161, 7, 21, 2, 2, 161,
-	27, 3, 2, 2, 2, 162, 164, 7, 40, 2, 2, 163, 165, 5, 30, 16, 2, 164, 163,
-	3, 2, 2, 2, 164, 165, 3, 2, 2, 2, 165, 29, 3, 2, 2, 2, 166, 169, 5, 34,
-	18, 2, 167, 169, 5, 32, 17, 2, 168, 166, 3, 2, 2, 2, 168, 167, 3, 2, 2,
-	2, 169, 171, 3, 2, 2, 2, 170, 172, 7, 39, 2, 2, 171, 170, 3, 2, 2, 2, 171,
-	172, 3, 2, 2, 2, 172, 31, 3, 2, 2, 2, 173, 175, 7, 7, 2, 2, 174, 173, 3,
-	2, 2, 2, 174, 175, 3, 2, 2, 2, 175, 176, 3, 2, 2, 2, 176, 180, 7, 20, 2,
-	2, 177, 179, 5, 28, 15, 2, 178, 177, 3, 2, 2, 2, 179, 182, 3, 2, 2, 2,
-	180, 178, 3, 2, 2, 2, 180, 181, 3, 2, 2, 2, 181, 183, 3, 2, 2, 2, 182,
-	180, 3, 2, 2, 2, 183, 184, 7, 21, 2, 2, 184, 33, 3, 2, 2, 2, 185, 190,
-	5, 40, 21, 2, 186, 190, 5, 36, 19, 2, 187, 190, 5, 38, 20, 2, 188, 190,
-	7, 8, 2, 2, 189, 185, 3, 2, 2, 2, 189, 186, 3, 2, 2, 2, 189, 187, 3, 2,
-	2, 2, 189, 188, 3, 2, 2, 2, 190, 35, 3, 2, 2, 2, 191, 192, 7, 6, 2, 2,
-	192, 193, 7, 22, 2, 2, 193, 194, 7, 3, 2, 2, 194, 195, 7, 23, 2, 2, 195,
-	196, 5, 34, 18, 2, 196, 37, 3, 2, 2, 2, 197, 198, 7, 22, 2, 2, 198, 199,
-	7, 23, 2, 2, 199, 200, 5, 34, 18, 2, 200, 39, 3, 2, 2, 2, 201, 203, 7,
-	32, 2, 2, 202, 201, 3, 2, 2, 2, 203, 206, 3, 2, 2, 2, 204, 202, 3, 2, 2,
-	2, 204, 205, 3, 2, 2, 2, 205, 207, 3, 2, 2, 2, 206, 204, 3, 2, 2, 2, 207,
-	208, 9, 2, 2, 2, 208, 41, 3, 2, 2, 2, 209, 211, 5, 44, 23, 2, 210, 209,
-	3, 2, 2, 2, 210, 211, 3, 2, 2, 2, 211, 212, 3, 2, 2, 2, 212, 213, 5, 50,
-	26, 2, 213, 43, 3, 2, 2, 2, 214, 215, 7, 13, 2, 2, 215, 219, 7, 18, 2,
-	2, 216, 218, 5, 46, 24, 2, 217, 216, 3, 2, 2, 2, 218, 221, 3, 2, 2, 2,
-	219, 217, 3, 2, 2, 2, 219, 220, 3, 2, 2, 2, 220, 222, 3, 2, 2, 2, 221,
-	219, 3, 2, 2, 2, 222, 223, 7, 19, 2, 2, 223, 45, 3, 2, 2, 2, 224, 225,
-	7, 40, 2, 2, 225, 227, 7, 31, 2, 2, 226, 228, 5, 48, 25, 2, 227, 226, 3,
-	2, 2, 2, 227, 228, 3, 2, 2, 2, 228, 47, 3, 2, 2, 2, 229, 232, 7, 40, 2,
-	2, 230, 231, 7, 26, 2, 2, 231, 233, 7, 40, 2, 2, 232, 230, 3, 2, 2, 2,
-	232, 233, 3, 2, 2, 2, 233, 235, 3, 2, 2, 2, 234, 229, 3, 2, 2, 2, 235,
-	236, 3, 2, 2, 2, 236, 234, 3, 2, 2, 2, 236, 237, 3, 2, 2, 2, 237, 49, 3,
-	2, 2, 2, 238, 239, 7, 10, 2, 2, 239, 240, 5, 52, 27, 2, 240, 244, 7, 20,
-	2, 2, 241, 243, 5, 54, 28, 2, 242, 241, 3, 2, 2, 2, 243, 246, 3, 2, 2,
-	2, 244, 242, 3, 2, 2, 2, 244, 245, 3, 2, 2, 2, 245, 247, 3, 2, 2, 2, 246,
-	244, 3, 2, 2, 2, 247, 248, 7, 21, 2, 2, 248, 51, 3, 2, 2, 2, 249, 252,
-	7, 40, 2, 2, 250, 251, 7, 30, 2, 2, 251, 253, 7, 40, 2, 2, 252, 250, 3,
-	2, 2, 2, 252, 253, 3, 2, 2, 2, 253, 53, 3, 2, 2, 2, 254, 256, 5, 56, 29,
-	2, 255, 254, 3, 2, 2, 2, 255, 256, 3, 2, 2, 2, 256, 259, 3, 2, 2, 2, 257,
-	260, 5, 44, 23, 2, 258, 260, 5, 62, 32, 2, 259, 257, 3, 2, 2, 2, 259, 258,
-	3, 2, 2, 2, 260, 261, 3, 2, 2, 2, 261, 262, 5, 64, 33, 2, 262, 55, 3, 2,
-	2, 2, 263, 266, 5, 58, 30, 2, 264, 266, 5, 60, 31, 2, 265, 263, 3, 2, 2,
-	2, 265, 264, 3, 2, 2, 2, 266, 57, 3, 2, 2, 2, 267, 268, 7, 14, 2, 2, 268,
-	269, 7, 18, 2, 2, 269, 270, 7, 16, 2, 2, 270, 272, 7, 31, 2, 2, 271, 273,
-	7, 38, 2, 2, 272, 271, 3, 2, 2, 2, 272, 273, 3, 2, 2, 2, 273, 274, 3, 2,
-	2, 2, 274, 275, 7, 19, 2, 2, 275, 59, 3, 2, 2, 2, 276, 277, 7, 14, 2, 2,
-	277, 278, 7, 38, 2, 2, 278, 61, 3, 2, 2, 2, 279, 280, 7, 15, 2, 2, 280,
-	281, 7, 40, 2, 2, 281, 63, 3, 2, 2, 2, 282, 283, 7, 17, 2, 2, 283, 285,
-	5, 66, 34, 2, 284, 286, 5, 68, 35, 2, 285, 284, 3, 2, 2, 2, 285, 286, 3,
-	2, 2, 2, 286, 288, 3, 2, 2, 2, 287, 289, 5, 70, 36, 2, 288, 287, 3, 2,
-	2, 2, 288, 289, 3, 2, 2, 2, 289, 65, 3, 2, 2, 2, 290, 292, 7, 26, 2, 2,
-	291, 293, 7, 31, 2, 2, 292, 291, 3, 2, 2, 2, 292, 293, 3, 2, 2, 2, 293,
-	294, 3, 2, 2, 2, 294, 297, 7, 40, 2, 2, 295, 296, 9, 3, 2, 2, 296, 298,
-	7, 40, 2, 2, 297, 295, 3, 2, 2, 2, 297, 298, 3, 2, 2, 2, 298, 300, 3, 2,
-	2, 2, 299, 290, 3, 2, 2, 2, 300, 301, 3, 2, 2, 2, 301, 299, 3, 2, 2, 2,
-	301, 302, 3, 2, 2, 2, 302, 67, 3, 2, 2, 2, 303, 304, 7, 18, 2, 2, 304,
-	305, 7, 40, 2, 2, 305, 306, 7, 19, 2, 2, 306, 69, 3, 2, 2, 2, 307, 308,
-	7, 11, 2, 2, 308, 309, 7, 18, 2, 2, 309, 310, 7, 40, 2, 2, 310, 311, 7,
-	19, 2, 2, 311, 71, 3, 2, 2, 2, 312, 313, 7, 40, 2, 2, 313, 315, 7, 31,
-	2, 2, 314, 316, 7, 38, 2, 2, 315, 314, 3, 2, 2, 2, 315, 316, 3, 2, 2, 2,
-	316, 73, 3, 2, 2, 2, 38, 75, 80, 89, 97, 107, 117, 124, 134, 141, 145,
-	151, 157, 164, 168, 171, 174, 180, 189, 204, 210, 219, 227, 232, 236, 244,
-	252, 255, 259, 265, 272, 285, 288, 292, 297, 301, 315,
+	44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 2, 3, 3, 2,
+	16, 18, 2, 321, 2, 75, 3, 2, 2, 2, 4, 89, 3, 2, 2, 2, 6, 91, 3, 2, 2, 2,
+	8, 97, 3, 2, 2, 2, 10, 99, 3, 2, 2, 2, 12, 102, 3, 2, 2, 2, 14, 112, 3,
+	2, 2, 2, 16, 124, 3, 2, 2, 2, 18, 126, 3, 2, 2, 2, 20, 129, 3, 2, 2, 2,
+	22, 141, 3, 2, 2, 2, 24, 143, 3, 2, 2, 2, 26, 149, 3, 2, 2, 2, 28, 162,
+	3, 2, 2, 2, 30, 168, 3, 2, 2, 2, 32, 174, 3, 2, 2, 2, 34, 189, 3, 2, 2,
+	2, 36, 191, 3, 2, 2, 2, 38, 197, 3, 2, 2, 2, 40, 204, 3, 2, 2, 2, 42, 210,
+	3, 2, 2, 2, 44, 214, 3, 2, 2, 2, 46, 224, 3, 2, 2, 2, 48, 234, 3, 2, 2,
+	2, 50, 238, 3, 2, 2, 2, 52, 249, 3, 2, 2, 2, 54, 255, 3, 2, 2, 2, 56, 265,
+	3, 2, 2, 2, 58, 267, 3, 2, 2, 2, 60, 276, 3, 2, 2, 2, 62, 279, 3, 2, 2,
+	2, 64, 282, 3, 2, 2, 2, 66, 299, 3, 2, 2, 2, 68, 303, 3, 2, 2, 2, 70, 307,
+	3, 2, 2, 2, 72, 312, 3, 2, 2, 2, 74, 76, 5, 6, 4, 2, 75, 74, 3, 2, 2, 2,
+	75, 76, 3, 2, 2, 2, 76, 80, 3, 2, 2, 2, 77, 79, 5, 4, 3, 2, 78, 77, 3,
+	2, 2, 2, 79, 82, 3, 2, 2, 2, 80, 78, 3, 2, 2, 2, 80, 81, 3, 2, 2, 2, 81,
+	83, 3, 2, 2, 2, 82, 80, 3, 2, 2, 2, 83, 84, 7, 2, 2, 3, 84, 3, 3, 2, 2,
+	2, 85, 90, 5, 8, 5, 2, 86, 90, 5, 14, 8, 2, 87, 90, 5, 16, 9, 2, 88, 90,
+	5, 42, 22, 2, 89, 85, 3, 2, 2, 2, 89, 86, 3, 2, 2, 2, 89, 87, 3, 2, 2,
+	2, 89, 88, 3, 2, 2, 2, 90, 5, 3, 2, 2, 2, 91, 92, 7, 29, 2, 2, 92, 93,
+	7, 18, 2, 2, 93, 94, 7, 25, 2, 2, 94, 7, 3, 2, 2, 2, 95, 98, 5, 10, 6,
+	2, 96, 98, 5, 12, 7, 2, 97, 95, 3, 2, 2, 2, 97, 96, 3, 2, 2, 2, 98, 9,
+	3, 2, 2, 2, 99, 100, 7, 29, 2, 2, 100, 101, 7, 26, 2, 2, 101, 11, 3, 2,
+	2, 2, 102, 103, 7, 29, 2, 2, 103, 107, 7, 7, 2, 2, 104, 106, 7, 26, 2,
+	2, 105, 104, 3, 2, 2, 2, 106, 109, 3, 2, 2, 2, 107, 105, 3, 2, 2, 2, 107,
+	108, 3, 2, 2, 2, 108, 110, 3, 2, 2, 2, 109, 107, 3, 2, 2, 2, 110, 111,
+	7, 8, 2, 2, 111, 13, 3, 2, 2, 2, 112, 113, 7, 29, 2, 2, 113, 117, 7, 7,
+	2, 2, 114, 116, 5, 72, 37, 2, 115, 114, 3, 2, 2, 2, 116, 119, 3, 2, 2,
+	2, 117, 115, 3, 2, 2, 2, 117, 118, 3, 2, 2, 2, 118, 120, 3, 2, 2, 2, 119,
+	117, 3, 2, 2, 2, 120, 121, 7, 8, 2, 2, 121, 15, 3, 2, 2, 2, 122, 125, 5,
+	18, 10, 2, 123, 125, 5, 20, 11, 2, 124, 122, 3, 2, 2, 2, 124, 123, 3, 2,
+	2, 2, 125, 17, 3, 2, 2, 2, 126, 127, 7, 29, 2, 2, 127, 128, 5, 22, 12,
+	2, 128, 19, 3, 2, 2, 2, 129, 130, 7, 29, 2, 2, 130, 134, 7, 7, 2, 2, 131,
+	133, 5, 22, 12, 2, 132, 131, 3, 2, 2, 2, 133, 136, 3, 2, 2, 2, 134, 132,
+	3, 2, 2, 2, 134, 135, 3, 2, 2, 2, 135, 137, 3, 2, 2, 2, 136, 134, 3, 2,
+	2, 2, 137, 138, 7, 8, 2, 2, 138, 21, 3, 2, 2, 2, 139, 142, 5, 24, 13, 2,
+	140, 142, 5, 26, 14, 2, 141, 139, 3, 2, 2, 2, 141, 140, 3, 2, 2, 2, 142,
+	23, 3, 2, 2, 2, 143, 145, 7, 29, 2, 2, 144, 146, 7, 18, 2, 2, 145, 144,
+	3, 2, 2, 2, 145, 146, 3, 2, 2, 2, 146, 147, 3, 2, 2, 2, 147, 148, 5, 34,
+	18, 2, 148, 25, 3, 2, 2, 2, 149, 151, 7, 29, 2, 2, 150, 152, 7, 29, 2,
+	2, 151, 150, 3, 2, 2, 2, 151, 152, 3, 2, 2, 2, 152, 153, 3, 2, 2, 2, 153,
+	157, 7, 9, 2, 2, 154, 156, 5, 28, 15, 2, 155, 154, 3, 2, 2, 2, 156, 159,
+	3, 2, 2, 2, 157, 155, 3, 2, 2, 2, 157, 158, 3, 2, 2, 2, 158, 160, 3, 2,
+	2, 2, 159, 157, 3, 2, 2, 2, 160, 161, 7, 10, 2, 2, 161, 27, 3, 2, 2, 2,
+	162, 164, 7, 29, 2, 2, 163, 165, 5, 30, 16, 2, 164, 163, 3, 2, 2, 2, 164,
+	165, 3, 2, 2, 2, 165, 29, 3, 2, 2, 2, 166, 169, 5, 34, 18, 2, 167, 169,
+	5, 32, 17, 2, 168, 166, 3, 2, 2, 2, 168, 167, 3, 2, 2, 2, 169, 171, 3,
+	2, 2, 2, 170, 172, 7, 28, 2, 2, 171, 170, 3, 2, 2, 2, 171, 172, 3, 2, 2,
+	2, 172, 31, 3, 2, 2, 2, 173, 175, 7, 29, 2, 2, 174, 173, 3, 2, 2, 2, 174,
+	175, 3, 2, 2, 2, 175, 176, 3, 2, 2, 2, 176, 180, 7, 9, 2, 2, 177, 179,
+	5, 28, 15, 2, 178, 177, 3, 2, 2, 2, 179, 182, 3, 2, 2, 2, 180, 178, 3,
+	2, 2, 2, 180, 181, 3, 2, 2, 2, 181, 183, 3, 2, 2, 2, 182, 180, 3, 2, 2,
+	2, 183, 184, 7, 10, 2, 2, 184, 33, 3, 2, 2, 2, 185, 190, 5, 40, 21, 2,
+	186, 190, 5, 36, 19, 2, 187, 190, 5, 38, 20, 2, 188, 190, 7, 6, 2, 2, 189,
+	185, 3, 2, 2, 2, 189, 186, 3, 2, 2, 2, 189, 187, 3, 2, 2, 2, 189, 188,
+	3, 2, 2, 2, 190, 35, 3, 2, 2, 2, 191, 192, 7, 29, 2, 2, 192, 193, 7, 11,
+	2, 2, 193, 194, 7, 29, 2, 2, 194, 195, 7, 12, 2, 2, 195, 196, 5, 34, 18,
+	2, 196, 37, 3, 2, 2, 2, 197, 198, 7, 11, 2, 2, 198, 199, 7, 12, 2, 2, 199,
+	200, 5, 34, 18, 2, 200, 39, 3, 2, 2, 2, 201, 203, 7, 21, 2, 2, 202, 201,
+	3, 2, 2, 2, 203, 206, 3, 2, 2, 2, 204, 202, 3, 2, 2, 2, 204, 205, 3, 2,
+	2, 2, 205, 207, 3, 2, 2, 2, 206, 204, 3, 2, 2, 2, 207, 208, 7, 29, 2, 2,
+	208, 41, 3, 2, 2, 2, 209, 211, 5, 44, 23, 2, 210, 209, 3, 2, 2, 2, 210,
+	211, 3, 2, 2, 2, 211, 212, 3, 2, 2, 2, 212, 213, 5, 50, 26, 2, 213, 43,
+	3, 2, 2, 2, 214, 215, 7, 3, 2, 2, 215, 219, 7, 7, 2, 2, 216, 218, 5, 46,
+	24, 2, 217, 216, 3, 2, 2, 2, 218, 221, 3, 2, 2, 2, 219, 217, 3, 2, 2, 2,
+	219, 220, 3, 2, 2, 2, 220, 222, 3, 2, 2, 2, 221, 219, 3, 2, 2, 2, 222,
+	223, 7, 8, 2, 2, 223, 45, 3, 2, 2, 2, 224, 225, 7, 29, 2, 2, 225, 227,
+	7, 20, 2, 2, 226, 228, 5, 48, 25, 2, 227, 226, 3, 2, 2, 2, 227, 228, 3,
+	2, 2, 2, 228, 47, 3, 2, 2, 2, 229, 232, 7, 29, 2, 2, 230, 231, 7, 15, 2,
+	2, 231, 233, 7, 29, 2, 2, 232, 230, 3, 2, 2, 2, 232, 233, 3, 2, 2, 2, 233,
+	235, 3, 2, 2, 2, 234, 229, 3, 2, 2, 2, 235, 236, 3, 2, 2, 2, 236, 234,
+	3, 2, 2, 2, 236, 237, 3, 2, 2, 2, 237, 49, 3, 2, 2, 2, 238, 239, 7, 29,
+	2, 2, 239, 240, 5, 52, 27, 2, 240, 244, 7, 9, 2, 2, 241, 243, 5, 54, 28,
+	2, 242, 241, 3, 2, 2, 2, 243, 246, 3, 2, 2, 2, 244, 242, 3, 2, 2, 2, 244,
+	245, 3, 2, 2, 2, 245, 247, 3, 2, 2, 2, 246, 244, 3, 2, 2, 2, 247, 248,
+	7, 10, 2, 2, 248, 51, 3, 2, 2, 2, 249, 252, 7, 29, 2, 2, 250, 251, 7, 19,
+	2, 2, 251, 253, 7, 29, 2, 2, 252, 250, 3, 2, 2, 2, 252, 253, 3, 2, 2, 2,
+	253, 53, 3, 2, 2, 2, 254, 256, 5, 56, 29, 2, 255, 254, 3, 2, 2, 2, 255,
+	256, 3, 2, 2, 2, 256, 259, 3, 2, 2, 2, 257, 260, 5, 44, 23, 2, 258, 260,
+	5, 62, 32, 2, 259, 257, 3, 2, 2, 2, 259, 258, 3, 2, 2, 2, 260, 261, 3,
+	2, 2, 2, 261, 262, 5, 64, 33, 2, 262, 55, 3, 2, 2, 2, 263, 266, 5, 58,
+	30, 2, 264, 266, 5, 60, 31, 2, 265, 263, 3, 2, 2, 2, 265, 264, 3, 2, 2,
+	2, 266, 57, 3, 2, 2, 2, 267, 268, 7, 4, 2, 2, 268, 269, 7, 7, 2, 2, 269,
+	270, 7, 29, 2, 2, 270, 272, 7, 20, 2, 2, 271, 273, 7, 27, 2, 2, 272, 271,
+	3, 2, 2, 2, 272, 273, 3, 2, 2, 2, 273, 274, 3, 2, 2, 2, 274, 275, 7, 8,
+	2, 2, 275, 59, 3, 2, 2, 2, 276, 277, 7, 4, 2, 2, 277, 278, 7, 27, 2, 2,
+	278, 61, 3, 2, 2, 2, 279, 280, 7, 5, 2, 2, 280, 281, 7, 29, 2, 2, 281,
+	63, 3, 2, 2, 2, 282, 283, 7, 29, 2, 2, 283, 285, 5, 66, 34, 2, 284, 286,
+	5, 68, 35, 2, 285, 284, 3, 2, 2, 2, 285, 286, 3, 2, 2, 2, 286, 288, 3,
+	2, 2, 2, 287, 289, 5, 70, 36, 2, 288, 287, 3, 2, 2, 2, 288, 289, 3, 2,
+	2, 2, 289, 65, 3, 2, 2, 2, 290, 292, 7, 15, 2, 2, 291, 293, 7, 20, 2, 2,
+	292, 291, 3, 2, 2, 2, 292, 293, 3, 2, 2, 2, 293, 294, 3, 2, 2, 2, 294,
+	297, 7, 29, 2, 2, 295, 296, 9, 2, 2, 2, 296, 298, 7, 29, 2, 2, 297, 295,
+	3, 2, 2, 2, 297, 298, 3, 2, 2, 2, 298, 300, 3, 2, 2, 2, 299, 290, 3, 2,
+	2, 2, 300, 301, 3, 2, 2, 2, 301, 299, 3, 2, 2, 2, 301, 302, 3, 2, 2, 2,
+	302, 67, 3, 2, 2, 2, 303, 304, 7, 7, 2, 2, 304, 305, 7, 29, 2, 2, 305,
+	306, 7, 8, 2, 2, 306, 69, 3, 2, 2, 2, 307, 308, 7, 29, 2, 2, 308, 309,
+	7, 7, 2, 2, 309, 310, 7, 29, 2, 2, 310, 311, 7, 8, 2, 2, 311, 71, 3, 2,
+	2, 2, 312, 313, 7, 29, 2, 2, 313, 315, 7, 20, 2, 2, 314, 316, 7, 27, 2,
+	2, 315, 314, 3, 2, 2, 2, 315, 316, 3, 2, 2, 2, 316, 73, 3, 2, 2, 2, 38,
+	75, 80, 89, 97, 107, 117, 124, 134, 141, 145, 151, 157, 164, 168, 171,
+	174, 180, 189, 204, 210, 219, 227, 232, 236, 244, 252, 255, 259, 265, 272,
+	285, 288, 292, 297, 301, 315,
 }
 var literalNames = []string{
-	"", "", "'syntax'", "'info'", "'map'", "'struct'", "'interface{}'", "'type'",
-	"'service'", "'returns'", "'import'", "'@server'", "'@doc'", "'@handler'",
-	"'summary'", "", "'('", "')'", "'{'", "'}'", "'['", "']'", "','", "'.'",
-	"'/'", "'?'", "'&'", "'='", "'-'", "':'", "'*'",
+	"", "'@server'", "'@doc'", "'@handler'", "'interface{}'", "'('", "')'",
+	"'{'", "'}'", "'['", "']'", "','", "'.'", "'/'", "'?'", "'&'", "'='", "'-'",
+	"':'", "'*'",
 }
 var symbolicNames = []string{
-	"", "GOTYPE", "SYNTAX", "INFO", "MAP", "STRUCT", "INTERFACE", "TYPE", "SERVICE",
-	"RETURNS", "IMPORT", "ATSERVER", "ATDOC", "ATHANDLER", "SUMMARY", "HTTPMETHOD",
-	"LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACK", "RBRACK", "COMMA", "DOT",
-	"SLASH", "QUESTION", "BITAND", "ASSIGN", "SUB", "COLON", "STAR", "WS",
-	"COMMENT", "LINE_COMMENT", "SYNTAX_VERSION", "IMPORT_PATH", "STRING_LIT",
-	"RAW_STRING", "ID",
+	"", "ATSERVER", "ATDOC", "ATHANDLER", "INTERFACE", "LPAREN", "RPAREN",
+	"LBRACE", "RBRACE", "LBRACK", "RBRACK", "COMMA", "DOT", "SLASH", "QUESTION",
+	"BITAND", "ASSIGN", "SUB", "COLON", "STAR", "WS", "COMMENT", "LINE_COMMENT",
+	"SYNTAX_VERSION", "IMPORT_PATH", "STRING_LIT", "RAW_STRING", "ID",
 }
 
 var ruleNames = []string{
@@ -210,44 +207,33 @@ func NewApiParser(input antlr.TokenStream) *ApiParser {
 // ApiParser tokens.
 const (
 	ApiParserEOF            = antlr.TokenEOF
-	ApiParserGOTYPE         = 1
-	ApiParserSYNTAX         = 2
-	ApiParserINFO           = 3
-	ApiParserMAP            = 4
-	ApiParserSTRUCT         = 5
-	ApiParserINTERFACE      = 6
-	ApiParserTYPE           = 7
-	ApiParserSERVICE        = 8
-	ApiParserRETURNS        = 9
-	ApiParserIMPORT         = 10
-	ApiParserATSERVER       = 11
-	ApiParserATDOC          = 12
-	ApiParserATHANDLER      = 13
-	ApiParserSUMMARY        = 14
-	ApiParserHTTPMETHOD     = 15
-	ApiParserLPAREN         = 16
-	ApiParserRPAREN         = 17
-	ApiParserLBRACE         = 18
-	ApiParserRBRACE         = 19
-	ApiParserLBRACK         = 20
-	ApiParserRBRACK         = 21
-	ApiParserCOMMA          = 22
-	ApiParserDOT            = 23
-	ApiParserSLASH          = 24
-	ApiParserQUESTION       = 25
-	ApiParserBITAND         = 26
-	ApiParserASSIGN         = 27
-	ApiParserSUB            = 28
-	ApiParserCOLON          = 29
-	ApiParserSTAR           = 30
-	ApiParserWS             = 31
-	ApiParserCOMMENT        = 32
-	ApiParserLINE_COMMENT   = 33
-	ApiParserSYNTAX_VERSION = 34
-	ApiParserIMPORT_PATH    = 35
-	ApiParserSTRING_LIT     = 36
-	ApiParserRAW_STRING     = 37
-	ApiParserID             = 38
+	ApiParserATSERVER       = 1
+	ApiParserATDOC          = 2
+	ApiParserATHANDLER      = 3
+	ApiParserINTERFACE      = 4
+	ApiParserLPAREN         = 5
+	ApiParserRPAREN         = 6
+	ApiParserLBRACE         = 7
+	ApiParserRBRACE         = 8
+	ApiParserLBRACK         = 9
+	ApiParserRBRACK         = 10
+	ApiParserCOMMA          = 11
+	ApiParserDOT            = 12
+	ApiParserSLASH          = 13
+	ApiParserQUESTION       = 14
+	ApiParserBITAND         = 15
+	ApiParserASSIGN         = 16
+	ApiParserSUB            = 17
+	ApiParserCOLON          = 18
+	ApiParserSTAR           = 19
+	ApiParserWS             = 20
+	ApiParserCOMMENT        = 21
+	ApiParserLINE_COMMENT   = 22
+	ApiParserSYNTAX_VERSION = 23
+	ApiParserIMPORT_PATH    = 24
+	ApiParserSTRING_LIT     = 25
+	ApiParserRAW_STRING     = 26
+	ApiParserID             = 27
 )
 
 // ApiParser rules.
@@ -407,9 +393,8 @@ func (p *ApiParser) Api() (localctx IApiContext) {
 	p.EnterOuterAlt(localctx, 1)
 	p.SetState(73)
 	p.GetErrorHandler().Sync(p)
-	_la = p.GetTokenStream().LA(1)
 
-	if _la == ApiParserSYNTAX {
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 0, p.GetParserRuleContext()) == 1 {
 		{
 			p.SetState(72)
 			p.SyntaxLit()
@@ -420,7 +405,7 @@ func (p *ApiParser) Api() (localctx IApiContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserINFO)|(1<<ApiParserTYPE)|(1<<ApiParserSERVICE)|(1<<ApiParserIMPORT)|(1<<ApiParserATSERVER))) != 0 {
+	for _la == ApiParserATSERVER || _la == ApiParserID {
 		{
 			p.SetState(75)
 			p.Body()
@@ -556,38 +541,35 @@ func (p *ApiParser) Body() (localctx IBodyContext) {
 
 	p.SetState(87)
 	p.GetErrorHandler().Sync(p)
-
-	switch p.GetTokenStream().LA(1) {
-	case ApiParserIMPORT:
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 2, p.GetParserRuleContext()) {
+	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(83)
 			p.ImportSpec()
 		}
 
-	case ApiParserINFO:
+	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(84)
 			p.InfoBlock()
 		}
 
-	case ApiParserTYPE:
+	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(85)
 			p.TypeBlock()
 		}
 
-	case ApiParserSERVICE, ApiParserATSERVER:
+	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(86)
 			p.ServiceBlock()
 		}
 
-	default:
-		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 
 	return localctx
@@ -600,8 +582,14 @@ type ISyntaxLitContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetSyntaxToken returns the syntaxToken token.
+	GetSyntaxToken() antlr.Token
+
 	// GetVersion returns the version token.
 	GetVersion() antlr.Token
+
+	// SetSyntaxToken sets the syntaxToken token.
+	SetSyntaxToken(antlr.Token)
 
 	// SetVersion sets the version token.
 	SetVersion(antlr.Token)
@@ -612,8 +600,9 @@ type ISyntaxLitContext interface {
 
 type SyntaxLitContext struct {
 	*antlr.BaseParserRuleContext
-	parser  antlr.Parser
-	version antlr.Token
+	parser      antlr.Parser
+	syntaxToken antlr.Token
+	version     antlr.Token
 }
 
 func NewEmptySyntaxLitContext() *SyntaxLitContext {
@@ -638,16 +627,20 @@ func NewSyntaxLitContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *SyntaxLitContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *SyntaxLitContext) GetSyntaxToken() antlr.Token { return s.syntaxToken }
+
 func (s *SyntaxLitContext) GetVersion() antlr.Token { return s.version }
+
+func (s *SyntaxLitContext) SetSyntaxToken(v antlr.Token) { s.syntaxToken = v }
 
 func (s *SyntaxLitContext) SetVersion(v antlr.Token) { s.version = v }
 
-func (s *SyntaxLitContext) SYNTAX() antlr.TerminalNode {
-	return s.GetToken(ApiParserSYNTAX, 0)
-}
-
 func (s *SyntaxLitContext) ASSIGN() antlr.TerminalNode {
 	return s.GetToken(ApiParserASSIGN, 0)
+}
+
+func (s *SyntaxLitContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *SyntaxLitContext) SYNTAX_VERSION() antlr.TerminalNode {
@@ -695,7 +688,10 @@ func (p *ApiParser) SyntaxLit() (localctx ISyntaxLitContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(89)
-		p.Match(ApiParserSYNTAX)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*SyntaxLitContext).syntaxToken = _m
 	}
 	{
 		p.SetState(90)
@@ -837,8 +833,14 @@ type IImportLitContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetImportToken returns the importToken token.
+	GetImportToken() antlr.Token
+
 	// GetImportPath returns the importPath token.
 	GetImportPath() antlr.Token
+
+	// SetImportToken sets the importToken token.
+	SetImportToken(antlr.Token)
 
 	// SetImportPath sets the importPath token.
 	SetImportPath(antlr.Token)
@@ -849,8 +851,9 @@ type IImportLitContext interface {
 
 type ImportLitContext struct {
 	*antlr.BaseParserRuleContext
-	parser     antlr.Parser
-	importPath antlr.Token
+	parser      antlr.Parser
+	importToken antlr.Token
+	importPath  antlr.Token
 }
 
 func NewEmptyImportLitContext() *ImportLitContext {
@@ -875,12 +878,16 @@ func NewImportLitContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *ImportLitContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *ImportLitContext) GetImportToken() antlr.Token { return s.importToken }
+
 func (s *ImportLitContext) GetImportPath() antlr.Token { return s.importPath }
+
+func (s *ImportLitContext) SetImportToken(v antlr.Token) { s.importToken = v }
 
 func (s *ImportLitContext) SetImportPath(v antlr.Token) { s.importPath = v }
 
-func (s *ImportLitContext) IMPORT() antlr.TerminalNode {
-	return s.GetToken(ApiParserIMPORT, 0)
+func (s *ImportLitContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *ImportLitContext) IMPORT_PATH() antlr.TerminalNode {
@@ -928,7 +935,10 @@ func (p *ApiParser) ImportLit() (localctx IImportLitContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(97)
-		p.Match(ApiParserIMPORT)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*ImportLitContext).importToken = _m
 	}
 	{
 		p.SetState(98)
@@ -948,8 +958,14 @@ type IImportLitGroupContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetImportToken returns the importToken token.
+	GetImportToken() antlr.Token
+
 	// GetImportPath returns the importPath token.
 	GetImportPath() antlr.Token
+
+	// SetImportToken sets the importToken token.
+	SetImportToken(antlr.Token)
 
 	// SetImportPath sets the importPath token.
 	SetImportPath(antlr.Token)
@@ -960,8 +976,9 @@ type IImportLitGroupContext interface {
 
 type ImportLitGroupContext struct {
 	*antlr.BaseParserRuleContext
-	parser     antlr.Parser
-	importPath antlr.Token
+	parser      antlr.Parser
+	importToken antlr.Token
+	importPath  antlr.Token
 }
 
 func NewEmptyImportLitGroupContext() *ImportLitGroupContext {
@@ -986,13 +1003,13 @@ func NewImportLitGroupContext(parser antlr.Parser, parent antlr.ParserRuleContex
 
 func (s *ImportLitGroupContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *ImportLitGroupContext) GetImportToken() antlr.Token { return s.importToken }
+
 func (s *ImportLitGroupContext) GetImportPath() antlr.Token { return s.importPath }
 
-func (s *ImportLitGroupContext) SetImportPath(v antlr.Token) { s.importPath = v }
+func (s *ImportLitGroupContext) SetImportToken(v antlr.Token) { s.importToken = v }
 
-func (s *ImportLitGroupContext) IMPORT() antlr.TerminalNode {
-	return s.GetToken(ApiParserIMPORT, 0)
-}
+func (s *ImportLitGroupContext) SetImportPath(v antlr.Token) { s.importPath = v }
 
 func (s *ImportLitGroupContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserLPAREN, 0)
@@ -1000,6 +1017,10 @@ func (s *ImportLitGroupContext) LPAREN() antlr.TerminalNode {
 
 func (s *ImportLitGroupContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserRPAREN, 0)
+}
+
+func (s *ImportLitGroupContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *ImportLitGroupContext) AllIMPORT_PATH() []antlr.TerminalNode {
@@ -1052,7 +1073,10 @@ func (p *ApiParser) ImportLitGroup() (localctx IImportLitGroupContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(100)
-		p.Match(ApiParserIMPORT)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*ImportLitGroupContext).importToken = _m
 	}
 	{
 		p.SetState(101)
@@ -1090,13 +1114,20 @@ type IInfoBlockContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetInfoToken returns the infoToken token.
+	GetInfoToken() antlr.Token
+
+	// SetInfoToken sets the infoToken token.
+	SetInfoToken(antlr.Token)
+
 	// IsInfoBlockContext differentiates from other interfaces.
 	IsInfoBlockContext()
 }
 
 type InfoBlockContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser    antlr.Parser
+	infoToken antlr.Token
 }
 
 func NewEmptyInfoBlockContext() *InfoBlockContext {
@@ -1121,9 +1152,9 @@ func NewInfoBlockContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *InfoBlockContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *InfoBlockContext) INFO() antlr.TerminalNode {
-	return s.GetToken(ApiParserINFO, 0)
-}
+func (s *InfoBlockContext) GetInfoToken() antlr.Token { return s.infoToken }
+
+func (s *InfoBlockContext) SetInfoToken(v antlr.Token) { s.infoToken = v }
 
 func (s *InfoBlockContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserLPAREN, 0)
@@ -1131,6 +1162,10 @@ func (s *InfoBlockContext) LPAREN() antlr.TerminalNode {
 
 func (s *InfoBlockContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserRPAREN, 0)
+}
+
+func (s *InfoBlockContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *InfoBlockContext) AllKvLit() []IKvLitContext {
@@ -1198,7 +1233,10 @@ func (p *ApiParser) InfoBlock() (localctx IInfoBlockContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(110)
-		p.Match(ApiParserINFO)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*InfoBlockContext).infoToken = _m
 	}
 	{
 		p.SetState(111)
@@ -1351,13 +1389,20 @@ type ITypeLitContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetTypeToken returns the typeToken token.
+	GetTypeToken() antlr.Token
+
+	// SetTypeToken sets the typeToken token.
+	SetTypeToken(antlr.Token)
+
 	// IsTypeLitContext differentiates from other interfaces.
 	IsTypeLitContext()
 }
 
 type TypeLitContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser    antlr.Parser
+	typeToken antlr.Token
 }
 
 func NewEmptyTypeLitContext() *TypeLitContext {
@@ -1382,9 +1427,9 @@ func NewTypeLitContext(parser antlr.Parser, parent antlr.ParserRuleContext, invo
 
 func (s *TypeLitContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *TypeLitContext) TYPE() antlr.TerminalNode {
-	return s.GetToken(ApiParserTYPE, 0)
-}
+func (s *TypeLitContext) GetTypeToken() antlr.Token { return s.typeToken }
+
+func (s *TypeLitContext) SetTypeToken(v antlr.Token) { s.typeToken = v }
 
 func (s *TypeLitContext) TypeSpec() ITypeSpecContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*ITypeSpecContext)(nil)).Elem(), 0)
@@ -1394,6 +1439,10 @@ func (s *TypeLitContext) TypeSpec() ITypeSpecContext {
 	}
 
 	return t.(ITypeSpecContext)
+}
+
+func (s *TypeLitContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *TypeLitContext) GetRuleContext() antlr.RuleContext {
@@ -1437,7 +1486,10 @@ func (p *ApiParser) TypeLit() (localctx ITypeLitContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(124)
-		p.Match(ApiParserTYPE)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*TypeLitContext).typeToken = _m
 	}
 	{
 		p.SetState(125)
@@ -1454,13 +1506,20 @@ type ITypeGroupContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetTypeToken returns the typeToken token.
+	GetTypeToken() antlr.Token
+
+	// SetTypeToken sets the typeToken token.
+	SetTypeToken(antlr.Token)
+
 	// IsTypeGroupContext differentiates from other interfaces.
 	IsTypeGroupContext()
 }
 
 type TypeGroupContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser    antlr.Parser
+	typeToken antlr.Token
 }
 
 func NewEmptyTypeGroupContext() *TypeGroupContext {
@@ -1485,9 +1544,9 @@ func NewTypeGroupContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *TypeGroupContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *TypeGroupContext) TYPE() antlr.TerminalNode {
-	return s.GetToken(ApiParserTYPE, 0)
-}
+func (s *TypeGroupContext) GetTypeToken() antlr.Token { return s.typeToken }
+
+func (s *TypeGroupContext) SetTypeToken(v antlr.Token) { s.typeToken = v }
 
 func (s *TypeGroupContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserLPAREN, 0)
@@ -1495,6 +1554,10 @@ func (s *TypeGroupContext) LPAREN() antlr.TerminalNode {
 
 func (s *TypeGroupContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserRPAREN, 0)
+}
+
+func (s *TypeGroupContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *TypeGroupContext) AllTypeSpec() []ITypeSpecContext {
@@ -1562,7 +1625,10 @@ func (p *ApiParser) TypeGroup() (localctx ITypeGroupContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(127)
-		p.Match(ApiParserTYPE)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*TypeGroupContext).typeToken = _m
 	}
 	{
 		p.SetState(128)
@@ -1851,8 +1917,14 @@ type ITypeStructContext interface {
 	// GetName returns the name token.
 	GetName() antlr.Token
 
+	// GetStructToken returns the structToken token.
+	GetStructToken() antlr.Token
+
 	// SetName sets the name token.
 	SetName(antlr.Token)
+
+	// SetStructToken sets the structToken token.
+	SetStructToken(antlr.Token)
 
 	// IsTypeStructContext differentiates from other interfaces.
 	IsTypeStructContext()
@@ -1860,8 +1932,9 @@ type ITypeStructContext interface {
 
 type TypeStructContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-	name   antlr.Token
+	parser      antlr.Parser
+	name        antlr.Token
+	structToken antlr.Token
 }
 
 func NewEmptyTypeStructContext() *TypeStructContext {
@@ -1888,7 +1961,11 @@ func (s *TypeStructContext) GetParser() antlr.Parser { return s.parser }
 
 func (s *TypeStructContext) GetName() antlr.Token { return s.name }
 
+func (s *TypeStructContext) GetStructToken() antlr.Token { return s.structToken }
+
 func (s *TypeStructContext) SetName(v antlr.Token) { s.name = v }
+
+func (s *TypeStructContext) SetStructToken(v antlr.Token) { s.structToken = v }
 
 func (s *TypeStructContext) LBRACE() antlr.TerminalNode {
 	return s.GetToken(ApiParserLBRACE, 0)
@@ -1898,12 +1975,12 @@ func (s *TypeStructContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(ApiParserRBRACE, 0)
 }
 
-func (s *TypeStructContext) ID() antlr.TerminalNode {
-	return s.GetToken(ApiParserID, 0)
+func (s *TypeStructContext) AllID() []antlr.TerminalNode {
+	return s.GetTokens(ApiParserID)
 }
 
-func (s *TypeStructContext) STRUCT() antlr.TerminalNode {
-	return s.GetToken(ApiParserSTRUCT, 0)
+func (s *TypeStructContext) ID(i int) antlr.TerminalNode {
+	return s.GetToken(ApiParserID, i)
 }
 
 func (s *TypeStructContext) AllTypeField() []ITypeFieldContext {
@@ -1980,10 +2057,13 @@ func (p *ApiParser) TypeStruct() (localctx ITypeStructContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if _la == ApiParserSTRUCT {
+	if _la == ApiParserID {
 		{
 			p.SetState(148)
-			p.Match(ApiParserSTRUCT)
+
+			var _m = p.Match(ApiParserID)
+
+			localctx.(*TypeStructContext).structToken = _m
 		}
 
 	}
@@ -2251,22 +2331,19 @@ func (p *ApiParser) Filed() (localctx IFiledContext) {
 	p.EnterOuterAlt(localctx, 1)
 	p.SetState(166)
 	p.GetErrorHandler().Sync(p)
-
-	switch p.GetTokenStream().LA(1) {
-	case ApiParserGOTYPE, ApiParserMAP, ApiParserINTERFACE, ApiParserLBRACK, ApiParserSTAR, ApiParserID:
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 13, p.GetParserRuleContext()) {
+	case 1:
 		{
 			p.SetState(164)
 			p.DataType()
 		}
 
-	case ApiParserSTRUCT, ApiParserLBRACE:
+	case 2:
 		{
 			p.SetState(165)
 			p.InnerStruct()
 		}
 
-	default:
-		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 	p.SetState(169)
 	p.GetErrorHandler().Sync(p)
@@ -2293,13 +2370,20 @@ type IInnerStructContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetStructToken returns the structToken token.
+	GetStructToken() antlr.Token
+
+	// SetStructToken sets the structToken token.
+	SetStructToken(antlr.Token)
+
 	// IsInnerStructContext differentiates from other interfaces.
 	IsInnerStructContext()
 }
 
 type InnerStructContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser      antlr.Parser
+	structToken antlr.Token
 }
 
 func NewEmptyInnerStructContext() *InnerStructContext {
@@ -2324,16 +2408,16 @@ func NewInnerStructContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 
 func (s *InnerStructContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *InnerStructContext) GetStructToken() antlr.Token { return s.structToken }
+
+func (s *InnerStructContext) SetStructToken(v antlr.Token) { s.structToken = v }
+
 func (s *InnerStructContext) LBRACE() antlr.TerminalNode {
 	return s.GetToken(ApiParserLBRACE, 0)
 }
 
 func (s *InnerStructContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(ApiParserRBRACE, 0)
-}
-
-func (s *InnerStructContext) STRUCT() antlr.TerminalNode {
-	return s.GetToken(ApiParserSTRUCT, 0)
 }
 
 func (s *InnerStructContext) AllTypeField() []ITypeFieldContext {
@@ -2357,6 +2441,10 @@ func (s *InnerStructContext) TypeField(i int) ITypeFieldContext {
 	}
 
 	return t.(ITypeFieldContext)
+}
+
+func (s *InnerStructContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *InnerStructContext) GetRuleContext() antlr.RuleContext {
@@ -2403,10 +2491,13 @@ func (p *ApiParser) InnerStruct() (localctx IInnerStructContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if _la == ApiParserSTRUCT {
+	if _la == ApiParserID {
 		{
 			p.SetState(171)
-			p.Match(ApiParserSTRUCT)
+
+			var _m = p.Match(ApiParserID)
+
+			localctx.(*InnerStructContext).structToken = _m
 		}
 
 	}
@@ -2548,38 +2639,35 @@ func (p *ApiParser) DataType() (localctx IDataTypeContext) {
 
 	p.SetState(187)
 	p.GetErrorHandler().Sync(p)
-
-	switch p.GetTokenStream().LA(1) {
-	case ApiParserGOTYPE, ApiParserSTAR, ApiParserID:
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 17, p.GetParserRuleContext()) {
+	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
 			p.SetState(183)
 			p.Pointer()
 		}
 
-	case ApiParserMAP:
+	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
 			p.SetState(184)
 			p.MapType()
 		}
 
-	case ApiParserLBRACK:
+	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
 			p.SetState(185)
 			p.ArrayType()
 		}
 
-	case ApiParserINTERFACE:
+	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
 			p.SetState(186)
 			p.Match(ApiParserINTERFACE)
 		}
 
-	default:
-		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 
 	return localctx
@@ -2592,8 +2680,14 @@ type IMapTypeContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetMapToken returns the mapToken token.
+	GetMapToken() antlr.Token
+
 	// GetKey returns the key token.
 	GetKey() antlr.Token
+
+	// SetMapToken sets the mapToken token.
+	SetMapToken(antlr.Token)
 
 	// SetKey sets the key token.
 	SetKey(antlr.Token)
@@ -2610,9 +2704,10 @@ type IMapTypeContext interface {
 
 type MapTypeContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-	key    antlr.Token
-	value  IDataTypeContext
+	parser   antlr.Parser
+	mapToken antlr.Token
+	key      antlr.Token
+	value    IDataTypeContext
 }
 
 func NewEmptyMapTypeContext() *MapTypeContext {
@@ -2637,17 +2732,17 @@ func NewMapTypeContext(parser antlr.Parser, parent antlr.ParserRuleContext, invo
 
 func (s *MapTypeContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *MapTypeContext) GetMapToken() antlr.Token { return s.mapToken }
+
 func (s *MapTypeContext) GetKey() antlr.Token { return s.key }
+
+func (s *MapTypeContext) SetMapToken(v antlr.Token) { s.mapToken = v }
 
 func (s *MapTypeContext) SetKey(v antlr.Token) { s.key = v }
 
 func (s *MapTypeContext) GetValue() IDataTypeContext { return s.value }
 
 func (s *MapTypeContext) SetValue(v IDataTypeContext) { s.value = v }
-
-func (s *MapTypeContext) MAP() antlr.TerminalNode {
-	return s.GetToken(ApiParserMAP, 0)
-}
 
 func (s *MapTypeContext) LBRACK() antlr.TerminalNode {
 	return s.GetToken(ApiParserLBRACK, 0)
@@ -2657,8 +2752,12 @@ func (s *MapTypeContext) RBRACK() antlr.TerminalNode {
 	return s.GetToken(ApiParserRBRACK, 0)
 }
 
-func (s *MapTypeContext) GOTYPE() antlr.TerminalNode {
-	return s.GetToken(ApiParserGOTYPE, 0)
+func (s *MapTypeContext) AllID() []antlr.TerminalNode {
+	return s.GetTokens(ApiParserID)
+}
+
+func (s *MapTypeContext) ID(i int) antlr.TerminalNode {
+	return s.GetToken(ApiParserID, i)
 }
 
 func (s *MapTypeContext) DataType() IDataTypeContext {
@@ -2712,7 +2811,10 @@ func (p *ApiParser) MapType() (localctx IMapTypeContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(189)
-		p.Match(ApiParserMAP)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*MapTypeContext).mapToken = _m
 	}
 	{
 		p.SetState(190)
@@ -2721,7 +2823,7 @@ func (p *ApiParser) MapType() (localctx IMapTypeContext) {
 	{
 		p.SetState(191)
 
-		var _m = p.Match(ApiParserGOTYPE)
+		var _m = p.Match(ApiParserID)
 
 		localctx.(*MapTypeContext).key = _m
 	}
@@ -2903,10 +3005,6 @@ func NewPointerContext(parser antlr.Parser, parent antlr.ParserRuleContext, invo
 
 func (s *PointerContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *PointerContext) GOTYPE() antlr.TerminalNode {
-	return s.GetToken(ApiParserGOTYPE, 0)
-}
-
 func (s *PointerContext) ID() antlr.TerminalNode {
 	return s.GetToken(ApiParserID, 0)
 }
@@ -2975,14 +3073,7 @@ func (p *ApiParser) Pointer() (localctx IPointerContext) {
 	}
 	{
 		p.SetState(205)
-		_la = p.GetTokenStream().LA(1)
-
-		if !(_la == ApiParserGOTYPE || _la == ApiParserID) {
-			p.GetErrorHandler().RecoverInline(p)
-		} else {
-			p.GetErrorHandler().ReportMatch(p)
-			p.Consume()
-		}
+		p.Match(ApiParserID)
 	}
 
 	return localctx
@@ -3534,6 +3625,12 @@ type IServiceBodyContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetServiceToken returns the serviceToken token.
+	GetServiceToken() antlr.Token
+
+	// SetServiceToken sets the serviceToken token.
+	SetServiceToken(antlr.Token)
+
 	// GetRoutes returns the routes rule contexts.
 	GetRoutes() IServiceRouteContext
 
@@ -3546,8 +3643,9 @@ type IServiceBodyContext interface {
 
 type ServiceBodyContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-	routes IServiceRouteContext
+	parser       antlr.Parser
+	serviceToken antlr.Token
+	routes       IServiceRouteContext
 }
 
 func NewEmptyServiceBodyContext() *ServiceBodyContext {
@@ -3572,13 +3670,13 @@ func NewServiceBodyContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 
 func (s *ServiceBodyContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *ServiceBodyContext) GetServiceToken() antlr.Token { return s.serviceToken }
+
+func (s *ServiceBodyContext) SetServiceToken(v antlr.Token) { s.serviceToken = v }
+
 func (s *ServiceBodyContext) GetRoutes() IServiceRouteContext { return s.routes }
 
 func (s *ServiceBodyContext) SetRoutes(v IServiceRouteContext) { s.routes = v }
-
-func (s *ServiceBodyContext) SERVICE() antlr.TerminalNode {
-	return s.GetToken(ApiParserSERVICE, 0)
-}
 
 func (s *ServiceBodyContext) ServiceName() IServiceNameContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IServiceNameContext)(nil)).Elem(), 0)
@@ -3596,6 +3694,10 @@ func (s *ServiceBodyContext) LBRACE() antlr.TerminalNode {
 
 func (s *ServiceBodyContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(ApiParserRBRACE, 0)
+}
+
+func (s *ServiceBodyContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *ServiceBodyContext) AllServiceRoute() []IServiceRouteContext {
@@ -3663,7 +3765,10 @@ func (p *ApiParser) ServiceBody() (localctx IServiceBodyContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(236)
-		p.Match(ApiParserSERVICE)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*ServiceBodyContext).serviceToken = _m
 	}
 	{
 		p.SetState(237)
@@ -4092,13 +4197,20 @@ type IDocContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetSummaryToken returns the summaryToken token.
+	GetSummaryToken() antlr.Token
+
+	// SetSummaryToken sets the summaryToken token.
+	SetSummaryToken(antlr.Token)
+
 	// IsDocContext differentiates from other interfaces.
 	IsDocContext()
 }
 
 type DocContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser       antlr.Parser
+	summaryToken antlr.Token
 }
 
 func NewEmptyDocContext() *DocContext {
@@ -4123,6 +4235,10 @@ func NewDocContext(parser antlr.Parser, parent antlr.ParserRuleContext, invoking
 
 func (s *DocContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *DocContext) GetSummaryToken() antlr.Token { return s.summaryToken }
+
+func (s *DocContext) SetSummaryToken(v antlr.Token) { s.summaryToken = v }
+
 func (s *DocContext) ATDOC() antlr.TerminalNode {
 	return s.GetToken(ApiParserATDOC, 0)
 }
@@ -4131,16 +4247,16 @@ func (s *DocContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserLPAREN, 0)
 }
 
-func (s *DocContext) SUMMARY() antlr.TerminalNode {
-	return s.GetToken(ApiParserSUMMARY, 0)
-}
-
 func (s *DocContext) COLON() antlr.TerminalNode {
 	return s.GetToken(ApiParserCOLON, 0)
 }
 
 func (s *DocContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserRPAREN, 0)
+}
+
+func (s *DocContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *DocContext) STRING_LIT() antlr.TerminalNode {
@@ -4197,7 +4313,10 @@ func (p *ApiParser) Doc() (localctx IDocContext) {
 	}
 	{
 		p.SetState(267)
-		p.Match(ApiParserSUMMARY)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*DocContext).summaryToken = _m
 	}
 	{
 		p.SetState(268)
@@ -4423,13 +4542,20 @@ type IRoutePathContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetHttpMethodToken returns the httpMethodToken token.
+	GetHttpMethodToken() antlr.Token
+
+	// SetHttpMethodToken sets the httpMethodToken token.
+	SetHttpMethodToken(antlr.Token)
+
 	// IsRoutePathContext differentiates from other interfaces.
 	IsRoutePathContext()
 }
 
 type RoutePathContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser          antlr.Parser
+	httpMethodToken antlr.Token
 }
 
 func NewEmptyRoutePathContext() *RoutePathContext {
@@ -4454,9 +4580,9 @@ func NewRoutePathContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *RoutePathContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *RoutePathContext) HTTPMETHOD() antlr.TerminalNode {
-	return s.GetToken(ApiParserHTTPMETHOD, 0)
-}
+func (s *RoutePathContext) GetHttpMethodToken() antlr.Token { return s.httpMethodToken }
+
+func (s *RoutePathContext) SetHttpMethodToken(v antlr.Token) { s.httpMethodToken = v }
 
 func (s *RoutePathContext) Path() IPathContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPathContext)(nil)).Elem(), 0)
@@ -4466,6 +4592,10 @@ func (s *RoutePathContext) Path() IPathContext {
 	}
 
 	return t.(IPathContext)
+}
+
+func (s *RoutePathContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserID, 0)
 }
 
 func (s *RoutePathContext) Request() IRequestContext {
@@ -4530,7 +4660,10 @@ func (p *ApiParser) RoutePath() (localctx IRoutePathContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(280)
-		p.Match(ApiParserHTTPMETHOD)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*RoutePathContext).httpMethodToken = _m
 	}
 	{
 		p.SetState(281)
@@ -4551,7 +4684,7 @@ func (p *ApiParser) RoutePath() (localctx IRoutePathContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if _la == ApiParserRETURNS {
+	if _la == ApiParserID {
 		{
 			p.SetState(285)
 			p.Reply()
@@ -4855,13 +4988,27 @@ type IReplyContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetReturnToken returns the returnToken token.
+	GetReturnToken() antlr.Token
+
+	// GetObj returns the obj token.
+	GetObj() antlr.Token
+
+	// SetReturnToken sets the returnToken token.
+	SetReturnToken(antlr.Token)
+
+	// SetObj sets the obj token.
+	SetObj(antlr.Token)
+
 	// IsReplyContext differentiates from other interfaces.
 	IsReplyContext()
 }
 
 type ReplyContext struct {
 	*antlr.BaseParserRuleContext
-	parser antlr.Parser
+	parser      antlr.Parser
+	returnToken antlr.Token
+	obj         antlr.Token
 }
 
 func NewEmptyReplyContext() *ReplyContext {
@@ -4886,20 +5033,28 @@ func NewReplyContext(parser antlr.Parser, parent antlr.ParserRuleContext, invoki
 
 func (s *ReplyContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ReplyContext) RETURNS() antlr.TerminalNode {
-	return s.GetToken(ApiParserRETURNS, 0)
-}
+func (s *ReplyContext) GetReturnToken() antlr.Token { return s.returnToken }
+
+func (s *ReplyContext) GetObj() antlr.Token { return s.obj }
+
+func (s *ReplyContext) SetReturnToken(v antlr.Token) { s.returnToken = v }
+
+func (s *ReplyContext) SetObj(v antlr.Token) { s.obj = v }
 
 func (s *ReplyContext) LPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserLPAREN, 0)
 }
 
-func (s *ReplyContext) ID() antlr.TerminalNode {
-	return s.GetToken(ApiParserID, 0)
-}
-
 func (s *ReplyContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(ApiParserRPAREN, 0)
+}
+
+func (s *ReplyContext) AllID() []antlr.TerminalNode {
+	return s.GetTokens(ApiParserID)
+}
+
+func (s *ReplyContext) ID(i int) antlr.TerminalNode {
+	return s.GetToken(ApiParserID, i)
 }
 
 func (s *ReplyContext) GetRuleContext() antlr.RuleContext {
@@ -4943,7 +5098,10 @@ func (p *ApiParser) Reply() (localctx IReplyContext) {
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(305)
-		p.Match(ApiParserRETURNS)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*ReplyContext).returnToken = _m
 	}
 	{
 		p.SetState(306)
@@ -4951,7 +5109,10 @@ func (p *ApiParser) Reply() (localctx IReplyContext) {
 	}
 	{
 		p.SetState(307)
-		p.Match(ApiParserID)
+
+		var _m = p.Match(ApiParserID)
+
+		localctx.(*ReplyContext).obj = _m
 	}
 	{
 		p.SetState(308)

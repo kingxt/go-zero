@@ -24,11 +24,25 @@ func TestImport(t *testing.T) {
 	}
 
 	test(t, do, spec.ApiImport{
-		List: []string{"foo.api"},
+		List: []spec.Import{
+			{
+				Value: "foo.api",
+			},
+		},
 	}, false, importLit)
 
 	test(t, do, spec.ApiImport{
-		List: []string{"foo.api", "bar.api", "foo/bar.api"},
+		List: []spec.Import{
+			{
+				Value: "foo.api",
+			},
+			{
+				Value: "bar.api",
+			},
+			{
+				Value: "foo/bar.api",
+			},
+		},
 	}, false, importGroup)
 
 	test(t, do, spec.ApiImport{}, false, `import ()`)
@@ -67,4 +81,12 @@ func TestImport(t *testing.T) {
 		"user.api"
 		"user.api"
 	)`)
+}
+
+func TestImportToken(t *testing.T) {
+	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.ImportSpec().Accept(visitor)
+	}
+	test(t, do, false, true, `imports "user.api"`)
+	test(t, do, false, true, `qw "user.api"`)
 }
