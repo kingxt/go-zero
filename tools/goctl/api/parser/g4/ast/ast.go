@@ -58,26 +58,20 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 
 // Parse parse the api file from the the root node
 func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
-	getContent := func(filename string) (string, error) {
-		abs, err := filepath.Abs(filename)
-		if err != nil {
-			return "", err
-		}
-
-		data, err := ioutil.ReadFile(abs)
-		if err != nil {
-			return "", err
-		}
-
-		return string(data), nil
-	}
-
-	data, err := getContent(filename)
+	data, err := p.readContent(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	api, err := p.invoke(filename, data)
+	return p.parse(filename, data)
+}
+
+func (p *Parser) ParseContent(content string) (*spec.ApiSpec, error) {
+	return p.parse("", content)
+}
+
+func (p *Parser) parse(filename, content string) (*spec.ApiSpec, error) {
+	api, err := p.invoke(filename, content)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +80,7 @@ func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	imports := api.Import.List
 	apiSpecs = append(apiSpecs, api)
 	for _, imp := range imports {
-		data, err = getContent(imp.Value)
+		data, err := p.readContent(imp.Value)
 		if err != nil {
 			return nil, err
 		}
@@ -111,10 +105,6 @@ func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 
 	allApi := p.memberFill(apiSpecs)
 	return allApi, nil
-}
-
-func (p *Parser) ParseContent(content string) (api *spec.ApiSpec, err error) {
-	return p.invoke("", content)
 }
 
 func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error) {
@@ -325,4 +315,18 @@ func (p *Parser) fillType(prefix string, types map[string]spec.Type, expr interf
 	default:
 		return expr, nil
 	}
+}
+
+func (p *Parser) readContent(filename string) (string, error) {
+	abs, err := filepath.Abs(filename)
+	if err != nil {
+		return "", err
+	}
+
+	data, err := ioutil.ReadFile(abs)
+	if err != nil {
+		return "", err
+	}
+
+	return string(data), nil
 }

@@ -48,7 +48,7 @@ service bar-api{}
 const oldApi = `
 info()
 
-type User {}
+type Foo {}
 `
 
 func TestApi(t *testing.T) {
@@ -67,7 +67,7 @@ func TestApi(t *testing.T) {
 		},
 		Types: []spec.Type{
 			{
-				Name: "User",
+				Name: "Foo",
 			},
 		},
 		Service: spec.Service{},
