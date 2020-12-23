@@ -6,6 +6,9 @@ ATSERVER:           '@server';
 ATDOC:              '@doc';
 ATHANDLER:          '@handler';
 INTERFACE:          'interface{}';
+TYPE:               'type';
+IMPORT:             'import';
+TIME:               'time.Time';
 
 
 // separators

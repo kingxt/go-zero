@@ -207,7 +207,6 @@ func (v *ApiVisitor) VisitImportSpec(ctx *parser.ImportSpecContext) interface{} 
 }
 
 func (v *ApiVisitor) VisitImportLit(ctx *parser.ImportLitContext) interface{} {
-	v.checkToken(ctx.GetImportToken(), importToken)
 	importPath := v.getTokenText(ctx.GetImportPath(), true)
 	line := ctx.GetImportPath().GetLine()
 	column := ctx.GetImportPath().GetColumn()
@@ -240,7 +239,6 @@ func (v *ApiVisitor) VisitImportLit(ctx *parser.ImportLitContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitImportLitGroup(ctx *parser.ImportLitGroupContext) interface{} {
-	v.checkToken(ctx.GetImportToken(), importToken)
 	nodes := ctx.AllIMPORT_PATH()
 	var list []spec.Import
 	for _, node := range nodes {
@@ -324,13 +322,11 @@ func (v *ApiVisitor) VisitTypeBlock(ctx *parser.TypeBlockContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitTypeLit(ctx *parser.TypeLitContext) interface{} {
-	v.checkToken(ctx.GetTypeToken(), typeToken)
 	iTypeSpecContext := ctx.TypeSpec()
 	return iTypeSpecContext.Accept(v).(spec.Type)
 }
 
 func (v *ApiVisitor) VisitTypeGroup(ctx *parser.TypeGroupContext) interface{} {
-	v.checkToken(ctx.GetTypeToken(), typeToken)
 	iTypeSpecContexts := ctx.AllTypeSpec()
 	var list []spec.Type
 	for _, each := range iTypeSpecContexts {

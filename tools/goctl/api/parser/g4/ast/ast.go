@@ -58,19 +58,44 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 
 // Parse parse the api file from the the root node
 func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
-	api, err := p.parse(filename)
+	getContent := func(filename string) (string, error) {
+		abs, err := filepath.Abs(filename)
+		if err != nil {
+			return "", err
+		}
+
+		data, err := ioutil.ReadFile(abs)
+		if err != nil {
+			return "", err
+		}
+
+		return string(data), nil
+	}
+
+	data, err := getContent(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	imports := api.Import.List
+	api, err := p.invoke(filename, data)
+	if err != nil {
+		return nil, err
+	}
+
 	var apiSpecs []*spec.ApiSpec
+	imports := api.Import.List
 	apiSpecs = append(apiSpecs, api)
 	for _, imp := range imports {
-		nestedApi, err := p.parse(imp.Value)
+		data, err = getContent(imp.Value)
 		if err != nil {
 			return nil, err
 		}
+
+		nestedApi, err := p.invoke(imp.Value, data)
+		if err != nil {
+			return nil, err
+		}
+
 		err = p.valid(api, imp.Value, nestedApi)
 		if err != nil {
 			return nil, err
@@ -88,7 +113,11 @@ func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	return allApi, nil
 }
 
-func (p *Parser) parse(filename string) (api *spec.ApiSpec, err error) {
+func (p *Parser) ParseContent(content string) (api *spec.ApiSpec, err error) {
+	return p.invoke("", content)
+}
+
+func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error) {
 	defer func() {
 		p := recover()
 		if p != nil {
@@ -100,17 +129,8 @@ func (p *Parser) parse(filename string) (api *spec.ApiSpec, err error) {
 			}
 		}
 	}()
-	abs, err := filepath.Abs(filename)
-	if err != nil {
-		return nil, err
-	}
 
-	data, err := ioutil.ReadFile(abs)
-	if err != nil {
-		return nil, err
-	}
-
-	inputStream := antlr.NewInputStream(string(data))
+	inputStream := antlr.NewInputStream(content)
 	lexer := parser.NewApiLexer(inputStream)
 	lexer.RemoveErrorListeners()
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)

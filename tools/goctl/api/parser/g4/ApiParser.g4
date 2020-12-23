@@ -14,14 +14,14 @@ body:       importSpec
 
 syntaxLit:      syntaxToken=ID ASSIGN version=SYNTAX_VERSION;
 importSpec:     importLit|importLitGroup;
-importLit:      importToken=ID importPath=IMPORT_PATH;
-importLitGroup:     importToken=ID '(' (importPath=IMPORT_PATH)* ')';
+importLit:      IMPORT importPath=IMPORT_PATH;
+importLitGroup:     IMPORT '(' (importPath=IMPORT_PATH)* ')';
 
 infoBlock: infoToken=ID '(' kvLit* ')';
 
 typeBlock:      typeLit|typeGroup;
-typeLit:        typeToken=ID typeSpec;
-typeGroup:      typeToken=ID '(' typeSpec* ')';
+typeLit:        TYPE typeSpec;
+typeGroup:      TYPE '(' typeSpec* ')';
 typeSpec:       typeAlias|typeStruct;
 typeAlias:      alias=ID '='? dataType;
 typeStruct:     name=ID structToken=ID? '{' typeField* '}';
@@ -32,6 +32,7 @@ dataType:       pointer
                 |mapType
                 |arrayType
                 |INTERFACE
+                |TIME
                 ;
 mapType:        mapToken=ID '[' key=ID ']' value=dataType;
 arrayType:      '['']'lit=dataType;
