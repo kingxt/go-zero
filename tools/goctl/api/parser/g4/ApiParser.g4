@@ -24,19 +24,18 @@ typeLit:        TYPE typeSpec;
 typeGroup:      TYPE '(' typeSpec* ')';
 typeSpec:       typeAlias|typeStruct;
 typeAlias:      alias=ID '='? dataType;
-typeStruct:     name=ID structToken=ID? '{' typeField* '}';
+typeStruct:     name=ID STRUCT? '{' typeField* '}';
 typeField:       name=ID filed?;
 filed:      (dataType|innerStruct) tag=RAW_STRING?;
-innerStruct:        structToken=ID? '{' typeField* '}';
+innerStruct:        STRUCT? '{' typeField* '}';
 dataType:       pointer
                 |mapType
                 |arrayType
                 |INTERFACE
-                |TIME
                 ;
-mapType:        mapToken=ID '[' key=ID ']' value=dataType;
+mapType:        MAP '[' key=GOTYPE ']' value=dataType;
 arrayType:      '['']'lit=dataType;
-pointer:        STAR* ID;
+pointer:        STAR* (GOTYPE|ID);
 
 serviceBlock:       serverMeta? serviceBody;
 serverMeta:     ATSERVER '(' annotation* ')';

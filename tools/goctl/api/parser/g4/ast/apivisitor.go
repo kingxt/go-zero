@@ -14,10 +14,6 @@ const (
 	handlerKey   = "handler"
 	infoToken    = "info"
 	syntaxToken  = "syntax"
-	mapToken     = "map"
-	structToken  = "struct"
-	typeToken    = "type"
-	importToken  = "import"
 	serviceToken = "service"
 	summaryToken = "summary"
 	returnToken  = "returns"
@@ -359,7 +355,6 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *parser.TypeAliasContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitTypeStruct(ctx *parser.TypeStructContext) interface{} {
-	v.checkToken(ctx.GetStructToken(), structToken)
 	var tp spec.Type
 	tp.Name = v.getTokenText(ctx.GetName(), false)
 	line := ctx.GetName().GetLine()
@@ -473,7 +468,6 @@ func (v *ApiVisitor) VisitFiled(ctx *parser.FiledContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitInnerStruct(ctx *parser.InnerStructContext) interface{} {
-	v.checkToken(ctx.GetStructToken(), structToken)
 	symbol := ctx.LBRACE().GetSymbol()
 	line := symbol.GetLine()
 	column := symbol.GetColumn()
@@ -502,14 +496,13 @@ func (v *ApiVisitor) VisitDataType(ctx *parser.DataTypeContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitMapType(ctx *parser.MapTypeContext) interface{} {
-	v.checkToken(ctx.GetMapToken(), mapToken)
 	tp := spec.MapType{}
 	tp.Key = v.getTokenText(ctx.GetKey(), false)
 	iDataTypeContext := ctx.DataType()
 	tp.Value = iDataTypeContext.Accept(v)
 	tp.StringExpr = ctx.GetText()
-	tp.Line = ctx.GetMapToken().GetLine()
-	tp.Column = ctx.GetMapToken().GetColumn()
+	tp.Line = ctx.MAP().GetSymbol().GetLine()
+	tp.Column = ctx.MAP().GetSymbol().GetColumn()
 	return tp
 }
 
@@ -524,30 +517,22 @@ func (v *ApiVisitor) VisitArrayType(ctx *parser.ArrayTypeContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
-	idText := v.getNodeText(ctx.ID(), false)
-	line := ctx.ID().GetSymbol().GetLine()
-	column := ctx.ID().GetSymbol().GetColumn()
 	if len(ctx.AllSTAR()) == 0 { // basic type
-		if v.isGoType(idText) {
-			if idText == "time.Time" {
+		if ctx.GOTYPE() != nil {
+			text := v.getNodeText(ctx.GOTYPE(), false)
+			if text == "time.Time" {
 				tp := spec.TimeType{}
-				tp.StringExpr = idText
-				tp.Line = line
-				tp.Column = column
+				tp.StringExpr = text
 				return tp
 			} else {
 				tp := spec.BasicType{}
 				tp.StringExpr = ctx.GetText()
-				tp.Name = idText
-				tp.Line = line
-				tp.Column = column
+				tp.Name = text
 				return tp
 			}
 		} else if ctx.ID() != nil {
 			tp := spec.Type{}
-			tp.Line = ctx.ID().GetSymbol().GetLine()
-			tp.Column = ctx.ID().GetSymbol().GetColumn()
-			tp.Name = idText
+			tp.Name = v.getNodeText(ctx.ID(), false)
 			if tp.Name == "interface" {
 				symbol := ctx.ID().GetSymbol()
 				panic(v.wrapError(ast{
@@ -561,46 +546,34 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 
 	// pointer
 	text := ctx.GetText()
-	line = ctx.STAR(0).GetSymbol().GetLine()
-	column = ctx.STAR(0).GetSymbol().GetColumn()
-
 	parent := &spec.PointerType{
 		StringExpr: text,
 	}
-	parent.Line = line
-	parent.Column = column
 	tmp := parent
 	for index := 1; index < len(ctx.AllSTAR()); index++ {
 		p := &spec.PointerType{
 			StringExpr: text[index:],
 			Star:       nil,
 		}
-		p.Line = line
-		p.Column = column + index
 		tmp.Star = p
 		tmp = p
 	}
 
-	if v.isGoType(idText) {
-		if idText == "time.Time" {
+	if ctx.GOTYPE() != nil {
+		text := v.getNodeText(ctx.GOTYPE(), false)
+		if text == "time.Time" {
 			tp := spec.TimeType{}
-			tp.StringExpr = idText
-			tp.Line = line
-			tp.Column = column + len(ctx.AllSTAR())
+			tp.StringExpr = text
 			tmp.Star = tp
 		} else {
 			tp := spec.BasicType{}
-			tp.StringExpr = idText
-			tp.Name = idText
-			tp.Line = line
-			tp.Column = column + len(ctx.AllSTAR())
+			tp.StringExpr = text
+			tp.Name = text
 			tmp.Star = tp
 		}
 	} else if ctx.ID() != nil {
 		tp := spec.Type{}
-		tp.Name = idText
-		tp.Line = line
-		tp.Column = column + len(ctx.AllSTAR())
+		tp.Name = v.getNodeText(ctx.ID(), false)
 		if tp.Name == "interface" {
 			symbol := ctx.ID().GetSymbol()
 			panic(v.wrapError(ast{
@@ -929,6 +902,9 @@ func (v *ApiVisitor) wrapError(ast ast, format string, a ...interface{}) error {
 }
 
 func (v *ApiVisitor) checkToken(token antlr.Token, text string) {
+	if token == nil {
+		return
+	}
 	tokenText := v.getTokenText(token, false)
 	if tokenText != text {
 		if len(v.filename) > 0 {
@@ -945,6 +921,9 @@ func (v *ApiVisitor) isGoType(text string) bool {
 }
 
 func (v *ApiVisitor) checkHttpMethod(token antlr.Token) {
+	if token == nil {
+		return
+	}
 	text := v.getTokenText(token, false)
 	_, ok := httpMethodToken[text]
 	if !ok {

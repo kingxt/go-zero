@@ -8,8 +8,32 @@ ATHANDLER:          '@handler';
 INTERFACE:          'interface{}';
 TYPE:               'type';
 IMPORT:             'import';
-TIME:               'time.Time';
+MAP:                'map';
+STRUCT:             'struct';
 
+
+GOTYPE:
+                    BOOL
+                    |UINT8
+                    |UINT16
+                    |UINT32
+                    |UINT64
+                    |INT8
+                    |INT16
+                    |INT32
+                    |INT64
+                    |FLOAT32
+                    |FLOAT64
+                    |COMPLEX64
+                    |COMPLEX128
+                    |STRING
+                    |INT
+                    |UINT
+                    |UINTPTR
+                    |BYTE
+                    |RUNE
+                    |TIME
+                    ;
 
 // separators
 LPAREN:             '(';
@@ -73,3 +97,24 @@ fragment Letter
     | ~[\u0000-\u007F\uD800-\uDBFF] // covers all characters above 0x7F which are not a surrogate
     | [\uD800-\uDBFF] [\uDC00-\uDFFF] // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
     ;
+
+fragment BOOL:               'bool';
+fragment UINT8:              'uint8';
+fragment UINT16:             'uint16';
+fragment UINT32:             'uint32';
+fragment UINT64:             'uint64';
+fragment INT8:               'int8';
+fragment INT16:              'int16';
+fragment INT32:              'int32';
+fragment INT64:              'int64';
+fragment FLOAT32:            'float32';
+fragment FLOAT64:            'float64';
+fragment COMPLEX64:          'complex64';
+fragment COMPLEX128:         'complex128';
+fragment STRING:             'string';
+fragment INT:                'int';
+fragment UINT:               'uint';
+fragment UINTPTR:            'uintptr';
+fragment BYTE:               'byte';
+fragment RUNE:               'rune';
+fragment TIME:               'time.Time';
