@@ -12,11 +12,12 @@ type (
 	}
 
 	ApiSpec struct {
-		Syntax  ApiSyntax
-		Import  ApiImport
-		Info    Info
-		Types   []Type
-		Service Service
+		Filename string
+		Syntax   ApiSyntax
+		Import   ApiImport
+		Info     Info
+		Types    []Type
+		Service  Service
 	}
 
 	ApiImport struct {
