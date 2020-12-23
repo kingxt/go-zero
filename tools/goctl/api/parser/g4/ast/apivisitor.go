@@ -519,20 +519,30 @@ func (v *ApiVisitor) VisitArrayType(ctx *parser.ArrayTypeContext) interface{} {
 func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 	if len(ctx.AllSTAR()) == 0 { // basic type
 		if ctx.GOTYPE() != nil {
+			line := ctx.GOTYPE().GetSymbol().GetLine()
+			column := ctx.GOTYPE().GetSymbol().GetColumn()
 			text := v.getNodeText(ctx.GOTYPE(), false)
 			if text == "time.Time" {
 				tp := spec.TimeType{}
 				tp.StringExpr = text
+				tp.Line = line
+				tp.Column = column
 				return tp
 			} else {
 				tp := spec.BasicType{}
 				tp.StringExpr = ctx.GetText()
 				tp.Name = text
+				tp.Line = line
+				tp.Column = column
 				return tp
 			}
 		} else if ctx.ID() != nil {
 			tp := spec.Type{}
+			line := ctx.ID().GetSymbol().GetLine()
+			column := ctx.ID().GetSymbol().GetColumn()
 			tp.Name = v.getNodeText(ctx.ID(), false)
+			tp.Line = line
+			tp.Column = column
 			if tp.Name == "interface" {
 				symbol := ctx.ID().GetSymbol()
 				panic(v.wrapError(ast{
@@ -560,19 +570,29 @@ func (v *ApiVisitor) VisitPointer(ctx *parser.PointerContext) interface{} {
 	}
 
 	if ctx.GOTYPE() != nil {
+		line := ctx.GOTYPE().GetSymbol().GetLine()
+		column := ctx.GOTYPE().GetSymbol().GetColumn()
 		text := v.getNodeText(ctx.GOTYPE(), false)
 		if text == "time.Time" {
 			tp := spec.TimeType{}
 			tp.StringExpr = text
+			tp.Line = line
+			tp.Column = column
 			tmp.Star = tp
 		} else {
 			tp := spec.BasicType{}
 			tp.StringExpr = text
 			tp.Name = text
+			tp.Line = line
+			tp.Column = column
 			tmp.Star = tp
 		}
 	} else if ctx.ID() != nil {
 		tp := spec.Type{}
+		line := ctx.ID().GetSymbol().GetLine()
+		column := ctx.ID().GetSymbol().GetColumn()
+		tp.Line = line
+		tp.Column = column
 		tp.Name = v.getNodeText(ctx.ID(), false)
 		if tp.Name == "interface" {
 			symbol := ctx.ID().GetSymbol()
