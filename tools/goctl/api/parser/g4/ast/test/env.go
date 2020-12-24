@@ -7,12 +7,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 )
 
 var logEnable = true
 
-func test(t *testing.T, do func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{}, expected interface{}, expectedErr bool, content string) {
+func test(t *testing.T, do func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{}, expected interface{}, expectedErr bool, content string) {
 	p := ast.NewParser()
 	result, err := p.Accept(content, do)
 	if logEnable {

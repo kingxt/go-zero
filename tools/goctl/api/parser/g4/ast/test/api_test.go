@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
@@ -51,8 +51,17 @@ info()
 type Foo {}
 `
 
+const duplicateInfoKeyBlock = `
+syntax = "v1"
+info (
+	title: this is title
+	desc: "new line"
+	desc: 你好
+)
+`
+
 func TestApi(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.Api().Accept(visitor)
 	}
 
@@ -61,6 +70,7 @@ func TestApi(t *testing.T) {
 	test(t, do, nil, true, duplicateTypeLit)
 	test(t, do, nil, true, duplicateTypeInGroup)
 	test(t, do, nil, true, duplicateServiceBlock)
+	test(t, do, nil, true, duplicateInfoKeyBlock)
 	test(t, do, spec.ApiSpec{
 		Info: spec.Info{
 			Proterties: map[string]string{},
@@ -75,7 +85,7 @@ func TestApi(t *testing.T) {
 }
 
 func TestToken(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.Api().Accept(visitor)
 	}
 	test(t, do, nil, true, `infos ()`)

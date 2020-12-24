@@ -1,7 +1,6 @@
 // Code generated from /Users/anqiansong/goland/go/go-zero_kingxt/tools/goctl/api/parser/g4/ApiParser.g4 by ANTLR 4.9. DO NOT EDIT.
 
-package parser // ApiParser
-
+package api // ApiParser
 import "github.com/antlr/antlr4/runtime/Go/antlr"
 
 type BaseApiParserVisitor struct {
@@ -145,9 +144,5 @@ func (v *BaseApiParserVisitor) VisitRequest(ctx *RequestContext) interface{} {
 }
 
 func (v *BaseApiParserVisitor) VisitReply(ctx *ReplyContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitKvLit(ctx *KvLitContext) interface{} {
 	return v.VisitChildren(ctx)
 }

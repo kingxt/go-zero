@@ -4,14 +4,14 @@ import (
 	"testing"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
 const structLit = "Foo {\n        VString string `json:\"vString\"`\n        VBool bool `json:\"vBool\"`\n        VInt8 int8 `json:\"vInt8\"`\n        VInt16 int16 `json:\"vInt16\"`\n        VInt32 int32 `json:\"vInt32\"`\n        VInt64 int64 `json:\"vInt64\"`\n        VInt int `json:\"vInt\"`\n        VUInt8 uint8 `json:\"vUInt8\"`\n        VUInt16 uint16 `json:\"vUInt16\"`\n        VUInt32 uint32 `json:\"vUInt32\"`\n        VUInt64 uint64 `json:\"vUInt64\"`\n        VFloat32 float32 `json:\"vFloat32\"`\n        VFloat64 float64 `json:\"vFloat64\"`\n        VByte byte `json:\"vByte\"`\n        VRune rune `json:\"vRune\"`\n        VMap map[string]int `json:\"vMap\"`\n        VArray []int `json:\"vArray\"`\n        VStruct Foo `json:\"vStruct\"`\n        VStructPointer *Foo `json:\"vStructPointer\"`\n        VInterface interface{} `json:\"vInterface\"`\n        T time.Time\n    }"
 
 func TestPointer(t *testing.T) {
-	do := func(p *parser.ApiParser, v *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, v *ast.ApiVisitor) interface{} {
 		return p.Pointer().Accept(v)
 	}
 	test(t, do, spec.BasicType{
@@ -57,7 +57,7 @@ func TestPointer(t *testing.T) {
 }
 
 func TestArrayType(t *testing.T) {
-	do := func(p *parser.ApiParser, v *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, v *ast.ApiVisitor) interface{} {
 		return p.ArrayType().Accept(v)
 	}
 
@@ -130,7 +130,7 @@ func TestArrayType(t *testing.T) {
 }
 
 func TestMapType(t *testing.T) {
-	do := func(p *parser.ApiParser, v *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, v *ast.ApiVisitor) interface{} {
 		return p.MapType().Accept(v)
 	}
 
@@ -200,7 +200,7 @@ func TestMapType(t *testing.T) {
 }
 
 func TestInterface(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.DataType().Accept(visitor)
 	}
 
@@ -212,7 +212,7 @@ func TestInterface(t *testing.T) {
 }
 
 func TestDataType(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.DataType().Accept(visitor)
 	}
 
@@ -254,7 +254,7 @@ func TestDataType(t *testing.T) {
 }
 
 func TestField(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeField().Accept(visitor)
 	}
 
@@ -302,7 +302,7 @@ func TestField(t *testing.T) {
 }
 
 func TestStruct(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeStruct().Accept(visitor)
 	}
 
@@ -508,7 +508,7 @@ func TestStruct(t *testing.T) {
 }
 
 func TestAlias(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeAlias().Accept(visitor)
 	}
 
@@ -516,7 +516,7 @@ func TestAlias(t *testing.T) {
 }
 
 func TestTypeSpec(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeSpec().Accept(visitor)
 	}
 
@@ -528,7 +528,7 @@ func TestTypeSpec(t *testing.T) {
 }
 
 func TestTypeLit(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeLit().Accept(visitor)
 	}
 
@@ -540,7 +540,7 @@ func TestTypeLit(t *testing.T) {
 }
 
 func TestTypeGroup(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeGroup().Accept(visitor)
 	}
 
@@ -558,7 +558,7 @@ func TestTypeGroup(t *testing.T) {
 }
 
 func TestTypeBlock(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeBlock().Accept(visitor)
 	}
 
@@ -576,7 +576,7 @@ func TestTypeBlock(t *testing.T) {
 }
 
 func TestTypeToken(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.TypeBlock().Accept(visitor)
 	}
 	test(t, do, nil, true, `types User int`)

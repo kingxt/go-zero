@@ -4,26 +4,19 @@ import (
 	"testing"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
-const infoBlock = `
-info(
-	title: "foo"
-	desc: "bar"
-)
-`
-
 func TestInfo(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.InfoBlock().Accept(visitor)
 	}
 
 	test(t, do, spec.Info{
 		Proterties: map[string]string{
-			"title": "foo",
-			"desc":  "bar",
+			"title": `foo`,
+			"desc":  `bar`,
 		},
 	}, false, `info(
 		title: "foo"
@@ -54,6 +47,19 @@ func TestInfo(t *testing.T) {
 		bar"		
 	)`)
 
+	test(t, do, spec.Info{
+		Proterties: map[string]string{
+			"title":   "this is title",
+			"desc":    "new line\ndescription",
+			"Chinese": "你好",
+		},
+	}, false, `info (
+	title: this is title
+	desc: "new line
+description"
+	Chinese: 你好
+)`)
+
 	test(t, do, nil, true, `info(
 	title: ""
 	title: ""
@@ -64,9 +70,27 @@ func TestInfo(t *testing.T) {
 }
 
 func TestInfoToken(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.InfoBlock().Accept(visitor)
 	}
 	test(t, do, nil, true, `inf ()`)
 	test(t, do, nil, true, `import ()`)
+}
+
+func TestKvLit(t *testing.T) {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
+		return p.InfoBlock().Accept(visitor)
+	}
+	test(t, do, spec.Info{
+		Proterties: map[string]string{
+			"foo":  "bar",
+			"bar":  "foo",
+			"fooo": "foo bar",
+		},
+	}, false, `info (
+foo:bar
+bar:foo
+fooo:foo bar
+)
+`)
 }

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
@@ -46,10 +46,8 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 	apiParser := parser.NewApiParser(tokens)
 	visitor := NewApiVisitor("")
 	p.options = append(p.options, WithErrorCallback("", nil))
-	if len(p.options) > 0 {
-		for _, opt := range p.options {
-			opt(apiParser)
-		}
+	for _, opt := range p.options {
+		opt(apiParser)
 	}
 
 	api = fn(apiParser, visitor)
@@ -127,10 +125,8 @@ func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error)
 	apiParser := parser.NewApiParser(tokens)
 	visitor := NewApiVisitor(filename)
 	p.options = append(p.options, WithErrorCallback(filename, nil))
-	if len(p.options) > 0 {
-		for _, opt := range p.options {
-			opt(apiParser)
-		}
+	for _, opt := range p.options {
+		opt(apiParser)
 	}
 
 	api = apiParser.Api().Accept(visitor).(*spec.ApiSpec)

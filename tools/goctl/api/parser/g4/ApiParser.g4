@@ -17,7 +17,7 @@ importSpec:     importLit|importLitGroup;
 importLit:      IMPORT importPath=IMPORT_PATH;
 importLitGroup:     IMPORT '(' (importPath=IMPORT_PATH)* ')';
 
-infoBlock: infoToken=ID '(' kvLit* ')';
+infoBlock: INFO_BLOCK;
 
 typeBlock:      typeLit|typeGroup;
 typeLit:        TYPE typeSpec;
@@ -52,4 +52,3 @@ routePath:      httpMethodToken=ID path request? reply?;
 path:      ('/' ':'? ID (('?'|'&'|'=') ID)?)+;
 request:       '(' ID ')';
 reply:      returnToken=ID '(' obj=ID ')';
-kvLit:      key=ID COLON value=STRING_LIT?;

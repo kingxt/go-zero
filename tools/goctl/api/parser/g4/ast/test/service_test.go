@@ -4,12 +4,12 @@ import (
 	"testing"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
 func TestServiceAnnotation(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServiceBlock().Accept(visitor)
 	}
 	test(t, do, spec.Service{
@@ -36,7 +36,7 @@ func TestServiceAnnotation(t *testing.T) {
 }
 
 func TestServiceBody(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServiceBlock().Accept(visitor)
 	}
 	test(t, do, spec.Service{
@@ -88,7 +88,7 @@ func TestServiceBody(t *testing.T) {
 }
 
 func TestServerMeta(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServerMeta().Accept(visitor)
 	}
 	test(t, do, spec.Annotation{
@@ -117,7 +117,7 @@ func TestServerMeta(t *testing.T) {
 }
 
 func TestServiceBlock(t *testing.T) {
-	do := func(p *parser.ApiParser, visitor *ast.ApiVisitor) interface{} {
+	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServiceBlock().Accept(visitor)
 	}
 

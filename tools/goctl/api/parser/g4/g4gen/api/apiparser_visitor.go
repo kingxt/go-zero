@@ -1,7 +1,6 @@
 // Code generated from /Users/anqiansong/goland/go/go-zero_kingxt/tools/goctl/api/parser/g4/ApiParser.g4 by ANTLR 4.9. DO NOT EDIT.
 
-package parser // ApiParser
-
+package api // ApiParser
 import "github.com/antlr/antlr4/runtime/Go/antlr"
 
 // A complete Visitor for a parse tree produced by ApiParser.
@@ -112,7 +111,4 @@ type ApiParserVisitor interface {
 
 	// Visit a parse tree produced by ApiParser#reply.
 	VisitReply(ctx *ReplyContext) interface{}
-
-	// Visit a parse tree produced by ApiParser#kvLit.
-	VisitKvLit(ctx *KvLitContext) interface{}
 }

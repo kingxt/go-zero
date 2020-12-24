@@ -1,7 +1,6 @@
 // Code generated from /Users/anqiansong/goland/go/go-zero_kingxt/tools/goctl/api/parser/g4/ApiParser.g4 by ANTLR 4.9. DO NOT EDIT.
 
-package parser // ApiParser
-
+package api // ApiParser
 import (
 	"fmt"
 	"reflect"
@@ -16,155 +15,148 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 34, 318,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 36, 303,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
 	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
 	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 4, 16, 9, 16, 4, 17, 9, 17, 4, 18, 9,
 	18, 4, 19, 9, 19, 4, 20, 9, 20, 4, 21, 9, 21, 4, 22, 9, 22, 4, 23, 9, 23,
 	4, 24, 9, 24, 4, 25, 9, 25, 4, 26, 9, 26, 4, 27, 9, 27, 4, 28, 9, 28, 4,
 	29, 9, 29, 4, 30, 9, 30, 4, 31, 9, 31, 4, 32, 9, 32, 4, 33, 9, 33, 4, 34,
-	9, 34, 4, 35, 9, 35, 4, 36, 9, 36, 4, 37, 9, 37, 3, 2, 5, 2, 76, 10, 2,
-	3, 2, 7, 2, 79, 10, 2, 12, 2, 14, 2, 82, 11, 2, 3, 2, 3, 2, 3, 3, 3, 3,
-	3, 3, 3, 3, 5, 3, 90, 10, 3, 3, 4, 3, 4, 3, 4, 3, 4, 3, 5, 3, 5, 5, 5,
-	98, 10, 5, 3, 6, 3, 6, 3, 6, 3, 7, 3, 7, 3, 7, 7, 7, 106, 10, 7, 12, 7,
-	14, 7, 109, 11, 7, 3, 7, 3, 7, 3, 8, 3, 8, 3, 8, 7, 8, 116, 10, 8, 12,
-	8, 14, 8, 119, 11, 8, 3, 8, 3, 8, 3, 9, 3, 9, 5, 9, 125, 10, 9, 3, 10,
-	3, 10, 3, 10, 3, 11, 3, 11, 3, 11, 7, 11, 133, 10, 11, 12, 11, 14, 11,
-	136, 11, 11, 3, 11, 3, 11, 3, 12, 3, 12, 5, 12, 142, 10, 12, 3, 13, 3,
-	13, 5, 13, 146, 10, 13, 3, 13, 3, 13, 3, 14, 3, 14, 5, 14, 152, 10, 14,
-	3, 14, 3, 14, 7, 14, 156, 10, 14, 12, 14, 14, 14, 159, 11, 14, 3, 14, 3,
-	14, 3, 15, 3, 15, 5, 15, 165, 10, 15, 3, 16, 3, 16, 5, 16, 169, 10, 16,
-	3, 16, 5, 16, 172, 10, 16, 3, 17, 5, 17, 175, 10, 17, 3, 17, 3, 17, 7,
-	17, 179, 10, 17, 12, 17, 14, 17, 182, 11, 17, 3, 17, 3, 17, 3, 18, 3, 18,
-	3, 18, 3, 18, 5, 18, 190, 10, 18, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3,
-	19, 3, 20, 3, 20, 3, 20, 3, 20, 3, 21, 7, 21, 203, 10, 21, 12, 21, 14,
-	21, 206, 11, 21, 3, 21, 3, 21, 3, 22, 5, 22, 211, 10, 22, 3, 22, 3, 22,
-	3, 23, 3, 23, 3, 23, 7, 23, 218, 10, 23, 12, 23, 14, 23, 221, 11, 23, 3,
-	23, 3, 23, 3, 24, 3, 24, 3, 24, 5, 24, 228, 10, 24, 3, 25, 3, 25, 3, 25,
-	5, 25, 233, 10, 25, 6, 25, 235, 10, 25, 13, 25, 14, 25, 236, 3, 26, 3,
-	26, 3, 26, 3, 26, 7, 26, 243, 10, 26, 12, 26, 14, 26, 246, 11, 26, 3, 26,
-	3, 26, 3, 27, 3, 27, 3, 27, 5, 27, 253, 10, 27, 3, 28, 5, 28, 256, 10,
-	28, 3, 28, 3, 28, 5, 28, 260, 10, 28, 3, 28, 3, 28, 3, 29, 3, 29, 5, 29,
-	266, 10, 29, 3, 30, 3, 30, 3, 30, 3, 30, 3, 30, 5, 30, 273, 10, 30, 3,
-	30, 3, 30, 3, 31, 3, 31, 3, 31, 3, 32, 3, 32, 3, 32, 3, 33, 3, 33, 3, 33,
-	5, 33, 286, 10, 33, 3, 33, 5, 33, 289, 10, 33, 3, 34, 3, 34, 5, 34, 293,
-	10, 34, 3, 34, 3, 34, 3, 34, 5, 34, 298, 10, 34, 6, 34, 300, 10, 34, 13,
-	34, 14, 34, 301, 3, 35, 3, 35, 3, 35, 3, 35, 3, 36, 3, 36, 3, 36, 3, 36,
-	3, 36, 3, 37, 3, 37, 3, 37, 5, 37, 316, 10, 37, 3, 37, 2, 2, 38, 2, 4,
-	6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42,
-	44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 2, 4, 4, 2,
-	11, 11, 34, 34, 3, 2, 21, 23, 2, 321, 2, 75, 3, 2, 2, 2, 4, 89, 3, 2, 2,
-	2, 6, 91, 3, 2, 2, 2, 8, 97, 3, 2, 2, 2, 10, 99, 3, 2, 2, 2, 12, 102, 3,
-	2, 2, 2, 14, 112, 3, 2, 2, 2, 16, 124, 3, 2, 2, 2, 18, 126, 3, 2, 2, 2,
-	20, 129, 3, 2, 2, 2, 22, 141, 3, 2, 2, 2, 24, 143, 3, 2, 2, 2, 26, 149,
-	3, 2, 2, 2, 28, 162, 3, 2, 2, 2, 30, 168, 3, 2, 2, 2, 32, 174, 3, 2, 2,
-	2, 34, 189, 3, 2, 2, 2, 36, 191, 3, 2, 2, 2, 38, 197, 3, 2, 2, 2, 40, 204,
-	3, 2, 2, 2, 42, 210, 3, 2, 2, 2, 44, 214, 3, 2, 2, 2, 46, 224, 3, 2, 2,
-	2, 48, 234, 3, 2, 2, 2, 50, 238, 3, 2, 2, 2, 52, 249, 3, 2, 2, 2, 54, 255,
-	3, 2, 2, 2, 56, 265, 3, 2, 2, 2, 58, 267, 3, 2, 2, 2, 60, 276, 3, 2, 2,
-	2, 62, 279, 3, 2, 2, 2, 64, 282, 3, 2, 2, 2, 66, 299, 3, 2, 2, 2, 68, 303,
-	3, 2, 2, 2, 70, 307, 3, 2, 2, 2, 72, 312, 3, 2, 2, 2, 74, 76, 5, 6, 4,
-	2, 75, 74, 3, 2, 2, 2, 75, 76, 3, 2, 2, 2, 76, 80, 3, 2, 2, 2, 77, 79,
-	5, 4, 3, 2, 78, 77, 3, 2, 2, 2, 79, 82, 3, 2, 2, 2, 80, 78, 3, 2, 2, 2,
-	80, 81, 3, 2, 2, 2, 81, 83, 3, 2, 2, 2, 82, 80, 3, 2, 2, 2, 83, 84, 7,
-	2, 2, 3, 84, 3, 3, 2, 2, 2, 85, 90, 5, 8, 5, 2, 86, 90, 5, 14, 8, 2, 87,
-	90, 5, 16, 9, 2, 88, 90, 5, 42, 22, 2, 89, 85, 3, 2, 2, 2, 89, 86, 3, 2,
-	2, 2, 89, 87, 3, 2, 2, 2, 89, 88, 3, 2, 2, 2, 90, 5, 3, 2, 2, 2, 91, 92,
-	7, 34, 2, 2, 92, 93, 7, 23, 2, 2, 93, 94, 7, 30, 2, 2, 94, 7, 3, 2, 2,
-	2, 95, 98, 5, 10, 6, 2, 96, 98, 5, 12, 7, 2, 97, 95, 3, 2, 2, 2, 97, 96,
-	3, 2, 2, 2, 98, 9, 3, 2, 2, 2, 99, 100, 7, 8, 2, 2, 100, 101, 7, 31, 2,
-	2, 101, 11, 3, 2, 2, 2, 102, 103, 7, 8, 2, 2, 103, 107, 7, 12, 2, 2, 104,
-	106, 7, 31, 2, 2, 105, 104, 3, 2, 2, 2, 106, 109, 3, 2, 2, 2, 107, 105,
-	3, 2, 2, 2, 107, 108, 3, 2, 2, 2, 108, 110, 3, 2, 2, 2, 109, 107, 3, 2,
-	2, 2, 110, 111, 7, 13, 2, 2, 111, 13, 3, 2, 2, 2, 112, 113, 7, 34, 2, 2,
-	113, 117, 7, 12, 2, 2, 114, 116, 5, 72, 37, 2, 115, 114, 3, 2, 2, 2, 116,
-	119, 3, 2, 2, 2, 117, 115, 3, 2, 2, 2, 117, 118, 3, 2, 2, 2, 118, 120,
-	3, 2, 2, 2, 119, 117, 3, 2, 2, 2, 120, 121, 7, 13, 2, 2, 121, 15, 3, 2,
-	2, 2, 122, 125, 5, 18, 10, 2, 123, 125, 5, 20, 11, 2, 124, 122, 3, 2, 2,
-	2, 124, 123, 3, 2, 2, 2, 125, 17, 3, 2, 2, 2, 126, 127, 7, 7, 2, 2, 127,
-	128, 5, 22, 12, 2, 128, 19, 3, 2, 2, 2, 129, 130, 7, 7, 2, 2, 130, 134,
-	7, 12, 2, 2, 131, 133, 5, 22, 12, 2, 132, 131, 3, 2, 2, 2, 133, 136, 3,
-	2, 2, 2, 134, 132, 3, 2, 2, 2, 134, 135, 3, 2, 2, 2, 135, 137, 3, 2, 2,
-	2, 136, 134, 3, 2, 2, 2, 137, 138, 7, 13, 2, 2, 138, 21, 3, 2, 2, 2, 139,
-	142, 5, 24, 13, 2, 140, 142, 5, 26, 14, 2, 141, 139, 3, 2, 2, 2, 141, 140,
-	3, 2, 2, 2, 142, 23, 3, 2, 2, 2, 143, 145, 7, 34, 2, 2, 144, 146, 7, 23,
-	2, 2, 145, 144, 3, 2, 2, 2, 145, 146, 3, 2, 2, 2, 146, 147, 3, 2, 2, 2,
-	147, 148, 5, 34, 18, 2, 148, 25, 3, 2, 2, 2, 149, 151, 7, 34, 2, 2, 150,
-	152, 7, 10, 2, 2, 151, 150, 3, 2, 2, 2, 151, 152, 3, 2, 2, 2, 152, 153,
-	3, 2, 2, 2, 153, 157, 7, 14, 2, 2, 154, 156, 5, 28, 15, 2, 155, 154, 3,
-	2, 2, 2, 156, 159, 3, 2, 2, 2, 157, 155, 3, 2, 2, 2, 157, 158, 3, 2, 2,
-	2, 158, 160, 3, 2, 2, 2, 159, 157, 3, 2, 2, 2, 160, 161, 7, 15, 2, 2, 161,
-	27, 3, 2, 2, 2, 162, 164, 7, 34, 2, 2, 163, 165, 5, 30, 16, 2, 164, 163,
-	3, 2, 2, 2, 164, 165, 3, 2, 2, 2, 165, 29, 3, 2, 2, 2, 166, 169, 5, 34,
-	18, 2, 167, 169, 5, 32, 17, 2, 168, 166, 3, 2, 2, 2, 168, 167, 3, 2, 2,
-	2, 169, 171, 3, 2, 2, 2, 170, 172, 7, 33, 2, 2, 171, 170, 3, 2, 2, 2, 171,
-	172, 3, 2, 2, 2, 172, 31, 3, 2, 2, 2, 173, 175, 7, 10, 2, 2, 174, 173,
-	3, 2, 2, 2, 174, 175, 3, 2, 2, 2, 175, 176, 3, 2, 2, 2, 176, 180, 7, 14,
-	2, 2, 177, 179, 5, 28, 15, 2, 178, 177, 3, 2, 2, 2, 179, 182, 3, 2, 2,
-	2, 180, 178, 3, 2, 2, 2, 180, 181, 3, 2, 2, 2, 181, 183, 3, 2, 2, 2, 182,
-	180, 3, 2, 2, 2, 183, 184, 7, 15, 2, 2, 184, 33, 3, 2, 2, 2, 185, 190,
-	5, 40, 21, 2, 186, 190, 5, 36, 19, 2, 187, 190, 5, 38, 20, 2, 188, 190,
-	7, 6, 2, 2, 189, 185, 3, 2, 2, 2, 189, 186, 3, 2, 2, 2, 189, 187, 3, 2,
-	2, 2, 189, 188, 3, 2, 2, 2, 190, 35, 3, 2, 2, 2, 191, 192, 7, 9, 2, 2,
-	192, 193, 7, 16, 2, 2, 193, 194, 7, 11, 2, 2, 194, 195, 7, 17, 2, 2, 195,
-	196, 5, 34, 18, 2, 196, 37, 3, 2, 2, 2, 197, 198, 7, 16, 2, 2, 198, 199,
-	7, 17, 2, 2, 199, 200, 5, 34, 18, 2, 200, 39, 3, 2, 2, 2, 201, 203, 7,
-	26, 2, 2, 202, 201, 3, 2, 2, 2, 203, 206, 3, 2, 2, 2, 204, 202, 3, 2, 2,
-	2, 204, 205, 3, 2, 2, 2, 205, 207, 3, 2, 2, 2, 206, 204, 3, 2, 2, 2, 207,
-	208, 9, 2, 2, 2, 208, 41, 3, 2, 2, 2, 209, 211, 5, 44, 23, 2, 210, 209,
-	3, 2, 2, 2, 210, 211, 3, 2, 2, 2, 211, 212, 3, 2, 2, 2, 212, 213, 5, 50,
-	26, 2, 213, 43, 3, 2, 2, 2, 214, 215, 7, 3, 2, 2, 215, 219, 7, 12, 2, 2,
-	216, 218, 5, 46, 24, 2, 217, 216, 3, 2, 2, 2, 218, 221, 3, 2, 2, 2, 219,
-	217, 3, 2, 2, 2, 219, 220, 3, 2, 2, 2, 220, 222, 3, 2, 2, 2, 221, 219,
-	3, 2, 2, 2, 222, 223, 7, 13, 2, 2, 223, 45, 3, 2, 2, 2, 224, 225, 7, 34,
-	2, 2, 225, 227, 7, 25, 2, 2, 226, 228, 5, 48, 25, 2, 227, 226, 3, 2, 2,
-	2, 227, 228, 3, 2, 2, 2, 228, 47, 3, 2, 2, 2, 229, 232, 7, 34, 2, 2, 230,
-	231, 7, 20, 2, 2, 231, 233, 7, 34, 2, 2, 232, 230, 3, 2, 2, 2, 232, 233,
-	3, 2, 2, 2, 233, 235, 3, 2, 2, 2, 234, 229, 3, 2, 2, 2, 235, 236, 3, 2,
-	2, 2, 236, 234, 3, 2, 2, 2, 236, 237, 3, 2, 2, 2, 237, 49, 3, 2, 2, 2,
-	238, 239, 7, 34, 2, 2, 239, 240, 5, 52, 27, 2, 240, 244, 7, 14, 2, 2, 241,
-	243, 5, 54, 28, 2, 242, 241, 3, 2, 2, 2, 243, 246, 3, 2, 2, 2, 244, 242,
-	3, 2, 2, 2, 244, 245, 3, 2, 2, 2, 245, 247, 3, 2, 2, 2, 246, 244, 3, 2,
-	2, 2, 247, 248, 7, 15, 2, 2, 248, 51, 3, 2, 2, 2, 249, 252, 7, 34, 2, 2,
-	250, 251, 7, 24, 2, 2, 251, 253, 7, 34, 2, 2, 252, 250, 3, 2, 2, 2, 252,
-	253, 3, 2, 2, 2, 253, 53, 3, 2, 2, 2, 254, 256, 5, 56, 29, 2, 255, 254,
-	3, 2, 2, 2, 255, 256, 3, 2, 2, 2, 256, 259, 3, 2, 2, 2, 257, 260, 5, 44,
-	23, 2, 258, 260, 5, 62, 32, 2, 259, 257, 3, 2, 2, 2, 259, 258, 3, 2, 2,
-	2, 260, 261, 3, 2, 2, 2, 261, 262, 5, 64, 33, 2, 262, 55, 3, 2, 2, 2, 263,
-	266, 5, 58, 30, 2, 264, 266, 5, 60, 31, 2, 265, 263, 3, 2, 2, 2, 265, 264,
-	3, 2, 2, 2, 266, 57, 3, 2, 2, 2, 267, 268, 7, 4, 2, 2, 268, 269, 7, 12,
-	2, 2, 269, 270, 7, 34, 2, 2, 270, 272, 7, 25, 2, 2, 271, 273, 7, 32, 2,
-	2, 272, 271, 3, 2, 2, 2, 272, 273, 3, 2, 2, 2, 273, 274, 3, 2, 2, 2, 274,
-	275, 7, 13, 2, 2, 275, 59, 3, 2, 2, 2, 276, 277, 7, 4, 2, 2, 277, 278,
-	7, 32, 2, 2, 278, 61, 3, 2, 2, 2, 279, 280, 7, 5, 2, 2, 280, 281, 7, 34,
-	2, 2, 281, 63, 3, 2, 2, 2, 282, 283, 7, 34, 2, 2, 283, 285, 5, 66, 34,
-	2, 284, 286, 5, 68, 35, 2, 285, 284, 3, 2, 2, 2, 285, 286, 3, 2, 2, 2,
-	286, 288, 3, 2, 2, 2, 287, 289, 5, 70, 36, 2, 288, 287, 3, 2, 2, 2, 288,
-	289, 3, 2, 2, 2, 289, 65, 3, 2, 2, 2, 290, 292, 7, 20, 2, 2, 291, 293,
-	7, 25, 2, 2, 292, 291, 3, 2, 2, 2, 292, 293, 3, 2, 2, 2, 293, 294, 3, 2,
-	2, 2, 294, 297, 7, 34, 2, 2, 295, 296, 9, 3, 2, 2, 296, 298, 7, 34, 2,
-	2, 297, 295, 3, 2, 2, 2, 297, 298, 3, 2, 2, 2, 298, 300, 3, 2, 2, 2, 299,
-	290, 3, 2, 2, 2, 300, 301, 3, 2, 2, 2, 301, 299, 3, 2, 2, 2, 301, 302,
-	3, 2, 2, 2, 302, 67, 3, 2, 2, 2, 303, 304, 7, 12, 2, 2, 304, 305, 7, 34,
-	2, 2, 305, 306, 7, 13, 2, 2, 306, 69, 3, 2, 2, 2, 307, 308, 7, 34, 2, 2,
-	308, 309, 7, 12, 2, 2, 309, 310, 7, 34, 2, 2, 310, 311, 7, 13, 2, 2, 311,
-	71, 3, 2, 2, 2, 312, 313, 7, 34, 2, 2, 313, 315, 7, 25, 2, 2, 314, 316,
-	7, 32, 2, 2, 315, 314, 3, 2, 2, 2, 315, 316, 3, 2, 2, 2, 316, 73, 3, 2,
-	2, 2, 38, 75, 80, 89, 97, 107, 117, 124, 134, 141, 145, 151, 157, 164,
-	168, 171, 174, 180, 189, 204, 210, 219, 227, 232, 236, 244, 252, 255, 259,
-	265, 272, 285, 288, 292, 297, 301, 315,
+	9, 34, 4, 35, 9, 35, 4, 36, 9, 36, 3, 2, 5, 2, 74, 10, 2, 3, 2, 7, 2, 77,
+	10, 2, 12, 2, 14, 2, 80, 11, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 5,
+	3, 88, 10, 3, 3, 4, 3, 4, 3, 4, 3, 4, 3, 5, 3, 5, 5, 5, 96, 10, 5, 3, 6,
+	3, 6, 3, 6, 3, 7, 3, 7, 3, 7, 7, 7, 104, 10, 7, 12, 7, 14, 7, 107, 11,
+	7, 3, 7, 3, 7, 3, 8, 3, 8, 3, 9, 3, 9, 5, 9, 115, 10, 9, 3, 10, 3, 10,
+	3, 10, 3, 11, 3, 11, 3, 11, 7, 11, 123, 10, 11, 12, 11, 14, 11, 126, 11,
+	11, 3, 11, 3, 11, 3, 12, 3, 12, 5, 12, 132, 10, 12, 3, 13, 3, 13, 5, 13,
+	136, 10, 13, 3, 13, 3, 13, 3, 14, 3, 14, 5, 14, 142, 10, 14, 3, 14, 3,
+	14, 7, 14, 146, 10, 14, 12, 14, 14, 14, 149, 11, 14, 3, 14, 3, 14, 3, 15,
+	3, 15, 5, 15, 155, 10, 15, 3, 16, 3, 16, 5, 16, 159, 10, 16, 3, 16, 5,
+	16, 162, 10, 16, 3, 17, 5, 17, 165, 10, 17, 3, 17, 3, 17, 7, 17, 169, 10,
+	17, 12, 17, 14, 17, 172, 11, 17, 3, 17, 3, 17, 3, 18, 3, 18, 3, 18, 3,
+	18, 5, 18, 180, 10, 18, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 19, 3, 20,
+	3, 20, 3, 20, 3, 20, 3, 21, 7, 21, 193, 10, 21, 12, 21, 14, 21, 196, 11,
+	21, 3, 21, 3, 21, 3, 22, 5, 22, 201, 10, 22, 3, 22, 3, 22, 3, 23, 3, 23,
+	3, 23, 7, 23, 208, 10, 23, 12, 23, 14, 23, 211, 11, 23, 3, 23, 3, 23, 3,
+	24, 3, 24, 3, 24, 5, 24, 218, 10, 24, 3, 25, 3, 25, 3, 25, 5, 25, 223,
+	10, 25, 6, 25, 225, 10, 25, 13, 25, 14, 25, 226, 3, 26, 3, 26, 3, 26, 3,
+	26, 7, 26, 233, 10, 26, 12, 26, 14, 26, 236, 11, 26, 3, 26, 3, 26, 3, 27,
+	3, 27, 3, 27, 5, 27, 243, 10, 27, 3, 28, 5, 28, 246, 10, 28, 3, 28, 3,
+	28, 5, 28, 250, 10, 28, 3, 28, 3, 28, 3, 29, 3, 29, 5, 29, 256, 10, 29,
+	3, 30, 3, 30, 3, 30, 3, 30, 3, 30, 5, 30, 263, 10, 30, 3, 30, 3, 30, 3,
+	31, 3, 31, 3, 31, 3, 32, 3, 32, 3, 32, 3, 33, 3, 33, 3, 33, 5, 33, 276,
+	10, 33, 3, 33, 5, 33, 279, 10, 33, 3, 34, 3, 34, 5, 34, 283, 10, 34, 3,
+	34, 3, 34, 3, 34, 5, 34, 288, 10, 34, 6, 34, 290, 10, 34, 13, 34, 14, 34,
+	291, 3, 35, 3, 35, 3, 35, 3, 35, 3, 36, 3, 36, 3, 36, 3, 36, 3, 36, 3,
+	36, 2, 2, 37, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
+	34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68,
+	70, 2, 4, 4, 2, 12, 12, 36, 36, 3, 2, 22, 24, 2, 305, 2, 73, 3, 2, 2, 2,
+	4, 87, 3, 2, 2, 2, 6, 89, 3, 2, 2, 2, 8, 95, 3, 2, 2, 2, 10, 97, 3, 2,
+	2, 2, 12, 100, 3, 2, 2, 2, 14, 110, 3, 2, 2, 2, 16, 114, 3, 2, 2, 2, 18,
+	116, 3, 2, 2, 2, 20, 119, 3, 2, 2, 2, 22, 131, 3, 2, 2, 2, 24, 133, 3,
+	2, 2, 2, 26, 139, 3, 2, 2, 2, 28, 152, 3, 2, 2, 2, 30, 158, 3, 2, 2, 2,
+	32, 164, 3, 2, 2, 2, 34, 179, 3, 2, 2, 2, 36, 181, 3, 2, 2, 2, 38, 187,
+	3, 2, 2, 2, 40, 194, 3, 2, 2, 2, 42, 200, 3, 2, 2, 2, 44, 204, 3, 2, 2,
+	2, 46, 214, 3, 2, 2, 2, 48, 224, 3, 2, 2, 2, 50, 228, 3, 2, 2, 2, 52, 239,
+	3, 2, 2, 2, 54, 245, 3, 2, 2, 2, 56, 255, 3, 2, 2, 2, 58, 257, 3, 2, 2,
+	2, 60, 266, 3, 2, 2, 2, 62, 269, 3, 2, 2, 2, 64, 272, 3, 2, 2, 2, 66, 289,
+	3, 2, 2, 2, 68, 293, 3, 2, 2, 2, 70, 297, 3, 2, 2, 2, 72, 74, 5, 6, 4,
+	2, 73, 72, 3, 2, 2, 2, 73, 74, 3, 2, 2, 2, 74, 78, 3, 2, 2, 2, 75, 77,
+	5, 4, 3, 2, 76, 75, 3, 2, 2, 2, 77, 80, 3, 2, 2, 2, 78, 76, 3, 2, 2, 2,
+	78, 79, 3, 2, 2, 2, 79, 81, 3, 2, 2, 2, 80, 78, 3, 2, 2, 2, 81, 82, 7,
+	2, 2, 3, 82, 3, 3, 2, 2, 2, 83, 88, 5, 8, 5, 2, 84, 88, 5, 14, 8, 2, 85,
+	88, 5, 16, 9, 2, 86, 88, 5, 42, 22, 2, 87, 83, 3, 2, 2, 2, 87, 84, 3, 2,
+	2, 2, 87, 85, 3, 2, 2, 2, 87, 86, 3, 2, 2, 2, 88, 5, 3, 2, 2, 2, 89, 90,
+	7, 36, 2, 2, 90, 91, 7, 24, 2, 2, 91, 92, 7, 31, 2, 2, 92, 7, 3, 2, 2,
+	2, 93, 96, 5, 10, 6, 2, 94, 96, 5, 12, 7, 2, 95, 93, 3, 2, 2, 2, 95, 94,
+	3, 2, 2, 2, 96, 9, 3, 2, 2, 2, 97, 98, 7, 8, 2, 2, 98, 99, 7, 32, 2, 2,
+	99, 11, 3, 2, 2, 2, 100, 101, 7, 8, 2, 2, 101, 105, 7, 13, 2, 2, 102, 104,
+	7, 32, 2, 2, 103, 102, 3, 2, 2, 2, 104, 107, 3, 2, 2, 2, 105, 103, 3, 2,
+	2, 2, 105, 106, 3, 2, 2, 2, 106, 108, 3, 2, 2, 2, 107, 105, 3, 2, 2, 2,
+	108, 109, 7, 14, 2, 2, 109, 13, 3, 2, 2, 2, 110, 111, 7, 35, 2, 2, 111,
+	15, 3, 2, 2, 2, 112, 115, 5, 18, 10, 2, 113, 115, 5, 20, 11, 2, 114, 112,
+	3, 2, 2, 2, 114, 113, 3, 2, 2, 2, 115, 17, 3, 2, 2, 2, 116, 117, 7, 7,
+	2, 2, 117, 118, 5, 22, 12, 2, 118, 19, 3, 2, 2, 2, 119, 120, 7, 7, 2, 2,
+	120, 124, 7, 13, 2, 2, 121, 123, 5, 22, 12, 2, 122, 121, 3, 2, 2, 2, 123,
+	126, 3, 2, 2, 2, 124, 122, 3, 2, 2, 2, 124, 125, 3, 2, 2, 2, 125, 127,
+	3, 2, 2, 2, 126, 124, 3, 2, 2, 2, 127, 128, 7, 14, 2, 2, 128, 21, 3, 2,
+	2, 2, 129, 132, 5, 24, 13, 2, 130, 132, 5, 26, 14, 2, 131, 129, 3, 2, 2,
+	2, 131, 130, 3, 2, 2, 2, 132, 23, 3, 2, 2, 2, 133, 135, 7, 36, 2, 2, 134,
+	136, 7, 24, 2, 2, 135, 134, 3, 2, 2, 2, 135, 136, 3, 2, 2, 2, 136, 137,
+	3, 2, 2, 2, 137, 138, 5, 34, 18, 2, 138, 25, 3, 2, 2, 2, 139, 141, 7, 36,
+	2, 2, 140, 142, 7, 11, 2, 2, 141, 140, 3, 2, 2, 2, 141, 142, 3, 2, 2, 2,
+	142, 143, 3, 2, 2, 2, 143, 147, 7, 15, 2, 2, 144, 146, 5, 28, 15, 2, 145,
+	144, 3, 2, 2, 2, 146, 149, 3, 2, 2, 2, 147, 145, 3, 2, 2, 2, 147, 148,
+	3, 2, 2, 2, 148, 150, 3, 2, 2, 2, 149, 147, 3, 2, 2, 2, 150, 151, 7, 16,
+	2, 2, 151, 27, 3, 2, 2, 2, 152, 154, 7, 36, 2, 2, 153, 155, 5, 30, 16,
+	2, 154, 153, 3, 2, 2, 2, 154, 155, 3, 2, 2, 2, 155, 29, 3, 2, 2, 2, 156,
+	159, 5, 34, 18, 2, 157, 159, 5, 32, 17, 2, 158, 156, 3, 2, 2, 2, 158, 157,
+	3, 2, 2, 2, 159, 161, 3, 2, 2, 2, 160, 162, 7, 34, 2, 2, 161, 160, 3, 2,
+	2, 2, 161, 162, 3, 2, 2, 2, 162, 31, 3, 2, 2, 2, 163, 165, 7, 11, 2, 2,
+	164, 163, 3, 2, 2, 2, 164, 165, 3, 2, 2, 2, 165, 166, 3, 2, 2, 2, 166,
+	170, 7, 15, 2, 2, 167, 169, 5, 28, 15, 2, 168, 167, 3, 2, 2, 2, 169, 172,
+	3, 2, 2, 2, 170, 168, 3, 2, 2, 2, 170, 171, 3, 2, 2, 2, 171, 173, 3, 2,
+	2, 2, 172, 170, 3, 2, 2, 2, 173, 174, 7, 16, 2, 2, 174, 33, 3, 2, 2, 2,
+	175, 180, 5, 40, 21, 2, 176, 180, 5, 36, 19, 2, 177, 180, 5, 38, 20, 2,
+	178, 180, 7, 6, 2, 2, 179, 175, 3, 2, 2, 2, 179, 176, 3, 2, 2, 2, 179,
+	177, 3, 2, 2, 2, 179, 178, 3, 2, 2, 2, 180, 35, 3, 2, 2, 2, 181, 182, 7,
+	10, 2, 2, 182, 183, 7, 17, 2, 2, 183, 184, 7, 12, 2, 2, 184, 185, 7, 18,
+	2, 2, 185, 186, 5, 34, 18, 2, 186, 37, 3, 2, 2, 2, 187, 188, 7, 17, 2,
+	2, 188, 189, 7, 18, 2, 2, 189, 190, 5, 34, 18, 2, 190, 39, 3, 2, 2, 2,
+	191, 193, 7, 27, 2, 2, 192, 191, 3, 2, 2, 2, 193, 196, 3, 2, 2, 2, 194,
+	192, 3, 2, 2, 2, 194, 195, 3, 2, 2, 2, 195, 197, 3, 2, 2, 2, 196, 194,
+	3, 2, 2, 2, 197, 198, 9, 2, 2, 2, 198, 41, 3, 2, 2, 2, 199, 201, 5, 44,
+	23, 2, 200, 199, 3, 2, 2, 2, 200, 201, 3, 2, 2, 2, 201, 202, 3, 2, 2, 2,
+	202, 203, 5, 50, 26, 2, 203, 43, 3, 2, 2, 2, 204, 205, 7, 3, 2, 2, 205,
+	209, 7, 13, 2, 2, 206, 208, 5, 46, 24, 2, 207, 206, 3, 2, 2, 2, 208, 211,
+	3, 2, 2, 2, 209, 207, 3, 2, 2, 2, 209, 210, 3, 2, 2, 2, 210, 212, 3, 2,
+	2, 2, 211, 209, 3, 2, 2, 2, 212, 213, 7, 14, 2, 2, 213, 45, 3, 2, 2, 2,
+	214, 215, 7, 36, 2, 2, 215, 217, 7, 26, 2, 2, 216, 218, 5, 48, 25, 2, 217,
+	216, 3, 2, 2, 2, 217, 218, 3, 2, 2, 2, 218, 47, 3, 2, 2, 2, 219, 222, 7,
+	36, 2, 2, 220, 221, 7, 21, 2, 2, 221, 223, 7, 36, 2, 2, 222, 220, 3, 2,
+	2, 2, 222, 223, 3, 2, 2, 2, 223, 225, 3, 2, 2, 2, 224, 219, 3, 2, 2, 2,
+	225, 226, 3, 2, 2, 2, 226, 224, 3, 2, 2, 2, 226, 227, 3, 2, 2, 2, 227,
+	49, 3, 2, 2, 2, 228, 229, 7, 36, 2, 2, 229, 230, 5, 52, 27, 2, 230, 234,
+	7, 15, 2, 2, 231, 233, 5, 54, 28, 2, 232, 231, 3, 2, 2, 2, 233, 236, 3,
+	2, 2, 2, 234, 232, 3, 2, 2, 2, 234, 235, 3, 2, 2, 2, 235, 237, 3, 2, 2,
+	2, 236, 234, 3, 2, 2, 2, 237, 238, 7, 16, 2, 2, 238, 51, 3, 2, 2, 2, 239,
+	242, 7, 36, 2, 2, 240, 241, 7, 25, 2, 2, 241, 243, 7, 36, 2, 2, 242, 240,
+	3, 2, 2, 2, 242, 243, 3, 2, 2, 2, 243, 53, 3, 2, 2, 2, 244, 246, 5, 56,
+	29, 2, 245, 244, 3, 2, 2, 2, 245, 246, 3, 2, 2, 2, 246, 249, 3, 2, 2, 2,
+	247, 250, 5, 44, 23, 2, 248, 250, 5, 62, 32, 2, 249, 247, 3, 2, 2, 2, 249,
+	248, 3, 2, 2, 2, 250, 251, 3, 2, 2, 2, 251, 252, 5, 64, 33, 2, 252, 55,
+	3, 2, 2, 2, 253, 256, 5, 58, 30, 2, 254, 256, 5, 60, 31, 2, 255, 253, 3,
+	2, 2, 2, 255, 254, 3, 2, 2, 2, 256, 57, 3, 2, 2, 2, 257, 258, 7, 4, 2,
+	2, 258, 259, 7, 13, 2, 2, 259, 260, 7, 36, 2, 2, 260, 262, 7, 26, 2, 2,
+	261, 263, 7, 33, 2, 2, 262, 261, 3, 2, 2, 2, 262, 263, 3, 2, 2, 2, 263,
+	264, 3, 2, 2, 2, 264, 265, 7, 14, 2, 2, 265, 59, 3, 2, 2, 2, 266, 267,
+	7, 4, 2, 2, 267, 268, 7, 33, 2, 2, 268, 61, 3, 2, 2, 2, 269, 270, 7, 5,
+	2, 2, 270, 271, 7, 36, 2, 2, 271, 63, 3, 2, 2, 2, 272, 273, 7, 36, 2, 2,
+	273, 275, 5, 66, 34, 2, 274, 276, 5, 68, 35, 2, 275, 274, 3, 2, 2, 2, 275,
+	276, 3, 2, 2, 2, 276, 278, 3, 2, 2, 2, 277, 279, 5, 70, 36, 2, 278, 277,
+	3, 2, 2, 2, 278, 279, 3, 2, 2, 2, 279, 65, 3, 2, 2, 2, 280, 282, 7, 21,
+	2, 2, 281, 283, 7, 26, 2, 2, 282, 281, 3, 2, 2, 2, 282, 283, 3, 2, 2, 2,
+	283, 284, 3, 2, 2, 2, 284, 287, 7, 36, 2, 2, 285, 286, 9, 3, 2, 2, 286,
+	288, 7, 36, 2, 2, 287, 285, 3, 2, 2, 2, 287, 288, 3, 2, 2, 2, 288, 290,
+	3, 2, 2, 2, 289, 280, 3, 2, 2, 2, 290, 291, 3, 2, 2, 2, 291, 289, 3, 2,
+	2, 2, 291, 292, 3, 2, 2, 2, 292, 67, 3, 2, 2, 2, 293, 294, 7, 13, 2, 2,
+	294, 295, 7, 36, 2, 2, 295, 296, 7, 14, 2, 2, 296, 69, 3, 2, 2, 2, 297,
+	298, 7, 36, 2, 2, 298, 299, 7, 13, 2, 2, 299, 300, 7, 36, 2, 2, 300, 301,
+	7, 14, 2, 2, 301, 71, 3, 2, 2, 2, 36, 73, 78, 87, 95, 105, 114, 124, 131,
+	135, 141, 147, 154, 158, 161, 164, 170, 179, 194, 200, 209, 217, 222, 226,
+	234, 242, 245, 249, 255, 262, 275, 278, 282, 287, 291,
 }
 var literalNames = []string{
 	"", "'@server'", "'@doc'", "'@handler'", "'interface{}'", "'type'", "'import'",
-	"'map'", "'struct'", "", "'('", "')'", "'{'", "'}'", "'['", "']'", "','",
-	"'.'", "'/'", "'?'", "'&'", "'='", "'-'", "':'", "'*'",
+	"'info'", "'map'", "'struct'", "", "'('", "')'", "'{'", "'}'", "'['", "']'",
+	"','", "'.'", "'/'", "'?'", "'&'", "'='", "'-'", "':'", "'*'",
 }
 var symbolicNames = []string{
-	"", "ATSERVER", "ATDOC", "ATHANDLER", "INTERFACE", "TYPE", "IMPORT", "MAP",
-	"STRUCT", "GOTYPE", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACK", "RBRACK",
-	"COMMA", "DOT", "SLASH", "QUESTION", "BITAND", "ASSIGN", "SUB", "COLON",
-	"STAR", "WS", "COMMENT", "LINE_COMMENT", "SYNTAX_VERSION", "IMPORT_PATH",
-	"STRING_LIT", "RAW_STRING", "ID",
+	"", "ATSERVER", "ATDOC", "ATHANDLER", "INTERFACE", "TYPE", "IMPORT", "INFO",
+	"MAP", "STRUCT", "GOTYPE", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACK",
+	"RBRACK", "COMMA", "DOT", "SLASH", "QUESTION", "BITAND", "ASSIGN", "SUB",
+	"COLON", "STAR", "WS", "COMMENT", "LINE_COMMENT", "SYNTAX_VERSION", "IMPORT_PATH",
+	"STRING_LIT", "RAW_STRING", "INFO_BLOCK", "ID",
 }
 
 var ruleNames = []string{
@@ -173,7 +165,7 @@ var ruleNames = []string{
 	"typeStruct", "typeField", "filed", "innerStruct", "dataType", "mapType",
 	"arrayType", "pointer", "serviceBlock", "serverMeta", "annotation", "annotationKeyValue",
 	"serviceBody", "serviceName", "serviceRoute", "routeDoc", "doc", "lineDoc",
-	"routeHandler", "routePath", "path", "request", "reply", "kvLit",
+	"routeHandler", "routePath", "path", "request", "reply",
 }
 
 type ApiParser struct {
@@ -214,32 +206,34 @@ const (
 	ApiParserINTERFACE      = 4
 	ApiParserTYPE           = 5
 	ApiParserIMPORT         = 6
-	ApiParserMAP            = 7
-	ApiParserSTRUCT         = 8
-	ApiParserGOTYPE         = 9
-	ApiParserLPAREN         = 10
-	ApiParserRPAREN         = 11
-	ApiParserLBRACE         = 12
-	ApiParserRBRACE         = 13
-	ApiParserLBRACK         = 14
-	ApiParserRBRACK         = 15
-	ApiParserCOMMA          = 16
-	ApiParserDOT            = 17
-	ApiParserSLASH          = 18
-	ApiParserQUESTION       = 19
-	ApiParserBITAND         = 20
-	ApiParserASSIGN         = 21
-	ApiParserSUB            = 22
-	ApiParserCOLON          = 23
-	ApiParserSTAR           = 24
-	ApiParserWS             = 25
-	ApiParserCOMMENT        = 26
-	ApiParserLINE_COMMENT   = 27
-	ApiParserSYNTAX_VERSION = 28
-	ApiParserIMPORT_PATH    = 29
-	ApiParserSTRING_LIT     = 30
-	ApiParserRAW_STRING     = 31
-	ApiParserID             = 32
+	ApiParserINFO           = 7
+	ApiParserMAP            = 8
+	ApiParserSTRUCT         = 9
+	ApiParserGOTYPE         = 10
+	ApiParserLPAREN         = 11
+	ApiParserRPAREN         = 12
+	ApiParserLBRACE         = 13
+	ApiParserRBRACE         = 14
+	ApiParserLBRACK         = 15
+	ApiParserRBRACK         = 16
+	ApiParserCOMMA          = 17
+	ApiParserDOT            = 18
+	ApiParserSLASH          = 19
+	ApiParserQUESTION       = 20
+	ApiParserBITAND         = 21
+	ApiParserASSIGN         = 22
+	ApiParserSUB            = 23
+	ApiParserCOLON          = 24
+	ApiParserSTAR           = 25
+	ApiParserWS             = 26
+	ApiParserCOMMENT        = 27
+	ApiParserLINE_COMMENT   = 28
+	ApiParserSYNTAX_VERSION = 29
+	ApiParserIMPORT_PATH    = 30
+	ApiParserSTRING_LIT     = 31
+	ApiParserRAW_STRING     = 32
+	ApiParserINFO_BLOCK     = 33
+	ApiParserID             = 34
 )
 
 // ApiParser rules.
@@ -279,7 +273,6 @@ const (
 	ApiParserRULE_path               = 32
 	ApiParserRULE_request            = 33
 	ApiParserRULE_reply              = 34
-	ApiParserRULE_kvLit              = 35
 )
 
 // IApiContext is an interface to support dynamic dispatch.
@@ -397,32 +390,32 @@ func (p *ApiParser) Api() (localctx IApiContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(73)
+	p.SetState(71)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 0, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(72)
+			p.SetState(70)
 			p.SyntaxLit()
 		}
 
 	}
-	p.SetState(78)
+	p.SetState(76)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for ((_la-1)&-(0x1f+1)) == 0 && ((1<<uint((_la-1)))&((1<<(ApiParserATSERVER-1))|(1<<(ApiParserTYPE-1))|(1<<(ApiParserIMPORT-1))|(1<<(ApiParserID-1)))) != 0 {
+	for (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserATSERVER)|(1<<ApiParserTYPE)|(1<<ApiParserIMPORT))) != 0) || _la == ApiParserINFO_BLOCK || _la == ApiParserID {
 		{
-			p.SetState(75)
+			p.SetState(73)
 			p.Body()
 		}
 
-		p.SetState(80)
+		p.SetState(78)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(81)
+		p.SetState(79)
 		p.Match(ApiParserEOF)
 	}
 
@@ -545,37 +538,40 @@ func (p *ApiParser) Body() (localctx IBodyContext) {
 		}
 	}()
 
-	p.SetState(87)
+	p.SetState(85)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 2, p.GetParserRuleContext()) {
-	case 1:
+
+	switch p.GetTokenStream().LA(1) {
+	case ApiParserIMPORT:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(83)
+			p.SetState(81)
 			p.ImportSpec()
 		}
 
-	case 2:
+	case ApiParserINFO_BLOCK:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(84)
+			p.SetState(82)
 			p.InfoBlock()
 		}
 
-	case 3:
+	case ApiParserTYPE:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(85)
+			p.SetState(83)
 			p.TypeBlock()
 		}
 
-	case 4:
+	case ApiParserATSERVER, ApiParserID:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(86)
+			p.SetState(84)
 			p.ServiceBlock()
 		}
 
+	default:
+		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 
 	return localctx
@@ -693,18 +689,18 @@ func (p *ApiParser) SyntaxLit() (localctx ISyntaxLitContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(89)
+		p.SetState(87)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*SyntaxLitContext).syntaxToken = _m
 	}
 	{
-		p.SetState(90)
+		p.SetState(88)
 		p.Match(ApiParserASSIGN)
 	}
 	{
-		p.SetState(91)
+		p.SetState(89)
 
 		var _m = p.Match(ApiParserSYNTAX_VERSION)
 
@@ -810,20 +806,20 @@ func (p *ApiParser) ImportSpec() (localctx IImportSpecContext) {
 		}
 	}()
 
-	p.SetState(95)
+	p.SetState(93)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 3, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(93)
+			p.SetState(91)
 			p.ImportLit()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(94)
+			p.SetState(92)
 			p.ImportLitGroup()
 		}
 
@@ -929,11 +925,11 @@ func (p *ApiParser) ImportLit() (localctx IImportLitContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(97)
+		p.SetState(95)
 		p.Match(ApiParserIMPORT)
 	}
 	{
-		p.SetState(98)
+		p.SetState(96)
 
 		var _m = p.Match(ApiParserIMPORT_PATH)
 
@@ -1053,32 +1049,32 @@ func (p *ApiParser) ImportLitGroup() (localctx IImportLitGroupContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(100)
+		p.SetState(98)
 		p.Match(ApiParserIMPORT)
 	}
 	{
-		p.SetState(101)
+		p.SetState(99)
 		p.Match(ApiParserLPAREN)
 	}
-	p.SetState(105)
+	p.SetState(103)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == ApiParserIMPORT_PATH {
 		{
-			p.SetState(102)
+			p.SetState(100)
 
 			var _m = p.Match(ApiParserIMPORT_PATH)
 
 			localctx.(*ImportLitGroupContext).importPath = _m
 		}
 
-		p.SetState(107)
+		p.SetState(105)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(108)
+		p.SetState(106)
 		p.Match(ApiParserRPAREN)
 	}
 
@@ -1092,20 +1088,13 @@ type IInfoBlockContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
-	// GetInfoToken returns the infoToken token.
-	GetInfoToken() antlr.Token
-
-	// SetInfoToken sets the infoToken token.
-	SetInfoToken(antlr.Token)
-
 	// IsInfoBlockContext differentiates from other interfaces.
 	IsInfoBlockContext()
 }
 
 type InfoBlockContext struct {
 	*antlr.BaseParserRuleContext
-	parser    antlr.Parser
-	infoToken antlr.Token
+	parser antlr.Parser
 }
 
 func NewEmptyInfoBlockContext() *InfoBlockContext {
@@ -1130,43 +1119,8 @@ func NewInfoBlockContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 
 func (s *InfoBlockContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *InfoBlockContext) GetInfoToken() antlr.Token { return s.infoToken }
-
-func (s *InfoBlockContext) SetInfoToken(v antlr.Token) { s.infoToken = v }
-
-func (s *InfoBlockContext) LPAREN() antlr.TerminalNode {
-	return s.GetToken(ApiParserLPAREN, 0)
-}
-
-func (s *InfoBlockContext) RPAREN() antlr.TerminalNode {
-	return s.GetToken(ApiParserRPAREN, 0)
-}
-
-func (s *InfoBlockContext) ID() antlr.TerminalNode {
-	return s.GetToken(ApiParserID, 0)
-}
-
-func (s *InfoBlockContext) AllKvLit() []IKvLitContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IKvLitContext)(nil)).Elem())
-	var tst = make([]IKvLitContext, len(ts))
-
-	for i, t := range ts {
-		if t != nil {
-			tst[i] = t.(IKvLitContext)
-		}
-	}
-
-	return tst
-}
-
-func (s *InfoBlockContext) KvLit(i int) IKvLitContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IKvLitContext)(nil)).Elem(), i)
-
-	if t == nil {
-		return nil
-	}
-
-	return t.(IKvLitContext)
+func (s *InfoBlockContext) INFO_BLOCK() antlr.TerminalNode {
+	return s.GetToken(ApiParserINFO_BLOCK, 0)
 }
 
 func (s *InfoBlockContext) GetRuleContext() antlr.RuleContext {
@@ -1190,7 +1144,6 @@ func (s *InfoBlockContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 func (p *ApiParser) InfoBlock() (localctx IInfoBlockContext) {
 	localctx = NewInfoBlockContext(p, p.GetParserRuleContext(), p.GetState())
 	p.EnterRule(localctx, 12, ApiParserRULE_infoBlock)
-	var _la int
 
 	defer func() {
 		p.ExitRule()
@@ -1210,33 +1163,8 @@ func (p *ApiParser) InfoBlock() (localctx IInfoBlockContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(110)
-
-		var _m = p.Match(ApiParserID)
-
-		localctx.(*InfoBlockContext).infoToken = _m
-	}
-	{
-		p.SetState(111)
-		p.Match(ApiParserLPAREN)
-	}
-	p.SetState(115)
-	p.GetErrorHandler().Sync(p)
-	_la = p.GetTokenStream().LA(1)
-
-	for _la == ApiParserID {
-		{
-			p.SetState(112)
-			p.KvLit()
-		}
-
-		p.SetState(117)
-		p.GetErrorHandler().Sync(p)
-		_la = p.GetTokenStream().LA(1)
-	}
-	{
-		p.SetState(118)
-		p.Match(ApiParserRPAREN)
+		p.SetState(108)
+		p.Match(ApiParserINFO_BLOCK)
 	}
 
 	return localctx
@@ -1338,20 +1266,20 @@ func (p *ApiParser) TypeBlock() (localctx ITypeBlockContext) {
 		}
 	}()
 
-	p.SetState(122)
+	p.SetState(112)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 6, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 5, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(120)
+			p.SetState(110)
 			p.TypeLit()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(121)
+			p.SetState(111)
 			p.TypeGroup()
 		}
 
@@ -1452,11 +1380,11 @@ func (p *ApiParser) TypeLit() (localctx ITypeLitContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(124)
+		p.SetState(114)
 		p.Match(ApiParserTYPE)
 	}
 	{
-		p.SetState(125)
+		p.SetState(115)
 		p.TypeSpec()
 	}
 
@@ -1577,29 +1505,29 @@ func (p *ApiParser) TypeGroup() (localctx ITypeGroupContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(127)
+		p.SetState(117)
 		p.Match(ApiParserTYPE)
 	}
 	{
-		p.SetState(128)
+		p.SetState(118)
 		p.Match(ApiParserLPAREN)
 	}
-	p.SetState(132)
+	p.SetState(122)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == ApiParserID {
 		{
-			p.SetState(129)
+			p.SetState(119)
 			p.TypeSpec()
 		}
 
-		p.SetState(134)
+		p.SetState(124)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(135)
+		p.SetState(125)
 		p.Match(ApiParserRPAREN)
 	}
 
@@ -1702,20 +1630,20 @@ func (p *ApiParser) TypeSpec() (localctx ITypeSpecContext) {
 		}
 	}()
 
-	p.SetState(139)
+	p.SetState(129)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 8, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 7, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(137)
+			p.SetState(127)
 			p.TypeAlias()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(138)
+			p.SetState(128)
 			p.TypeStruct()
 		}
 
@@ -1832,25 +1760,25 @@ func (p *ApiParser) TypeAlias() (localctx ITypeAliasContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(141)
+		p.SetState(131)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*TypeAliasContext).alias = _m
 	}
-	p.SetState(143)
+	p.SetState(133)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserASSIGN {
 		{
-			p.SetState(142)
+			p.SetState(132)
 			p.Match(ApiParserASSIGN)
 		}
 
 	}
 	{
-		p.SetState(145)
+		p.SetState(135)
 		p.DataType()
 	}
 
@@ -1986,43 +1914,43 @@ func (p *ApiParser) TypeStruct() (localctx ITypeStructContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(147)
+		p.SetState(137)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*TypeStructContext).name = _m
 	}
-	p.SetState(149)
+	p.SetState(139)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserSTRUCT {
 		{
-			p.SetState(148)
+			p.SetState(138)
 			p.Match(ApiParserSTRUCT)
 		}
 
 	}
 	{
-		p.SetState(151)
+		p.SetState(141)
 		p.Match(ApiParserLBRACE)
 	}
-	p.SetState(155)
+	p.SetState(145)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == ApiParserID {
 		{
-			p.SetState(152)
+			p.SetState(142)
 			p.TypeField()
 		}
 
-		p.SetState(157)
+		p.SetState(147)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(158)
+		p.SetState(148)
 		p.Match(ApiParserRBRACE)
 	}
 
@@ -2132,18 +2060,18 @@ func (p *ApiParser) TypeField() (localctx ITypeFieldContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(160)
+		p.SetState(150)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*TypeFieldContext).name = _m
 	}
-	p.SetState(162)
+	p.SetState(152)
 	p.GetErrorHandler().Sync(p)
 
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 12, p.GetParserRuleContext()) == 1 {
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 11, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(161)
+			p.SetState(151)
 			p.Filed()
 		}
 
@@ -2265,32 +2193,32 @@ func (p *ApiParser) Filed() (localctx IFiledContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(166)
+	p.SetState(156)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case ApiParserINTERFACE, ApiParserMAP, ApiParserGOTYPE, ApiParserLBRACK, ApiParserSTAR, ApiParserID:
 		{
-			p.SetState(164)
+			p.SetState(154)
 			p.DataType()
 		}
 
 	case ApiParserSTRUCT, ApiParserLBRACE:
 		{
-			p.SetState(165)
+			p.SetState(155)
 			p.InnerStruct()
 		}
 
 	default:
 		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
-	p.SetState(169)
+	p.SetState(159)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserRAW_STRING {
 		{
-			p.SetState(168)
+			p.SetState(158)
 
 			var _m = p.Match(ApiParserRAW_STRING)
 
@@ -2415,37 +2343,37 @@ func (p *ApiParser) InnerStruct() (localctx IInnerStructContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(172)
+	p.SetState(162)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserSTRUCT {
 		{
-			p.SetState(171)
+			p.SetState(161)
 			p.Match(ApiParserSTRUCT)
 		}
 
 	}
 	{
-		p.SetState(174)
+		p.SetState(164)
 		p.Match(ApiParserLBRACE)
 	}
-	p.SetState(178)
+	p.SetState(168)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == ApiParserID {
 		{
-			p.SetState(175)
+			p.SetState(165)
 			p.TypeField()
 		}
 
-		p.SetState(180)
+		p.SetState(170)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(181)
+		p.SetState(171)
 		p.Match(ApiParserRBRACE)
 	}
 
@@ -2562,35 +2490,35 @@ func (p *ApiParser) DataType() (localctx IDataTypeContext) {
 		}
 	}()
 
-	p.SetState(187)
+	p.SetState(177)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case ApiParserGOTYPE, ApiParserSTAR, ApiParserID:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(183)
+			p.SetState(173)
 			p.Pointer()
 		}
 
 	case ApiParserMAP:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(184)
+			p.SetState(174)
 			p.MapType()
 		}
 
 	case ApiParserLBRACK:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(185)
+			p.SetState(175)
 			p.ArrayType()
 		}
 
 	case ApiParserINTERFACE:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(186)
+			p.SetState(176)
 			p.Match(ApiParserINTERFACE)
 		}
 
@@ -2727,26 +2655,26 @@ func (p *ApiParser) MapType() (localctx IMapTypeContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(189)
+		p.SetState(179)
 		p.Match(ApiParserMAP)
 	}
 	{
-		p.SetState(190)
+		p.SetState(180)
 		p.Match(ApiParserLBRACK)
 	}
 	{
-		p.SetState(191)
+		p.SetState(181)
 
 		var _m = p.Match(ApiParserGOTYPE)
 
 		localctx.(*MapTypeContext).key = _m
 	}
 	{
-		p.SetState(192)
+		p.SetState(182)
 		p.Match(ApiParserRBRACK)
 	}
 	{
-		p.SetState(193)
+		p.SetState(183)
 
 		var _x = p.DataType()
 
@@ -2863,15 +2791,15 @@ func (p *ApiParser) ArrayType() (localctx IArrayTypeContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(195)
+		p.SetState(185)
 		p.Match(ApiParserLBRACK)
 	}
 	{
-		p.SetState(196)
+		p.SetState(186)
 		p.Match(ApiParserRBRACK)
 	}
 	{
-		p.SetState(197)
+		p.SetState(187)
 
 		var _x = p.DataType()
 
@@ -2975,22 +2903,22 @@ func (p *ApiParser) Pointer() (localctx IPointerContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(202)
+	p.SetState(192)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == ApiParserSTAR {
 		{
-			p.SetState(199)
+			p.SetState(189)
 			p.Match(ApiParserSTAR)
 		}
 
-		p.SetState(204)
+		p.SetState(194)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(205)
+		p.SetState(195)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == ApiParserGOTYPE || _la == ApiParserID) {
@@ -3102,19 +3030,19 @@ func (p *ApiParser) ServiceBlock() (localctx IServiceBlockContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(208)
+	p.SetState(198)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserATSERVER {
 		{
-			p.SetState(207)
+			p.SetState(197)
 			p.ServerMeta()
 		}
 
 	}
 	{
-		p.SetState(210)
+		p.SetState(200)
 		p.ServiceBody()
 	}
 
@@ -3235,29 +3163,29 @@ func (p *ApiParser) ServerMeta() (localctx IServerMetaContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(212)
+		p.SetState(202)
 		p.Match(ApiParserATSERVER)
 	}
 	{
-		p.SetState(213)
+		p.SetState(203)
 		p.Match(ApiParserLPAREN)
 	}
-	p.SetState(217)
+	p.SetState(207)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == ApiParserID {
 		{
-			p.SetState(214)
+			p.SetState(204)
 			p.Annotation()
 		}
 
-		p.SetState(219)
+		p.SetState(209)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(220)
+		p.SetState(210)
 		p.Match(ApiParserRPAREN)
 	}
 
@@ -3382,22 +3310,22 @@ func (p *ApiParser) Annotation() (localctx IAnnotationContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(222)
+		p.SetState(212)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*AnnotationContext).key = _m
 	}
 	{
-		p.SetState(223)
+		p.SetState(213)
 		p.Match(ApiParserCOLON)
 	}
-	p.SetState(225)
+	p.SetState(215)
 	p.GetErrorHandler().Sync(p)
 
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 21, p.GetParserRuleContext()) == 1 {
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 20, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(224)
+			p.SetState(214)
 
 			var _x = p.AnnotationKeyValue()
 
@@ -3505,27 +3433,27 @@ func (p *ApiParser) AnnotationKeyValue() (localctx IAnnotationKeyValueContext) {
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(232)
+	p.SetState(222)
 	p.GetErrorHandler().Sync(p)
 	_alt = 1
 	for ok := true; ok; ok = _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		switch _alt {
 		case 1:
 			{
-				p.SetState(227)
+				p.SetState(217)
 				p.Match(ApiParserID)
 			}
-			p.SetState(230)
+			p.SetState(220)
 			p.GetErrorHandler().Sync(p)
 			_la = p.GetTokenStream().LA(1)
 
 			if _la == ApiParserSLASH {
 				{
-					p.SetState(228)
+					p.SetState(218)
 					p.Match(ApiParserSLASH)
 				}
 				{
-					p.SetState(229)
+					p.SetState(219)
 					p.Match(ApiParserID)
 				}
 
@@ -3535,9 +3463,9 @@ func (p *ApiParser) AnnotationKeyValue() (localctx IAnnotationKeyValueContext) {
 			panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 		}
 
-		p.SetState(234)
+		p.SetState(224)
 		p.GetErrorHandler().Sync(p)
-		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 23, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 22, p.GetParserRuleContext())
 	}
 
 	return localctx
@@ -3689,39 +3617,39 @@ func (p *ApiParser) ServiceBody() (localctx IServiceBodyContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(236)
+		p.SetState(226)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*ServiceBodyContext).serviceToken = _m
 	}
 	{
-		p.SetState(237)
+		p.SetState(227)
 		p.ServiceName()
 	}
 	{
-		p.SetState(238)
+		p.SetState(228)
 		p.Match(ApiParserLBRACE)
 	}
-	p.SetState(242)
+	p.SetState(232)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserATSERVER)|(1<<ApiParserATDOC)|(1<<ApiParserATHANDLER))) != 0 {
 		{
-			p.SetState(239)
+			p.SetState(229)
 
 			var _x = p.ServiceRoute()
 
 			localctx.(*ServiceBodyContext).routes = _x
 		}
 
-		p.SetState(244)
+		p.SetState(234)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(245)
+		p.SetState(235)
 		p.Match(ApiParserRBRACE)
 	}
 
@@ -3819,20 +3747,20 @@ func (p *ApiParser) ServiceName() (localctx IServiceNameContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(247)
+		p.SetState(237)
 		p.Match(ApiParserID)
 	}
-	p.SetState(250)
+	p.SetState(240)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserSUB {
 		{
-			p.SetState(248)
+			p.SetState(238)
 			p.Match(ApiParserSUB)
 		}
 		{
-			p.SetState(249)
+			p.SetState(239)
 			p.Match(ApiParserID)
 		}
 
@@ -3959,30 +3887,30 @@ func (p *ApiParser) ServiceRoute() (localctx IServiceRouteContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(253)
+	p.SetState(243)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserATDOC {
 		{
-			p.SetState(252)
+			p.SetState(242)
 			p.RouteDoc()
 		}
 
 	}
-	p.SetState(257)
+	p.SetState(247)
 	p.GetErrorHandler().Sync(p)
 
 	switch p.GetTokenStream().LA(1) {
 	case ApiParserATSERVER:
 		{
-			p.SetState(255)
+			p.SetState(245)
 			p.ServerMeta()
 		}
 
 	case ApiParserATHANDLER:
 		{
-			p.SetState(256)
+			p.SetState(246)
 			p.RouteHandler()
 		}
 
@@ -3990,7 +3918,7 @@ func (p *ApiParser) ServiceRoute() (localctx IServiceRouteContext) {
 		panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 	}
 	{
-		p.SetState(259)
+		p.SetState(249)
 		p.RoutePath()
 	}
 
@@ -4093,20 +4021,20 @@ func (p *ApiParser) RouteDoc() (localctx IRouteDocContext) {
 		}
 	}()
 
-	p.SetState(263)
+	p.SetState(253)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 28, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 27, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(261)
+			p.SetState(251)
 			p.Doc()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(262)
+			p.SetState(252)
 			p.LineDoc()
 		}
 
@@ -4229,37 +4157,37 @@ func (p *ApiParser) Doc() (localctx IDocContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(265)
+		p.SetState(255)
 		p.Match(ApiParserATDOC)
 	}
 	{
-		p.SetState(266)
+		p.SetState(256)
 		p.Match(ApiParserLPAREN)
 	}
 	{
-		p.SetState(267)
+		p.SetState(257)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*DocContext).summaryToken = _m
 	}
 	{
-		p.SetState(268)
+		p.SetState(258)
 		p.Match(ApiParserCOLON)
 	}
-	p.SetState(270)
+	p.SetState(260)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserSTRING_LIT {
 		{
-			p.SetState(269)
+			p.SetState(259)
 			p.Match(ApiParserSTRING_LIT)
 		}
 
 	}
 	{
-		p.SetState(272)
+		p.SetState(262)
 		p.Match(ApiParserRPAREN)
 	}
 
@@ -4352,11 +4280,11 @@ func (p *ApiParser) LineDoc() (localctx ILineDocContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(274)
+		p.SetState(264)
 		p.Match(ApiParserATDOC)
 	}
 	{
-		p.SetState(275)
+		p.SetState(265)
 		p.Match(ApiParserSTRING_LIT)
 	}
 
@@ -4449,11 +4377,11 @@ func (p *ApiParser) RouteHandler() (localctx IRouteHandlerContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(277)
+		p.SetState(267)
 		p.Match(ApiParserATHANDLER)
 	}
 	{
-		p.SetState(278)
+		p.SetState(268)
 		p.Match(ApiParserID)
 	}
 
@@ -4584,34 +4512,34 @@ func (p *ApiParser) RoutePath() (localctx IRoutePathContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(280)
+		p.SetState(270)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*RoutePathContext).httpMethodToken = _m
 	}
 	{
-		p.SetState(281)
+		p.SetState(271)
 		p.Path()
 	}
-	p.SetState(283)
+	p.SetState(273)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserLPAREN {
 		{
-			p.SetState(282)
+			p.SetState(272)
 			p.Request()
 		}
 
 	}
-	p.SetState(286)
+	p.SetState(276)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserID {
 		{
-			p.SetState(285)
+			p.SetState(275)
 			p.Reply()
 		}
 
@@ -4746,37 +4674,37 @@ func (p *ApiParser) Path() (localctx IPathContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(297)
+	p.SetState(287)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == ApiParserSLASH {
 		{
-			p.SetState(288)
+			p.SetState(278)
 			p.Match(ApiParserSLASH)
 		}
-		p.SetState(290)
+		p.SetState(280)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		if _la == ApiParserCOLON {
 			{
-				p.SetState(289)
+				p.SetState(279)
 				p.Match(ApiParserCOLON)
 			}
 
 		}
 		{
-			p.SetState(292)
+			p.SetState(282)
 			p.Match(ApiParserID)
 		}
-		p.SetState(295)
+		p.SetState(285)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		if ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserQUESTION)|(1<<ApiParserBITAND)|(1<<ApiParserASSIGN))) != 0 {
 			{
-				p.SetState(293)
+				p.SetState(283)
 				_la = p.GetTokenStream().LA(1)
 
 				if !(((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserQUESTION)|(1<<ApiParserBITAND)|(1<<ApiParserASSIGN))) != 0) {
@@ -4787,13 +4715,13 @@ func (p *ApiParser) Path() (localctx IPathContext) {
 				}
 			}
 			{
-				p.SetState(294)
+				p.SetState(284)
 				p.Match(ApiParserID)
 			}
 
 		}
 
-		p.SetState(299)
+		p.SetState(289)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -4891,15 +4819,15 @@ func (p *ApiParser) Request() (localctx IRequestContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(301)
+		p.SetState(291)
 		p.Match(ApiParserLPAREN)
 	}
 	{
-		p.SetState(302)
+		p.SetState(292)
 		p.Match(ApiParserID)
 	}
 	{
-		p.SetState(303)
+		p.SetState(293)
 		p.Match(ApiParserRPAREN)
 	}
 
@@ -5022,167 +4950,26 @@ func (p *ApiParser) Reply() (localctx IReplyContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(305)
+		p.SetState(295)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*ReplyContext).returnToken = _m
 	}
 	{
-		p.SetState(306)
+		p.SetState(296)
 		p.Match(ApiParserLPAREN)
 	}
 	{
-		p.SetState(307)
+		p.SetState(297)
 
 		var _m = p.Match(ApiParserID)
 
 		localctx.(*ReplyContext).obj = _m
 	}
 	{
-		p.SetState(308)
+		p.SetState(298)
 		p.Match(ApiParserRPAREN)
-	}
-
-	return localctx
-}
-
-// IKvLitContext is an interface to support dynamic dispatch.
-type IKvLitContext interface {
-	antlr.ParserRuleContext
-
-	// GetParser returns the parser.
-	GetParser() antlr.Parser
-
-	// GetKey returns the key token.
-	GetKey() antlr.Token
-
-	// GetValue returns the value token.
-	GetValue() antlr.Token
-
-	// SetKey sets the key token.
-	SetKey(antlr.Token)
-
-	// SetValue sets the value token.
-	SetValue(antlr.Token)
-
-	// IsKvLitContext differentiates from other interfaces.
-	IsKvLitContext()
-}
-
-type KvLitContext struct {
-	*antlr.BaseParserRuleContext
-	parser antlr.Parser
-	key    antlr.Token
-	value  antlr.Token
-}
-
-func NewEmptyKvLitContext() *KvLitContext {
-	var p = new(KvLitContext)
-	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
-	p.RuleIndex = ApiParserRULE_kvLit
-	return p
-}
-
-func (*KvLitContext) IsKvLitContext() {}
-
-func NewKvLitContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *KvLitContext {
-	var p = new(KvLitContext)
-
-	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
-
-	p.parser = parser
-	p.RuleIndex = ApiParserRULE_kvLit
-
-	return p
-}
-
-func (s *KvLitContext) GetParser() antlr.Parser { return s.parser }
-
-func (s *KvLitContext) GetKey() antlr.Token { return s.key }
-
-func (s *KvLitContext) GetValue() antlr.Token { return s.value }
-
-func (s *KvLitContext) SetKey(v antlr.Token) { s.key = v }
-
-func (s *KvLitContext) SetValue(v antlr.Token) { s.value = v }
-
-func (s *KvLitContext) COLON() antlr.TerminalNode {
-	return s.GetToken(ApiParserCOLON, 0)
-}
-
-func (s *KvLitContext) ID() antlr.TerminalNode {
-	return s.GetToken(ApiParserID, 0)
-}
-
-func (s *KvLitContext) STRING_LIT() antlr.TerminalNode {
-	return s.GetToken(ApiParserSTRING_LIT, 0)
-}
-
-func (s *KvLitContext) GetRuleContext() antlr.RuleContext {
-	return s
-}
-
-func (s *KvLitContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
-	return antlr.TreesStringTree(s, ruleNames, recog)
-}
-
-func (s *KvLitContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
-	switch t := visitor.(type) {
-	case ApiParserVisitor:
-		return t.VisitKvLit(s)
-
-	default:
-		return t.VisitChildren(s)
-	}
-}
-
-func (p *ApiParser) KvLit() (localctx IKvLitContext) {
-	localctx = NewKvLitContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 70, ApiParserRULE_kvLit)
-	var _la int
-
-	defer func() {
-		p.ExitRule()
-	}()
-
-	defer func() {
-		if err := recover(); err != nil {
-			if v, ok := err.(antlr.RecognitionException); ok {
-				localctx.SetException(v)
-				p.GetErrorHandler().ReportError(p, v)
-				p.GetErrorHandler().Recover(p, v)
-			} else {
-				panic(err)
-			}
-		}
-	}()
-
-	p.EnterOuterAlt(localctx, 1)
-	{
-		p.SetState(310)
-
-		var _m = p.Match(ApiParserID)
-
-		localctx.(*KvLitContext).key = _m
-	}
-	{
-		p.SetState(311)
-		p.Match(ApiParserCOLON)
-	}
-	p.SetState(313)
-	p.GetErrorHandler().Sync(p)
-	_la = p.GetTokenStream().LA(1)
-
-	if _la == ApiParserSTRING_LIT {
-		{
-			p.SetState(312)
-
-			var _m = p.Match(ApiParserSTRING_LIT)
-
-			localctx.(*KvLitContext).value = _m
-		}
-
 	}
 
 	return localctx
