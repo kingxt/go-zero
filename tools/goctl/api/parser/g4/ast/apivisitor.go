@@ -622,8 +622,16 @@ func (v *ApiVisitor) VisitPointer(ctx *api.PointerContext) interface{} {
 func (v *ApiVisitor) VisitServiceBlock(ctx *api.ServiceBlockContext) interface{} {
 	var serviceGroup spec.Group
 	if ctx.ServerMeta() != nil {
-		annotation := ctx.ServerMeta().Accept(v).(spec.Annotation)
-		serviceGroup.Annotation = annotation
+		kv := ctx.ServerMeta().Accept(v).(*KVSpec)
+		if kv != nil {
+			properties := make(map[string]string)
+			for _, each := range kv.List {
+				properties[each.Key.Text] = each.Value.Text
+			}
+
+			annotation := spec.Annotation{Properties: properties}
+			serviceGroup.Annotation = annotation
+		}
 	}
 
 	body := ctx.ServiceBody().Accept(v).(serviceBody)
@@ -642,46 +650,21 @@ func (v *ApiVisitor) VisitServiceBlock(ctx *api.ServiceBlockContext) interface{}
 }
 
 func (v *ApiVisitor) VisitServerMeta(ctx *api.ServerMetaContext) interface{} {
-	var annotation spec.Annotation
-	annotation.Properties = make(map[string]string, 0)
-	annos := ctx.AllAnnotation()
-
-	duplicate := make(map[string]struct{})
-	for _, anno := range annos {
-		kv := anno.Accept(v).(kv)
-		if _, ok := duplicate[kv.key]; ok {
-			panic(v.wrapError(kv.ast, `duplicate key "%s"`, kv.key))
-		}
-
-		duplicate[kv.key] = struct{}{}
-		annotation.Properties[kv.key] = kv.value
+	serverMeta := ctx.SERVER_META_STRING()
+	if serverMeta == nil {
+		return nil
 	}
 
-	return annotation
-}
-
-func (v *ApiVisitor) VisitAnnotation(ctx *api.AnnotationContext) interface{} {
-	key := v.getTokenText(ctx.GetKey(), true)
-
-	if len(key) == 0 || ctx.GetValue() == nil {
-		panic(v.wrapError(ast{
-			line:   ctx.GetKey().GetLine(),
-			column: ctx.GetKey().GetColumn(),
-		}, "empty annotation key or value"))
+	line := serverMeta.GetSymbol().GetLine()
+	kvParser := NewKVParser()
+	content := serverMeta.GetText()
+	content = strings.TrimPrefix(content, "@server")
+	kv, err := kvParser.Parse(line-1, v.filename, content)
+	if err != nil {
+		panic(err)
 	}
 
-	line := ctx.GetKey().GetLine()
-	column := ctx.GetKey().GetColumn()
-
-	return kv{
-		key:   key,
-		value: ctx.GetValue().GetText(),
-		ast:   ast{line: line, column: column},
-	}
-}
-
-func (v *ApiVisitor) VisitAnnotationKeyValue(ctx *api.AnnotationKeyValueContext) interface{} {
-	return v.VisitChildren(ctx)
+	return kv
 }
 
 func (v *ApiVisitor) VisitServiceBody(ctx *api.ServiceBodyContext) interface{} {
@@ -722,17 +705,21 @@ func (v *ApiVisitor) VisitServiceRoute(ctx *api.ServiceRouteContext) interface{}
 	}
 
 	if iServerMetaContext != nil {
-		metaContext := iServerMetaContext.(*api.ServerMetaContext)
-		for _, each := range metaContext.AllAnnotation() {
-			key := v.getTokenText(each.GetKey(), false)
-			if key == handlerKey {
-				route.HandlerLineColumn.Line = each.GetKey().GetLine()
-				route.HandlerLineColumn.Column = each.GetKey().GetColumn()
+		kvSpec := iServerMetaContext.Accept(v).(*KVSpec)
+		if kvSpec != nil {
+			properties := make(map[string]string)
+			for _, each := range kvSpec.List {
+				key := each.Key.Text
+				properties[key] = each.Value.Text
+				if key == handlerKey {
+					route.Handler = each.Value.Text
+					route.HandlerLineColumn.Line = each.Key.Line
+					route.HandlerLineColumn.Column = each.Key.Column
+				}
 			}
+
+			route.Annotation = spec.Annotation{Properties: properties}
 		}
-		annotation := iServerMetaContext.Accept(v).(spec.Annotation)
-		route.Annotation = annotation
-		route.Handler = annotation.Properties[handlerKey]
 	} else if iRouteHandlerContext != nil {
 		handlerContext := iRouteHandlerContext.(*api.RouteHandlerContext)
 		route.HandlerLineColumn.Line = handlerContext.ID().GetSymbol().GetLine()
@@ -804,11 +791,11 @@ func (v *ApiVisitor) VisitRoutePath(ctx *api.RoutePathContext) interface{} {
 	v.checkHttpMethod(ctx.GetHttpMethodToken())
 	var routePath Route
 	routePath.method = v.getTokenText(ctx.GetHttpMethodToken(), false)
+	line := ctx.GetHttpMethodToken().GetLine()
+	column := ctx.GetHttpMethodToken().GetColumn()
+
 	if ctx.Path() != nil {
 		path := ctx.Path().GetText()
-		pathContext := ctx.Path().(*api.PathContext)
-		line := pathContext.ID(0).GetSymbol().GetLine()
-		column := pathContext.ID(0).GetSymbol().GetColumn()
 		if _, ok := v.serviceAst.routeMap[routePath.method+path]; ok {
 			panic(v.wrapError(ast{
 				line:   line,
@@ -820,37 +807,34 @@ func (v *ApiVisitor) VisitRoutePath(ctx *api.RoutePathContext) interface{} {
 		routePath.path = path
 	}
 
-	iRequestContext := ctx.Request()
-	iReplyContext := ctx.Reply()
+	iRequestContext := ctx.GetReq()
+	iReplyContext := ctx.GetReply()
 	if iRequestContext != nil {
-		routePath.request = iRequestContext.Accept(v).(ReqReply)
+		req := iRequestContext.Accept(v).(*ReqReply)
+		if len(req.name) != 0 {
+			routePath.request = *req
+		}
 	}
 
 	if iReplyContext != nil {
-		routePath.response = iReplyContext.Accept(v).(ReqReply)
+		reply := iReplyContext.Accept(v).(*ReqReply)
+		if len(reply.name) != 0 {
+			routePath.response = *reply
+		}
 	}
 
 	return routePath
 }
-func (v *ApiVisitor) VisitPath(ctx *api.PathContext) interface{} {
-	return v.VisitChildren(ctx)
-}
 
-func (v *ApiVisitor) VisitRequest(ctx *api.RequestContext) interface{} {
+func (v *ApiVisitor) VisitHttpBody(ctx *api.HttpBodyContext) interface{} {
+	obj := ctx.GetObj()
 	var ret ReqReply
-	ret.name = v.getNodeText(ctx.ID(), false)
-	ret.line = ctx.ID().GetSymbol().GetLine()
-	ret.column = ctx.ID().GetSymbol().GetColumn()
-	return ret
-}
-
-func (v *ApiVisitor) VisitReply(ctx *api.ReplyContext) interface{} {
-	v.checkToken(ctx.GetReturnToken(), returnToken)
-	var ret ReqReply
-	ret.name = v.getTokenText(ctx.GetObj(), false)
-	ret.line = ctx.GetObj().GetLine()
-	ret.column = ctx.GetObj().GetColumn()
-	return ret
+	if obj != nil {
+		ret.name = v.getTokenText(obj, false)
+		ret.line = obj.GetLine()
+		ret.column = obj.GetColumn()
+	}
+	return &ret
 }
 
 func (v *ApiVisitor) getTokenInt(token antlr.Token) (int64, error) {

@@ -20,7 +20,7 @@ type KV struct {
 
 type KVSpec struct {
 	List     []KV
-	Filename string
+	Filename string `json:"-"`
 }
 
 type KVVisitor struct {

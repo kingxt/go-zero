@@ -15,16 +15,15 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 10, 23, 4,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 10, 22, 4,
 	2, 9, 2, 4, 3, 9, 3, 3, 2, 3, 2, 7, 2, 9, 10, 2, 12, 2, 14, 2, 12, 11,
-	2, 3, 2, 3, 2, 5, 2, 16, 10, 2, 3, 3, 3, 3, 3, 3, 5, 3, 21, 10, 3, 3, 3,
-	2, 2, 4, 2, 4, 2, 3, 3, 2, 9, 10, 2, 23, 2, 6, 3, 2, 2, 2, 4, 17, 3, 2,
-	2, 2, 6, 10, 7, 3, 2, 2, 7, 9, 5, 4, 3, 2, 8, 7, 3, 2, 2, 2, 9, 12, 3,
-	2, 2, 2, 10, 8, 3, 2, 2, 2, 10, 11, 3, 2, 2, 2, 11, 13, 3, 2, 2, 2, 12,
-	10, 3, 2, 2, 2, 13, 15, 7, 4, 2, 2, 14, 16, 7, 2, 2, 3, 15, 14, 3, 2, 2,
-	2, 15, 16, 3, 2, 2, 2, 16, 3, 3, 2, 2, 2, 17, 18, 7, 10, 2, 2, 18, 20,
-	7, 5, 2, 2, 19, 21, 9, 2, 2, 2, 20, 19, 3, 2, 2, 2, 20, 21, 3, 2, 2, 2,
-	21, 5, 3, 2, 2, 2, 5, 10, 15, 20,
+	2, 3, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 3, 5, 3, 20, 10, 3, 3, 3, 2, 2, 4,
+	2, 4, 2, 3, 3, 2, 9, 10, 2, 21, 2, 6, 3, 2, 2, 2, 4, 16, 3, 2, 2, 2, 6,
+	10, 7, 3, 2, 2, 7, 9, 5, 4, 3, 2, 8, 7, 3, 2, 2, 2, 9, 12, 3, 2, 2, 2,
+	10, 8, 3, 2, 2, 2, 10, 11, 3, 2, 2, 2, 11, 13, 3, 2, 2, 2, 12, 10, 3, 2,
+	2, 2, 13, 14, 7, 4, 2, 2, 14, 15, 7, 2, 2, 3, 15, 3, 3, 2, 2, 2, 16, 17,
+	7, 10, 2, 2, 17, 19, 7, 5, 2, 2, 18, 20, 9, 2, 2, 2, 19, 18, 3, 2, 2, 2,
+	19, 20, 3, 2, 2, 2, 20, 5, 3, 2, 2, 2, 4, 10, 19,
 }
 var literalNames = []string{
 	"", "'('", "')'", "':'",
@@ -132,6 +131,10 @@ func (s *KvContext) RPAREN() antlr.TerminalNode {
 	return s.GetToken(KVParserRPAREN, 0)
 }
 
+func (s *KvContext) EOF() antlr.TerminalNode {
+	return s.GetToken(KVParserEOF, 0)
+}
+
 func (s *KvContext) AllKvLit() []IKvLitContext {
 	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*IKvLitContext)(nil)).Elem())
 	var tst = make([]IKvLitContext, len(ts))
@@ -153,10 +156,6 @@ func (s *KvContext) KvLit(i int) IKvLitContext {
 	}
 
 	return t.(IKvLitContext)
-}
-
-func (s *KvContext) EOF() antlr.TerminalNode {
-	return s.GetToken(KVParserEOF, 0)
 }
 
 func (s *KvContext) GetRuleContext() antlr.RuleContext {
@@ -221,15 +220,9 @@ func (p *KVParser) Kv() (localctx IKvContext) {
 		p.SetState(11)
 		p.Match(KVParserRPAREN)
 	}
-	p.SetState(13)
-	p.GetErrorHandler().Sync(p)
-
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) == 1 {
-		{
-			p.SetState(12)
-			p.Match(KVParserEOF)
-		}
-
+	{
+		p.SetState(12)
+		p.Match(KVParserEOF)
 	}
 
 	return localctx
@@ -352,22 +345,22 @@ func (p *KVParser) KvLit() (localctx IKvLitContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(15)
+		p.SetState(14)
 
 		var _m = p.Match(KVParserVALUE_LIT)
 
 		localctx.(*KvLitContext).key = _m
 	}
 	{
-		p.SetState(16)
+		p.SetState(15)
 		p.Match(KVParserCOLON)
 	}
-	p.SetState(18)
+	p.SetState(17)
 	p.GetErrorHandler().Sync(p)
 
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 2, p.GetParserRuleContext()) == 1 {
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(17)
+			p.SetState(16)
 
 			var _lt = p.GetTokenStream().LT(1)
 

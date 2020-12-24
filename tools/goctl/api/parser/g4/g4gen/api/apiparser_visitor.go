@@ -73,12 +73,6 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParser#serverMeta.
 	VisitServerMeta(ctx *ServerMetaContext) interface{}
 
-	// Visit a parse tree produced by ApiParser#annotation.
-	VisitAnnotation(ctx *AnnotationContext) interface{}
-
-	// Visit a parse tree produced by ApiParser#annotationKeyValue.
-	VisitAnnotationKeyValue(ctx *AnnotationKeyValueContext) interface{}
-
 	// Visit a parse tree produced by ApiParser#serviceBody.
 	VisitServiceBody(ctx *ServiceBodyContext) interface{}
 
@@ -106,9 +100,6 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParser#path.
 	VisitPath(ctx *PathContext) interface{}
 
-	// Visit a parse tree produced by ApiParser#request.
-	VisitRequest(ctx *RequestContext) interface{}
-
-	// Visit a parse tree produced by ApiParser#reply.
-	VisitReply(ctx *ReplyContext) interface{}
+	// Visit a parse tree produced by ApiParser#httpBody.
+	VisitHttpBody(ctx *HttpBodyContext) interface{}
 }

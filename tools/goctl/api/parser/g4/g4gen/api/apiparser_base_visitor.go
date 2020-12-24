@@ -95,14 +95,6 @@ func (v *BaseApiParserVisitor) VisitServerMeta(ctx *ServerMetaContext) interface
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitAnnotation(ctx *AnnotationContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitAnnotationKeyValue(ctx *AnnotationKeyValueContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseApiParserVisitor) VisitServiceBody(ctx *ServiceBodyContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -139,10 +131,6 @@ func (v *BaseApiParserVisitor) VisitPath(ctx *PathContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitRequest(ctx *RequestContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitReply(ctx *ReplyContext) interface{} {
+func (v *BaseApiParserVisitor) VisitHttpBody(ctx *HttpBodyContext) interface{} {
 	return v.VisitChildren(ctx)
 }

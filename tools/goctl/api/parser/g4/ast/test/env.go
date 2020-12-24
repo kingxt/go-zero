@@ -10,7 +10,7 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 )
 
-var logEnable = true
+var logEnable = false
 
 func test(t *testing.T, do func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{}, expected interface{}, expectedErr bool, content string) {
 	p := ast.NewParser()

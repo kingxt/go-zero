@@ -2,13 +2,12 @@ lexer grammar ApiLexer;
 
 // Keywords
 
-ATSERVER:           '@server';
 ATDOC:              '@doc';
 ATHANDLER:          '@handler';
 INTERFACE:          'interface{}';
 TYPE:               'type';
 IMPORT:             'import';
-INFO:               'info';
+
 MAP:                'map';
 STRUCT:             'struct';
 
@@ -66,7 +65,9 @@ SYNTAX_VERSION:     '"' 'v'[1-9][0-9]* '"';
 IMPORT_PATH:        '"' '/'? ID ('/' ID)* '.api' '"';
 STRING_LIT:         ('"' (~["\\] | EscapeSequence)* '"');
 RAW_STRING:         '`' (~[`\\\r\n] | EscapeSequence)* '`';
-INFO_BLOCK:             INFO [ \t]* '(' ~[()]* ')';
+INFO_BLOCK:         INFO [ \t]* '(' ~[()]* ')';
+SERVER_META_STRING:         ATSERVER [ \t]* '(' ~[()]* ')';
+HTTP_PATH:          ('/' ((':'? ID)|(ID ('-' ID)*)))+ ;
 
 ID:         Letter LetterOrDigit*;
 
@@ -120,3 +121,5 @@ fragment UINTPTR:            'uintptr';
 fragment BYTE:               'byte';
 fragment RUNE:               'rune';
 fragment TIME:               'time.Time';
+fragment INFO:               'info';
+fragment ATSERVER:           '@server';

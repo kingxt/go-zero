@@ -67,6 +67,14 @@ func TestServiceBody(t *testing.T) {
 						},
 						Handler: "fooHandler3",
 					},
+					{
+						Method: "post",
+						Path:   "/api/foo-bar",
+						ResponseType: spec.Type{
+							Name: "SingleExample3",
+						},
+						Handler: "fooHandler4",
+					},
 				},
 			},
 		},
@@ -83,6 +91,9 @@ func TestServiceBody(t *testing.T) {
 
 			@handler fooHandler3
     		post /api/foo3/:id returns (SingleExample2)
+
+			@handler fooHandler4
+    		post /api/foo-bar returns (SingleExample3)
 		}
 	`)
 }
@@ -91,27 +102,38 @@ func TestServerMeta(t *testing.T) {
 	do := func(p *api.ApiParser, visitor *ast.ApiVisitor) interface{} {
 		return p.ServerMeta().Accept(visitor)
 	}
-	test(t, do, spec.Annotation{
-		Properties: map[string]string{
-			"jwt":   "Foo",
-			"group": "foo/bar",
-			"key":   "value",
+	test(t, do, ast.KVSpec{
+		List: []ast.KV{
+			{
+				Key: ast.Token{
+					Text: "jwt",
+				},
+				Value: ast.Token{
+					Text: "Foo",
+				},
+			},
+			{
+				Key: ast.Token{
+					Text: "group",
+				},
+				Value: ast.Token{
+					Text: "foo/bar",
+				},
+			},
+			{
+				Key: ast.Token{
+					Text: "key",
+				},
+				Value: ast.Token{
+					Text: "value",
+				},
+			},
 		},
 	}, false, `@server(
 		jwt: Foo
 		group: foo/bar
 		key: value
 	)
-	service user-api{}
-	`)
-
-	test(t, do, nil, true, `@server(
-		jwt: Foo
-		jwt: Bar
-		group: foo/bar
-		key: value
-	)
-	service foo-api{}
 	`)
 
 }
