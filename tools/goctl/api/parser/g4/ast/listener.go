@@ -30,10 +30,12 @@ func (listener *ErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, li
 	if listener.filename != "" {
 		lineHeader = listener.filename + " " + lineHeader
 	}
+
 	if listener.callback != nil {
 		listener.callback(fmt.Errorf("%s, %s", lineHeader, msg))
 		return
 	}
+
 	errString := fmt.Sprintf(lineHeader + ", " + msg)
 	panic(errors.New(errString))
 }

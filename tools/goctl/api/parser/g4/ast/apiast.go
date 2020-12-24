@@ -19,10 +19,7 @@ type (
 )
 
 func NewParser(options ...option) *Parser {
-	instance := &Parser{
-		options: options,
-	}
-	return instance
+	return &Parser{options: options}
 }
 
 // Accept can parse any terminalNode of api tree by fn.
@@ -45,6 +42,7 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	apiParser := parser.NewApiParser(tokens)
 	visitor := NewApiVisitor("")
+
 	p.options = append(p.options, WithErrorCallback("", nil))
 	for _, opt := range p.options {
 		opt(apiParser)
@@ -54,7 +52,7 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 	return
 }
 
-// Parse parse the api file from the the root node
+// Parse is used to parse the api from the specified file name
 func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	data, err := p.readContent(filename)
 	if err != nil {
@@ -64,10 +62,13 @@ func (p *Parser) Parse(filename string) (*spec.ApiSpec, error) {
 	return p.parse(filename, data)
 }
 
+// ParseContent is used to parse the api from the specified content
 func (p *Parser) ParseContent(content string) (*spec.ApiSpec, error) {
 	return p.parse("", content)
 }
 
+// parse is used to parse api from the content
+// filename is only used to mark the file where the error is located
 func (p *Parser) parse(filename, content string) (*spec.ApiSpec, error) {
 	api, err := p.invoke(filename, content)
 	if err != nil {
@@ -124,6 +125,7 @@ func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error)
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	apiParser := parser.NewApiParser(tokens)
 	visitor := NewApiVisitor(filename)
+
 	p.options = append(p.options, WithErrorCallback(filename, nil))
 	for _, opt := range p.options {
 		opt(apiParser)
@@ -144,54 +146,59 @@ func WithErrorCallback(filename string, callback ErrCallback) option {
 
 func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.ApiSpec) error {
 	if len(nestedApi.Import.List) > 0 {
-		return fmt.Errorf("%s %d:%d nested api does not support import",
+		return fmt.Errorf("%s line %d:%d the nested api does not support import",
 			filename, nestedApi.Import.List[0].Line, nestedApi.Import.List[0].Column)
 	}
 
 	if mainApi.Syntax.Version != nestedApi.Syntax.Version {
-		return fmt.Errorf("%s %d:%d multiple syntax, expected syntax %s, but found %s",
+		return fmt.Errorf("%s line %d:%d multiple syntax declaration, expecting syntax '%s', but found '%s'",
 			filename, nestedApi.Syntax.Line, nestedApi.Syntax.Column, mainApi.Syntax.Version, nestedApi.Syntax.Version)
 	}
 
 	if mainApi.Service.Name != nestedApi.Service.Name {
-		return fmt.Errorf("%s expected service name %s, but found %s",
+		return fmt.Errorf("%s multiple service name declaration, expecting service name '%s', but found '%s'",
 			filename, mainApi.Service.Name, nestedApi.Service.Name)
 	}
 
-	mainHandlerMap := make(map[string]struct{})
-	mainRouteMap := make(map[string]struct{})
-	mainTypeMap := make(map[string]struct{})
-	routeMap := func(list []spec.Route) (map[string]struct{}, map[string]struct{}) {
-		handlerMap := make(map[string]struct{})
-		routeMap := make(map[string]struct{})
+	mainHandlerMap := make(map[string]PlaceHolder)
+	mainRouteMap := make(map[string]PlaceHolder)
+	mainTypeMap := make(map[string]PlaceHolder)
+
+	routeMap := func(list []spec.Route) (map[string]PlaceHolder, map[string]PlaceHolder) {
+		handlerMap := make(map[string]PlaceHolder)
+		routeMap := make(map[string]PlaceHolder)
+
 		for _, g := range list {
-			handlerMap[g.Handler] = struct{}{}
-			routeMap[g.Method+g.Path] = struct{}{}
+			handlerMap[g.Handler] = hodler
+			routeMap[g.Method+g.Path] = hodler
 		}
+
 		return handlerMap, routeMap
 	}
 
 	h, r := routeMap(mainApi.Service.Routes())
+
 	for k, v := range h {
 		mainHandlerMap[k] = v
 	}
+
 	for k, v := range r {
 		mainRouteMap[k] = v
 	}
 
 	for _, each := range mainApi.Types {
-		mainTypeMap[each.Name] = struct{}{}
+		mainTypeMap[each.Name] = hodler
 	}
 
 	// duplicate route check
 	for _, r := range nestedApi.Service.Routes() {
 		if _, ok := mainHandlerMap[r.Handler]; ok {
-			return fmt.Errorf("%s %d:%d duplicate handler %s",
+			return fmt.Errorf("%s line %d:%d duplicate handler '%s'",
 				filename, r.HandlerLineColumn.Line, r.HandlerLineColumn.Column, r.Handler)
 		}
 
 		if _, ok := mainRouteMap[r.Method+r.Path]; ok {
-			return fmt.Errorf("%s %d:%d duplicate route %s",
+			return fmt.Errorf("%s line %d:%d duplicate route '%s'",
 				filename, r.Line, r.Column, r.Method+" "+r.Path)
 		}
 	}
@@ -199,7 +206,7 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 	// duplicate type check
 	for _, each := range nestedApi.Types {
 		if _, ok := mainTypeMap[each.Name]; ok {
-			return fmt.Errorf("%s %d:%d duplicate type declaration %s",
+			return fmt.Errorf("%s line %d:%d duplicate type declaration '%s'",
 				filename, each.Line, each.Column, each.Name)
 		}
 	}
@@ -208,6 +215,7 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 
 func (p *Parser) memberFill(apiList []*spec.ApiSpec) *spec.ApiSpec {
 	var api spec.ApiSpec
+
 	for index, each := range apiList {
 		if index == 0 {
 			api.Syntax = each.Syntax
@@ -216,14 +224,17 @@ func (p *Parser) memberFill(apiList []*spec.ApiSpec) *spec.ApiSpec {
 			api.Import = each.Import
 			api.Service.Name = each.Service.Name
 		}
+
 		api.Types = append(api.Types, each.Types...)
 		api.Service.Groups = append(api.Service.Groups, each.Service.Groups...)
 	}
+
 	return &api
 }
 
 func (p *Parser) fillTypeMember(apiList []*spec.ApiSpec) error {
 	types := make(map[string]spec.Type)
+
 	for _, api := range apiList {
 		for _, each := range api.Types {
 			types[each.Name] = each
@@ -233,6 +244,7 @@ func (p *Parser) fillTypeMember(apiList []*spec.ApiSpec) error {
 	for _, api := range apiList {
 		filename := api.Filename
 		prefix := filepath.Base(filename)
+
 		for _, each := range api.Types {
 			for _, member := range each.Members {
 				expr, err := p.fillType(prefix, types, member.Expr)
@@ -247,21 +259,19 @@ func (p *Parser) fillTypeMember(apiList []*spec.ApiSpec) error {
 			if len(each.RequestType.Name) > 0 {
 				r, ok := types[each.RequestType.Name]
 				if !ok {
-					return fmt.Errorf("%s %d:%d can not found declaration %s in context",
+					return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
 						prefix, each.RequestType.Line, each.RequestType.Column, each.RequestType.Name)
 				}
-
 				each.RequestType.Members = r.Members
+			}
 
-				if len(each.ResponseType.Name) > 0 {
-					r, ok = types[each.ResponseType.Name]
-					if !ok {
-						return fmt.Errorf("%s %d:%d can not found declaration %s in context",
-							prefix, each.ResponseType.Line, each.ResponseType.Column, each.ResponseType.Name)
-					}
-
-					each.ResponseType.Members = r.Members
+			if len(each.ResponseType.Name) > 0 {
+				r, ok := types[each.ResponseType.Name]
+				if !ok {
+					return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
+						prefix, each.ResponseType.Line, each.ResponseType.Column, each.ResponseType.Name)
 				}
+				each.ResponseType.Members = r.Members
 			}
 		}
 	}
@@ -278,7 +288,7 @@ func (p *Parser) fillType(prefix string, types map[string]spec.Type, expr interf
 		name := v.Name
 		r, ok := types[name]
 		if !ok {
-			return nil, fmt.Errorf("%s %d:%d can not found declaration %s in context",
+			return nil, fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
 				prefix, v.Line, v.Column, name)
 		}
 

@@ -11,6 +11,7 @@ type (
 	KVParser struct {
 		options []kvOption
 	}
+
 	kvOption func(p *parser.KVParser)
 )
 
@@ -37,6 +38,7 @@ func (p *KVParser) Accept(baseLine int, content string, fn func(p *parser.KVPars
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	kvParser := parser.NewKVParser(tokens)
 	visitor := NewKVVisitor("", baseLine)
+
 	p.options = append(p.options, WithKVErrorCallback("", nil))
 	for _, opt := range p.options {
 		opt(kvParser)

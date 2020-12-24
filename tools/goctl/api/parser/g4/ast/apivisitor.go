@@ -19,38 +19,39 @@ const (
 )
 
 var (
-	goTypeToken = map[string]struct{}{
-		"bool":       struct{}{},
-		"uint8":      struct{}{},
-		"uint16":     struct{}{},
-		"uint32":     struct{}{},
-		"uint64":     struct{}{},
-		"int8":       struct{}{},
-		"int16":      struct{}{},
-		"int32":      struct{}{},
-		"int64":      struct{}{},
-		"int":        struct{}{},
-		"float32":    struct{}{},
-		"float64":    struct{}{},
-		"complex64":  struct{}{},
-		"complex128": struct{}{},
-		"string":     struct{}{},
-		"uint":       struct{}{},
-		"uintptr":    struct{}{},
-		"byte":       struct{}{},
-		"rune":       struct{}{},
-		"time.Time":  struct{}{},
+	goTypeToken = map[string]PlaceHolder{
+		"bool":       hodler,
+		"uint8":      hodler,
+		"uint16":     hodler,
+		"uint32":     hodler,
+		"uint64":     hodler,
+		"int8":       hodler,
+		"int16":      hodler,
+		"int32":      hodler,
+		"int64":      hodler,
+		"int":        hodler,
+		"float32":    hodler,
+		"float64":    hodler,
+		"complex64":  hodler,
+		"complex128": hodler,
+		"string":     hodler,
+		"uint":       hodler,
+		"uintptr":    hodler,
+		"byte":       hodler,
+		"rune":       hodler,
+		"time.Time":  hodler,
 	}
-	httpMethodToken = map[string]struct{}{
-		"get":     struct{}{},
-		"head":    struct{}{},
-		"post":    struct{}{},
-		"put":     struct{}{},
-		"patch":   struct{}{},
-		"delete":  struct{}{},
-		"connect": struct{}{},
-		"options": struct{}{},
-		"trace":   struct{}{},
+
+	httpMethodToken = map[string]PlaceHolder{
+		"get":     hodler,
+		"head":    hodler,
+		"post":    hodler,
+		"put":     hodler,
+		"patch":   hodler,
+		"delete":  hodler,
+		"connect": hodler,
+		"options": hodler,
+		"trace":   hodler,
 	}
 )
 
@@ -97,6 +98,7 @@ type (
 		key   string
 		value string
 	}
+
 	serviceBody struct {
 		name string
 		ast
@@ -107,6 +109,7 @@ type (
 		ast
 		name string
 	}
+
 	Route struct {
 		method   string
 		path     string
@@ -207,7 +210,7 @@ func (v *ApiVisitor) VisitImportLit(ctx *api.ImportLitContext) interface{} {
 	if _, ok := v.importSet[importPath]; ok {
 		panic(v.wrapError(
 			ast{line: line, column: column},
-			`duplicate import "%s"`, importPath),
+			`duplicate import '%s'`, importPath),
 		)
 	}
 
@@ -243,7 +246,7 @@ func (v *ApiVisitor) VisitImportLitGroup(ctx *api.ImportLitGroupContext) interfa
 			panic(v.wrapError(ast{
 				line:   line,
 				column: column,
-			}, fmt.Sprintf(`duplicate import "%s"`, importPath)))
+			}, fmt.Sprintf(`duplicate import '%s'`, importPath)))
 		}
 
 		v.importSet[importPath] = importAst{
@@ -253,6 +256,7 @@ func (v *ApiVisitor) VisitImportLitGroup(ctx *api.ImportLitGroupContext) interfa
 			},
 			v: importPath,
 		}
+
 		list = append(list, spec.Import{
 			LineColumn: spec.LineColumn{
 				Line:   line,
@@ -287,7 +291,10 @@ func (v *ApiVisitor) VisitInfoBlock(ctx *api.InfoBlockContext) interface{} {
 	for _, each := range kvSpec.List {
 		key := each.Key
 		if _, ok := properties[key.Text]; ok {
-			panic(fmt.Errorf("%s line %d:%d duplicate key '%s' in info block", v.filename, key.Line, key.Column, key.Text))
+			panic(v.wrapError(ast{
+				line:   key.Line,
+				column: key.Column,
+			}, "duplicate key '%s' in info block", key.Text))
 		}
 
 		properties[each.Key.Text] = each.Value.Text
@@ -357,7 +364,7 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *api.TypeAliasContext) interface{} {
 	panic(v.wrapError(ast{
 		line:   line,
 		column: column,
-	}, "unsupport alias"))
+	}, "unexpecting alias"))
 }
 
 func (v *ApiVisitor) VisitTypeStruct(ctx *api.TypeStructContext) interface{} {
@@ -554,7 +561,7 @@ func (v *ApiVisitor) VisitPointer(ctx *api.PointerContext) interface{} {
 				panic(v.wrapError(ast{
 					line:   symbol.GetLine(),
 					column: symbol.GetColumn(),
-				}, "expected '{'"))
+				}, "expecting '{'"))
 			}
 			return tp
 		}
@@ -605,7 +612,7 @@ func (v *ApiVisitor) VisitPointer(ctx *api.PointerContext) interface{} {
 			panic(v.wrapError(ast{
 				line:   symbol.GetLine(),
 				column: symbol.GetColumn(),
-			}, "unexpected interface"))
+			}, "unexpecting interface"))
 		}
 		tmp.Star = tp
 	}
@@ -921,7 +928,7 @@ func (v *ApiVisitor) checkToken(token antlr.Token, text string) {
 		if len(v.filename) > 0 {
 			v.filename = v.filename + " "
 		}
-		panic(fmt.Errorf("%sline %d:%d expected %s, but found %s",
+		panic(fmt.Errorf("%sline %d:%d expecting %s, but found %s",
 			v.filename, token.GetLine(), token.GetColumn(), text, tokenText))
 	}
 }
@@ -938,7 +945,10 @@ func (v *ApiVisitor) checkHttpMethod(token antlr.Token) {
 	text := v.getTokenText(token, false)
 	_, ok := httpMethodToken[text]
 	if !ok {
-		panic(fmt.Errorf("%s line %d:%d expected http method, but found %s",
+		if len(v.filename) > 0 {
+			v.filename = v.filename + " "
+		}
+		panic(fmt.Errorf("%sline %d:%d expecting http method, but found %s",
 			v.filename, token.GetLine(), token.GetColumn(), text))
 	}
 }
