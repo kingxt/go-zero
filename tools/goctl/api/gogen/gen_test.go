@@ -227,7 +227,7 @@ type Response struct {
 }
 
 service A-api {
-  @doc("helloworld")
+  @doc "helloworld"
   @server(
     handler: GreetHandler
   )
@@ -247,7 +247,7 @@ type Response struct {
 }
 
 service A-api {
-  @doc("helloworld")
+  @doc "helloworld"
   @server(
     handler: GreetHandler
   )
@@ -469,9 +469,7 @@ func TestInlineTypeNotExist(t *testing.T) {
 	defer os.Remove(filename)
 
 	_, err = parser.Parser(filename)
-	assert.Nil(t, err)
-
-	validate(t, filename)
+	assert.NotNil(t, err)
 }
 
 func TestHasImportApi(t *testing.T) {
