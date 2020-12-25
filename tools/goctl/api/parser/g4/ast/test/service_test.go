@@ -80,9 +80,7 @@ func TestServiceBody(t *testing.T) {
 		},
 	}, false, `
 		service example-api {
-			@doc(
-				summary: "foo1"
-			)
+			@doc(foo1)
 			@server(
 				handler: fooHandler1
 				anotherKey: anotherValue

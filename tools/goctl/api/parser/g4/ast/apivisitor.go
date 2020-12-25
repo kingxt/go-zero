@@ -772,6 +772,15 @@ func (v *ApiVisitor) VisitDoc(ctx *api.DocContext) interface{} {
 	line := ctx.DOC_BLOCK().GetSymbol().GetLine()
 	kvParser := NewKVParser()
 	content = strings.TrimPrefix(content, "@doc")
+	if !strings.Contains(content, ":") {
+		content = strings.TrimLeftFunc(content, func(r rune) bool {
+			return r == '('
+		})
+		content = strings.TrimRightFunc(content, func(r rune) bool {
+			return r == ')'
+		})
+		return content
+	}
 	kvSpec, err := kvParser.Parse(line-1, v.filename, content)
 	if err != nil {
 		panic(err)
