@@ -6,7 +6,7 @@ import "foo.api"
 
 // import group
 import(
-    "foo.api"
+    "bar.api"
     "foo/bar.api"
 )
 
@@ -14,40 +14,31 @@ import(
 info(
     title: "foo title"
     desc: "foo
-desc"
+    desc"
     author: "foo author"
     email: "foo email"
     version: "foo version"
 )
 
-// ignore the following duplicate name
-
-type Foo int
 
 // type single
 type Foo {
     Bar string
 }
 
-type Foo {
-    Bar string `json:"bar"`
-    Inline
-}
 // go struct
-type Foo struct {
+type GoFoo struct {
     Bar string `json:"bar"`
 }
 
 // type group
 type (
-    Foo int
-
-    // go struct
-    Foo struct {
+        // go struct
+    GroupFoo struct {
         Bar string `json:"bar"`
     }
 
-    Foo {
+    GroupBar {
         VString string `json:"vString"`
         VBool bool `json:"vBool"`
         VInt8 int8 `json:"vInt8"`
@@ -77,7 +68,7 @@ type (
     group: foo/bar
     anotherKey: anotherValue
 )
-service example-api {
+service foo-api {
     @doc(
         summary: "foo1"
     )
@@ -85,15 +76,15 @@ service example-api {
         handler: fooHandler1
         anotherKey: anotherValue
     )
-    post /api/foo1 (SingleExample)
+    post /api/foo/bar (Foo)
 
     @doc "foo2"
     @handler fooHandler2
-    get /api/foo2 (SingleExample) returns (SingleExample2)
+    get /api/foo (Foo) returns (Foo)
 
     @handler fooHandler3
-    post /api/foo3/:id returns (SingleExample2)
+    post /api/foo/:id returns (Foo)
 
     @handler fooHandler4
-    get /api/foo4
+    get /api/foo-bar
 }
