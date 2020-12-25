@@ -429,7 +429,6 @@ func (v *ApiVisitor) VisitFiled(ctx *api.FiledContext) interface{} {
 	iDataTypeContext := ctx.DataType()
 	iInnerStructContext := ctx.InnerStruct()
 	tag := v.getTokenText(ctx.GetTag(), false)
-	tag = strings.ReplaceAll(tag, "`", "")
 	// todo: tag valid?
 	var tp interface{}
 	if iDataTypeContext != nil {

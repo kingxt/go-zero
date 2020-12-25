@@ -10,3 +10,9 @@ func Parser(filename string) (*spec.ApiSpec, error) {
 	apiSpec, err := parser.Parse(filename)
 	return apiSpec, err
 }
+
+func ParserContent(content string) (*spec.ApiSpec, error) {
+	parser := ast.NewParser()
+	apiSpec, err := parser.ParseContent(content)
+	return apiSpec, err
+}
