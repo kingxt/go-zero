@@ -43,7 +43,7 @@ serviceBody:        serviceToken=ID serviceName '{' routes=serviceRoute* '}';
 serviceName:        ID ('-' ID)?;
 serviceRoute:       routeDoc? (serverMeta|routeHandler) routePath ;
 routeDoc:       doc|lineDoc;
-doc:        ATDOC '(' summaryToken=ID COLON STRING_LIT? ')';
+doc:        DOC_BLOCK;
 lineDoc:        ATDOC STRING_LIT;
 routeHandler:       ATHANDLER ID;
 routePath:      httpMethodToken=ID path req=httpBody? returnToken=ID? reply=httpBody?;

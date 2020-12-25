@@ -14,8 +14,6 @@ const (
 	handlerKey   = "handler"
 	syntaxToken  = "syntax"
 	serviceToken = "service"
-	summaryToken = "summary"
-	returnToken  = "returns"
 )
 
 var (
@@ -770,8 +768,20 @@ func (v *ApiVisitor) VisitRouteDoc(ctx *api.RouteDocContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitDoc(ctx *api.DocContext) interface{} {
-	v.checkToken(ctx.GetSummaryToken(), summaryToken)
-	return v.getNodeText(ctx.STRING_LIT(), true)
+	content := ctx.DOC_BLOCK().GetText()
+	line := ctx.DOC_BLOCK().GetSymbol().GetLine()
+	kvParser := NewKVParser()
+	content = strings.TrimPrefix(content, "@doc")
+	kvSpec, err := kvParser.Parse(line-1, v.filename, content)
+	if err != nil {
+		panic(err)
+	}
+	for _, each := range kvSpec.List {
+		if each.Key.Text == "summary" {
+			return each.Value.Text
+		}
+	}
+	return ""
 }
 
 func (v *ApiVisitor) VisitLineDoc(ctx *api.LineDocContext) interface{} {

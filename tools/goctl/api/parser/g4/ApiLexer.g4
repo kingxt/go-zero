@@ -66,6 +66,7 @@ IMPORT_PATH:        '"' '/'? ID ('/' ID)* '.api' '"';
 STRING_LIT:         ('"' (~["\\] | EscapeSequence)* '"');
 RAW_STRING:         '`' (~[`\\\r\n] | EscapeSequence)* '`';
 INFO_BLOCK:         INFO [ \t]* '(' ~[()]* ')';
+DOC_BLOCK:         ATDOC [ \t]* '(' ~[()]* ')';
 SERVER_META_STRING:         ATSERVER [ \t]* '(' ~[()]* ')';
 HTTP_PATH:          ('/' ((':'? ID)|(ID ('-' ID)*)))+ ;
 
