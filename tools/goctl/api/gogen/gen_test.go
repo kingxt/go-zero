@@ -55,9 +55,7 @@ service A-api {
 const testMultiServiceTemplate = `
 info(
     title: doc title
-    desc: >
-    doc description first part,
-    doc description second part<
+    desc: doc description first part
     version: 1.0
 )
 
@@ -229,7 +227,7 @@ type Response struct {
 }
 
 service A-api {
-  @doc(helloworld)
+  @doc("helloworld")
   @server(
     handler: GreetHandler
   )
@@ -249,7 +247,7 @@ type Response struct {
 }
 
 service A-api {
-  @doc(helloworld)
+  @doc("helloworld")
   @server(
     handler: GreetHandler
   )

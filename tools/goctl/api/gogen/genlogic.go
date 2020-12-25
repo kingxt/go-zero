@@ -122,7 +122,7 @@ func getLogicFolderPath(group spec.Group, route spec.Route) string {
 	if len(folder) == 0 {
 		folder = group.GetAnnotation(groupProperty)
 		if len(folder) == 0 {
-			return handlerDir
+			return logicDir
 		}
 	}
 	folder = strings.TrimPrefix(folder, "/")
