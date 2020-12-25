@@ -656,10 +656,10 @@ func (v *ApiVisitor) VisitServerMeta(ctx *api.ServerMetaContext) interface{} {
 	}
 
 	line := serverMeta.GetSymbol().GetLine()
-	kvParser := NewKVParser()
+	metaParser := NewMetaParser()
 	content := serverMeta.GetText()
 	content = strings.TrimPrefix(content, "@server")
-	kv, err := kvParser.Parse(line-1, v.filename, content)
+	kv, err := metaParser.Parse(line-1, v.filename, content)
 	if err != nil {
 		panic(err)
 	}

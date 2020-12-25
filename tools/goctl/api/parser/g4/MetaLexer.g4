@@ -1,4 +1,4 @@
-lexer grammar KVLexer;
+lexer grammar MetaLexer;
 
 // separators
 LPAREN:             '(';
@@ -11,8 +11,9 @@ COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);
 LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
 // Literals
-STRING_LIT:         ('"' (~["\\] | EscapeSequence)* '"');
-VALUE_LIT:          ((~[("'`:\r\n)] | EscapeSequence)*) ;
+VALUE_LIT:         (ID ('/' ID)?)*;
+
+fragment ID:         Letter LetterOrDigit*;
 
 fragment ExponentPart
     : [eE] [+-]? Digits
