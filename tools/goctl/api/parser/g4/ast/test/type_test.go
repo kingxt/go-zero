@@ -573,6 +573,24 @@ func TestTypeBlock(t *testing.T) {
 	test(t, do, nil, true, `type (
 		Gender int
 	)`)
+
+	test(t, do, []spec.Type{
+		{
+			Name: "Foo",
+			Members: []spec.Member{
+				{
+					Name: "Inline",
+					Type: "Inline",
+					Expr: spec.Type{
+						Name: "Inline",
+					},
+					IsInline: true,
+				},
+			},
+		},
+	}, false, `type Foo{
+		Inline
+	}`)
 }
 
 func TestTypeToken(t *testing.T) {

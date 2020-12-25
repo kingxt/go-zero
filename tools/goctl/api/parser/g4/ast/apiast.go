@@ -155,7 +155,7 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 			filename, nestedApi.Syntax.Line, nestedApi.Syntax.Column, mainApi.Syntax.Version, nestedApi.Syntax.Version)
 	}
 
-	if mainApi.Service.Name != nestedApi.Service.Name {
+	if len(mainApi.Service.Name) != 0 && len(nestedApi.Service.Name) != 0 && mainApi.Service.Name != nestedApi.Service.Name {
 		return fmt.Errorf("%s multiple service name declaration, expecting service name '%s', but found '%s'",
 			filename, mainApi.Service.Name, nestedApi.Service.Name)
 	}

@@ -416,12 +416,17 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *api.TypeStructContext) interface{} {
 func (v *ApiVisitor) VisitTypeField(ctx *api.TypeFieldContext) interface{} {
 	var member spec.Member
 	iFiledContext := ctx.Filed()
+	name := v.getTokenText(ctx.GetName(), false)
 	if iFiledContext != nil {
 		member = iFiledContext.Accept(v).(spec.Member)
 	} else { // anonymousType
+		member.Type = name
+		member.Expr = spec.Type{
+			Name: name,
+		}
 		member.IsInline = true
 	}
-	member.Name = v.getTokenText(ctx.GetName(), false)
+	member.Name = name
 	return member
 }
 
