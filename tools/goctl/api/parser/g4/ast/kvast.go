@@ -39,7 +39,7 @@ func (p *KVParser) Accept(baseLine int, content string, fn func(p *parser.KVPars
 	kvParser := parser.NewKVParser(tokens)
 	visitor := NewKVVisitor("", baseLine)
 
-	p.options = append(p.options, WithKVErrorCallback("", nil))
+	p.options = append(p.options, WithKVErrorCallback(baseLine, "", nil))
 	for _, opt := range p.options {
 		opt(kvParser)
 	}
@@ -67,7 +67,7 @@ func (p *KVParser) Parse(baseLine int, filename string, content string) (kv *KVS
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	kvParser := parser.NewKVParser(tokens)
 	visitor := NewKVVisitor(filename, baseLine)
-	p.options = append(p.options, WithKVErrorCallback(filename, nil))
+	p.options = append(p.options, WithKVErrorCallback(baseLine, filename, nil))
 	for _, opt := range p.options {
 		opt(kvParser)
 	}
@@ -77,10 +77,10 @@ func (p *KVParser) Parse(baseLine int, filename string, content string) (kv *KVS
 	return
 }
 
-func WithKVErrorCallback(filename string, callback ErrCallback) kvOption {
+func WithKVErrorCallback(baseLine int, filename string, callback ErrCallback) kvOption {
 	return func(p *parser.KVParser) {
 		p.RemoveErrorListeners()
-		errListener := NewErrorListener(filename, callback)
+		errListener := NewErrorListener(baseLine, filename, callback)
 		p.AddErrorListener(errListener)
 	}
 }

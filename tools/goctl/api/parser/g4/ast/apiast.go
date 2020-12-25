@@ -139,7 +139,7 @@ func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error)
 func WithErrorCallback(filename string, callback ErrCallback) option {
 	return func(p *parser.ApiParser) {
 		p.RemoveErrorListeners()
-		errListener := NewErrorListener(filename, callback)
+		errListener := NewErrorListener(0, filename, callback)
 		p.AddErrorListener(errListener)
 	}
 }

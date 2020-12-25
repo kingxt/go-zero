@@ -13,20 +13,22 @@ type (
 		*antlr.DefaultErrorListener
 		callback ErrCallback
 		filename string
+		baseline int
 	}
 
 	ErrCallback func(err error)
 )
 
-func NewErrorListener(filename string, callback ErrCallback) *ErrorListener {
+func NewErrorListener(baseline int, filename string, callback ErrCallback) *ErrorListener {
 	return &ErrorListener{
 		callback: callback,
 		filename: filename,
+		baseline: baseline,
 	}
 }
 
 func (listener *ErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, line, column int, msg string, _ antlr.RecognitionException) {
-	lineHeader := "line " + strconv.Itoa(line) + ":" + strconv.Itoa(column)
+	lineHeader := "line " + strconv.Itoa(line+listener.baseline) + ":" + strconv.Itoa(column)
 	if listener.filename != "" {
 		lineHeader = listener.filename + " " + lineHeader
 	}

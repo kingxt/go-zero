@@ -16,9 +16,9 @@ import (
 const testApiTemplate = `
 info(
     title: doc title
-    desc: >
+    desc: ">
     doc description first part,
-    doc description second part<
+    doc description second part<"
     version: 1.0
 )
 

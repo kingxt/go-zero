@@ -12,7 +12,7 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
 // Literals
 STRING_LIT:         ('"' (~["\\] | EscapeSequence)* '"');
-VALUE_LIT:          ((~[("'`:\r\n)] | EscapeSequence)*) ;
+VALUE_LIT:          ((~[("'`:\r\n*)] | EscapeSequence)*) ;
 
 fragment ExponentPart
     : [eE] [+-]? Digits
