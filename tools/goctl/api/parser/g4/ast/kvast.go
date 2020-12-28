@@ -2,6 +2,7 @@ package ast
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/kv"
@@ -32,6 +33,11 @@ func (p *KVParser) Accept(baseLine int, content string, fn func(p *parser.KVPars
 		}
 	}()
 
+	content = p.trim(content)
+	if len(strings.TrimSpace(content)) == 0 {
+		return
+	}
+
 	inputStream := antlr.NewInputStream(content)
 	lexer := parser.NewKVLexer(inputStream)
 	lexer.RemoveErrorListeners()
@@ -61,6 +67,11 @@ func (p *KVParser) Parse(baseLine int, filename string, content string) (kv *KVS
 		}
 	}()
 
+	content = p.trim(content)
+	if len(strings.TrimSpace(content)) == 0 {
+		return &KVSpec{}, nil
+	}
+
 	inputStream := antlr.NewInputStream(content)
 	lexer := parser.NewKVLexer(inputStream)
 	lexer.RemoveErrorListeners()
@@ -77,6 +88,19 @@ func (p *KVParser) Parse(baseLine int, filename string, content string) (kv *KVS
 	return
 }
 
+func (p *KVParser) trim(s string) string {
+	leftIndex := strings.Index(s, "(")
+	if leftIndex >= 0 {
+		s = s[leftIndex+1:]
+	}
+
+	rightIndex := strings.LastIndex(s, ")")
+	if rightIndex >= 0 {
+		s = s[:rightIndex]
+	}
+
+	return s
+}
 func WithKVErrorCallback(baseLine int, filename string, callback ErrCallback) kvOption {
 	return func(p *parser.KVParser) {
 		p.RemoveErrorListeners()

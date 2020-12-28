@@ -15,15 +15,14 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 10, 22, 4,
-	2, 9, 2, 4, 3, 9, 3, 3, 2, 3, 2, 7, 2, 9, 10, 2, 12, 2, 14, 2, 12, 11,
-	2, 3, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 3, 5, 3, 20, 10, 3, 3, 3, 2, 2, 4,
-	2, 4, 2, 3, 3, 2, 9, 10, 2, 21, 2, 6, 3, 2, 2, 2, 4, 16, 3, 2, 2, 2, 6,
-	10, 7, 3, 2, 2, 7, 9, 5, 4, 3, 2, 8, 7, 3, 2, 2, 2, 9, 12, 3, 2, 2, 2,
-	10, 8, 3, 2, 2, 2, 10, 11, 3, 2, 2, 2, 11, 13, 3, 2, 2, 2, 12, 10, 3, 2,
-	2, 2, 13, 14, 7, 4, 2, 2, 14, 15, 7, 2, 2, 3, 15, 3, 3, 2, 2, 2, 16, 17,
-	7, 10, 2, 2, 17, 19, 7, 5, 2, 2, 18, 20, 9, 2, 2, 2, 19, 18, 3, 2, 2, 2,
-	19, 20, 3, 2, 2, 2, 20, 5, 3, 2, 2, 2, 4, 10, 19,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 10, 20, 4,
+	2, 9, 2, 4, 3, 9, 3, 3, 2, 7, 2, 8, 10, 2, 12, 2, 14, 2, 11, 11, 2, 3,
+	2, 3, 2, 3, 3, 3, 3, 3, 3, 5, 3, 18, 10, 3, 3, 3, 2, 2, 4, 2, 4, 2, 3,
+	3, 2, 9, 10, 2, 19, 2, 9, 3, 2, 2, 2, 4, 14, 3, 2, 2, 2, 6, 8, 5, 4, 3,
+	2, 7, 6, 3, 2, 2, 2, 8, 11, 3, 2, 2, 2, 9, 7, 3, 2, 2, 2, 9, 10, 3, 2,
+	2, 2, 10, 12, 3, 2, 2, 2, 11, 9, 3, 2, 2, 2, 12, 13, 7, 2, 2, 3, 13, 3,
+	3, 2, 2, 2, 14, 15, 7, 10, 2, 2, 15, 17, 7, 5, 2, 2, 16, 18, 9, 2, 2, 2,
+	17, 16, 3, 2, 2, 2, 17, 18, 3, 2, 2, 2, 18, 5, 3, 2, 2, 2, 4, 9, 17,
 }
 var literalNames = []string{
 	"", "'('", "')'", "':'",
@@ -123,14 +122,6 @@ func NewKvContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingS
 
 func (s *KvContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *KvContext) LPAREN() antlr.TerminalNode {
-	return s.GetToken(KVParserLPAREN, 0)
-}
-
-func (s *KvContext) RPAREN() antlr.TerminalNode {
-	return s.GetToken(KVParserRPAREN, 0)
-}
-
 func (s *KvContext) EOF() antlr.TerminalNode {
 	return s.GetToken(KVParserEOF, 0)
 }
@@ -198,30 +189,22 @@ func (p *KVParser) Kv() (localctx IKvContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	{
-		p.SetState(4)
-		p.Match(KVParserLPAREN)
-	}
-	p.SetState(8)
+	p.SetState(7)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for _la == KVParserVALUE_LIT {
 		{
-			p.SetState(5)
+			p.SetState(4)
 			p.KvLit()
 		}
 
-		p.SetState(10)
+		p.SetState(9)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(11)
-		p.Match(KVParserRPAREN)
-	}
-	{
-		p.SetState(12)
+		p.SetState(10)
 		p.Match(KVParserEOF)
 	}
 
@@ -345,22 +328,22 @@ func (p *KVParser) KvLit() (localctx IKvLitContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(14)
+		p.SetState(12)
 
 		var _m = p.Match(KVParserVALUE_LIT)
 
 		localctx.(*KvLitContext).key = _m
 	}
 	{
-		p.SetState(15)
+		p.SetState(13)
 		p.Match(KVParserCOLON)
 	}
-	p.SetState(17)
+	p.SetState(15)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(16)
+			p.SetState(14)
 
 			var _lt = p.GetTokenStream().LT(1)
 

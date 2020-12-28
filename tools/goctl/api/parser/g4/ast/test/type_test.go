@@ -293,7 +293,11 @@ func TestField(t *testing.T) {
 	}, false, `Name map[string]int`)
 
 	test(t, do, spec.Member{
-		Name:     "User",
+		Name: "User",
+		Type: "User",
+		Expr: spec.Type{
+			Name: "User",
+		},
 		IsInline: true,
 	}, false, `User`)
 
@@ -320,7 +324,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "string",
 					Name:       "string",
 				},
-				Tag: `json:"vString"`,
+				Tag: "`json:\"vString\"`",
 			},
 			{
 				Name: "VBool",
@@ -329,7 +333,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "bool",
 					Name:       "bool",
 				},
-				Tag: `json:"vBool"`,
+				Tag: "`json:\"vBool\"`",
 			},
 			{
 				Name: "VInt8",
@@ -338,7 +342,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "int8",
 					Name:       "int8",
 				},
-				Tag: `json:"vInt8"`,
+				Tag: "`json:\"vInt8\"`",
 			},
 			{
 				Name: "VInt16",
@@ -347,7 +351,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "int16",
 					Name:       "int16",
 				},
-				Tag: `json:"vInt16"`,
+				Tag: "`json:\"vInt16\"`",
 			},
 			{
 				Name: "VInt32",
@@ -356,7 +360,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "int32",
 					Name:       "int32",
 				},
-				Tag: `json:"vInt32"`,
+				Tag: "`json:\"vInt32\"`",
 			},
 			{
 				Name: "VInt64",
@@ -365,7 +369,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "int64",
 					Name:       "int64",
 				},
-				Tag: `json:"vInt64"`,
+				Tag: "`json:\"vInt64\"`",
 			},
 			{
 				Name: "VInt",
@@ -374,7 +378,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "int",
 					Name:       "int",
 				},
-				Tag: `json:"vInt"`,
+				Tag: "`json:\"vInt\"`",
 			},
 			{
 				Name: "VUInt8",
@@ -383,7 +387,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "uint8",
 					Name:       "uint8",
 				},
-				Tag: `json:"vUInt8"`,
+				Tag: "`json:\"vUInt8\"`",
 			},
 			{
 				Name: "VUInt16",
@@ -392,7 +396,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "uint16",
 					Name:       "uint16",
 				},
-				Tag: `json:"vUInt16"`,
+				Tag: "`json:\"vUInt16\"`",
 			},
 			{
 				Name: "VUInt32",
@@ -401,7 +405,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "uint32",
 					Name:       "uint32",
 				},
-				Tag: `json:"vUInt32"`,
+				Tag: "`json:\"vUInt32\"`",
 			},
 			{
 				Name: "VUInt64",
@@ -410,7 +414,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "uint64",
 					Name:       "uint64",
 				},
-				Tag: `json:"vUInt64"`,
+				Tag: "`json:\"vUInt64\"`",
 			},
 			{
 				Name: "VFloat32",
@@ -419,7 +423,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "float32",
 					Name:       "float32",
 				},
-				Tag: `json:"vFloat32"`,
+				Tag: "`json:\"vFloat32\"`",
 			},
 			{
 				Name: "VFloat64",
@@ -428,7 +432,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "float64",
 					Name:       "float64",
 				},
-				Tag: `json:"vFloat64"`,
+				Tag: "`json:\"vFloat64\"`",
 			},
 			{
 				Name: "VByte",
@@ -437,7 +441,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "byte",
 					Name:       "byte",
 				},
-				Tag: `json:"vByte"`,
+				Tag: "`json:\"vByte\"`",
 			},
 			{
 				Name: "VRune",
@@ -446,7 +450,7 @@ func TestStruct(t *testing.T) {
 					StringExpr: "rune",
 					Name:       "rune",
 				},
-				Tag: `json:"vRune"`,
+				Tag: "`json:\"vRune\"`",
 			},
 			{
 				Name: "VMap",
@@ -459,7 +463,7 @@ func TestStruct(t *testing.T) {
 						Name:       "int",
 					},
 				},
-				Tag: `json:"vMap"`,
+				Tag: "`json:\"vMap\"`",
 			},
 			{
 				Name: "VArray",
@@ -471,7 +475,7 @@ func TestStruct(t *testing.T) {
 						Name:       "int",
 					},
 				},
-				Tag: `json:"vArray"`,
+				Tag: "`json:\"vArray\"`",
 			},
 			{
 				Name: "VStruct",
@@ -479,7 +483,7 @@ func TestStruct(t *testing.T) {
 				Expr: spec.Type{
 					Name: "Foo",
 				},
-				Tag: `json:"vStruct"`,
+				Tag: "`json:\"vStruct\"`",
 			},
 			{
 				Name: "VStructPointer",
@@ -490,13 +494,13 @@ func TestStruct(t *testing.T) {
 						Name: "Foo",
 					},
 				},
-				Tag: `json:"vStructPointer"`,
+				Tag: "`json:\"vStructPointer\"`",
 			},
 			{
 				Name: "VInterface",
 				Type: "interface{}",
 				Expr: spec.InterfaceType{StringExpr: "interface{}"},
-				Tag:  `json:"vInterface"`,
+				Tag:  "`json:\"vInterface\"`",
 			},
 			{
 				Name: "T",
