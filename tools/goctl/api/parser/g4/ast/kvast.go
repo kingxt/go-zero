@@ -3,6 +3,7 @@ package ast
 import (
 	"fmt"
 	"strings"
+	"unicode"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/kv"
@@ -89,16 +90,12 @@ func (p *KVParser) Parse(baseLine int, filename string, content string) (kv *KVS
 }
 
 func (p *KVParser) trim(s string) string {
-	leftIndex := strings.Index(s, "(")
-	if leftIndex >= 0 {
-		s = s[leftIndex+1:]
-	}
-
-	rightIndex := strings.LastIndex(s, ")")
-	if rightIndex >= 0 {
-		s = s[:rightIndex]
-	}
-
+	s = strings.TrimLeftFunc(s, func(r rune) bool {
+		return unicode.IsSpace(r) || r == '('
+	})
+	s = strings.TrimRightFunc(s, func(r rune) bool {
+		return unicode.IsSpace(r) || r == ')'
+	})
 	return s
 }
 func WithKVErrorCallback(baseLine int, filename string, callback ErrCallback) kvOption {
