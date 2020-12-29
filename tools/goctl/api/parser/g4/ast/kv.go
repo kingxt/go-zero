@@ -1,0 +1,50 @@
+package ast
+
+import "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+
+type KvExpr struct {
+	Key         Expr
+	Value       Expr
+	DocExpr     Expr
+	CommentExpr Expr
+}
+
+func (v *ApiVisitor) VisitKvLit(ctx *api.KvLitContext) interface{} {
+	key := v.newExprWithToken(ctx.GetKey())
+	value := v.newExprWithToken(ctx.GetValue())
+	doc := v.getDoc(ctx.GetDoc())
+	comment := v.getDoc(ctx.GetComment())
+	return &KvExpr{
+		Key:         key,
+		Value:       value,
+		DocExpr:     doc,
+		CommentExpr: comment,
+	}
+}
+
+func (k *KvExpr) Format() error {
+	// todo
+	return nil
+}
+
+func (k *KvExpr) Equal(v interface{}) bool {
+	kv, ok := v.(*KvExpr)
+	if !ok {
+		return false
+	}
+
+	if !EqualDoc(k, kv) {
+		return false
+	}
+
+	return ExprEqual(k.Key, kv.Key) &&
+		ExprEqual(k.Value, kv.Value)
+}
+
+func (k *KvExpr) Doc() Expr {
+	return k.DocExpr
+}
+
+func (k *KvExpr) Comment() Expr {
+	return k.CommentExpr
+}

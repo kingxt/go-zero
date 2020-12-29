@@ -11,7 +11,7 @@ func (v *BaseApiParserVisitor) VisitApi(ctx *ApiContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitBody(ctx *BodyContext) interface{} {
+func (v *BaseApiParserVisitor) VisitSpec(ctx *SpecContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -27,110 +27,26 @@ func (v *BaseApiParserVisitor) VisitImportLit(ctx *ImportLitContext) interface{}
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitImportLitGroup(ctx *ImportLitGroupContext) interface{} {
+func (v *BaseApiParserVisitor) VisitImportBlock(ctx *ImportBlockContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitInfoBlock(ctx *InfoBlockContext) interface{} {
+func (v *BaseApiParserVisitor) VisitImportBlockValue(ctx *ImportBlockValueContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitTypeBlock(ctx *TypeBlockContext) interface{} {
+func (v *BaseApiParserVisitor) VisitImportValue(ctx *ImportValueContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitTypeLit(ctx *TypeLitContext) interface{} {
+func (v *BaseApiParserVisitor) VisitInfoSpec(ctx *InfoSpecContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitTypeGroup(ctx *TypeGroupContext) interface{} {
+func (v *BaseApiParserVisitor) VisitKvLit(ctx *KvLitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitTypeSpec(ctx *TypeSpecContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitTypeAlias(ctx *TypeAliasContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitTypeStruct(ctx *TypeStructContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitTypeField(ctx *TypeFieldContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitFiled(ctx *FiledContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitInnerStruct(ctx *InnerStructContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitDataType(ctx *DataTypeContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitMapType(ctx *MapTypeContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitArrayType(ctx *ArrayTypeContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitPointer(ctx *PointerContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitServiceBlock(ctx *ServiceBlockContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitServerMeta(ctx *ServerMetaContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitServiceBody(ctx *ServiceBodyContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitServiceName(ctx *ServiceNameContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitServiceRoute(ctx *ServiceRouteContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitRouteDoc(ctx *RouteDocContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitDoc(ctx *DocContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitLineDoc(ctx *LineDocContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitRouteHandler(ctx *RouteHandlerContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitRoutePath(ctx *RoutePathContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitPath(ctx *PathContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseApiParserVisitor) VisitHttpBody(ctx *HttpBodyContext) interface{} {
+func (v *BaseApiParserVisitor) VisitCommentSpec(ctx *CommentSpecContext) interface{} {
 	return v.VisitChildren(ctx)
 }

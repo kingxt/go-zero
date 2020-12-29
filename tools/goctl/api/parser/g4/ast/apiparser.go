@@ -6,24 +6,31 @@ import (
 	"path/filepath"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	parser "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
 type (
 	Parser struct {
-		options []option
+		prefix string
+		debug  bool
+		antlr.DefaultErrorListener
 	}
 
-	option func(p *parser.ApiParser)
+	ParserOption func(p *Parser)
 )
 
-func NewParser(options ...option) *Parser {
-	return &Parser{options: options}
+func NewParser(options ...ParserOption) *Parser {
+	p := &Parser{}
+	for _, opt := range options {
+		opt(p)
+	}
+
+	return p
 }
 
 // Accept can parse any terminalNode of api tree by fn.
-func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *ApiVisitor) interface{}) (api interface{}, err error) {
+func (p *Parser) Accept(fn func(p *api.ApiParserParser, visitor *ApiVisitor) interface{}, content string) (v interface{}, err error) {
 	defer func() {
 		p := recover()
 		if p != nil {
@@ -37,18 +44,14 @@ func (p *Parser) Accept(content string, fn func(p *parser.ApiParser, visitor *Ap
 	}()
 
 	inputStream := antlr.NewInputStream(content)
-	lexer := parser.NewApiLexer(inputStream)
+	lexer := api.NewApiParserLexer(inputStream)
 	lexer.RemoveErrorListeners()
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
-	apiParser := parser.NewApiParser(tokens)
-	visitor := NewApiVisitor("")
-
-	p.options = append(p.options, WithErrorCallback("", nil))
-	for _, opt := range p.options {
-		opt(apiParser)
-	}
-
-	api = fn(apiParser, visitor)
+	apiParser := api.NewApiParserParser(tokens)
+	apiParser.RemoveErrorListeners()
+	apiParser.AddErrorListener(p)
+	visitor := NewApiVisitor(WithVisitorPrefix(p.prefix))
+	v = fn(apiParser, visitor)
 	return
 }
 
@@ -106,7 +109,7 @@ func (p *Parser) parse(filename, content string) (*spec.ApiSpec, error) {
 	return allApi, nil
 }
 
-func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error) {
+func (p *Parser) invoke(filename, content string) (v *spec.ApiSpec, err error) {
 	defer func() {
 		p := recover()
 		if p != nil {
@@ -120,28 +123,16 @@ func (p *Parser) invoke(filename, content string) (api *spec.ApiSpec, err error)
 	}()
 
 	inputStream := antlr.NewInputStream(content)
-	lexer := parser.NewApiLexer(inputStream)
+	lexer := api.NewApiParserLexer(inputStream)
 	lexer.RemoveErrorListeners()
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
-	apiParser := parser.NewApiParser(tokens)
-	visitor := NewApiVisitor(filename)
+	apiParser := api.NewApiParserParser(tokens)
+	apiParser.RemoveErrorListeners()
+	apiParser.AddErrorListener(p)
+	visitor := NewApiVisitor(WithVisitorPrefix(filepath.Base(filename)))
 
-	p.options = append(p.options, WithErrorCallback(filename, nil))
-	for _, opt := range p.options {
-		opt(apiParser)
-	}
-
-	api = apiParser.Api().Accept(visitor).(*spec.ApiSpec)
-	api.Filename = filename
+	v = apiParser.Api().Accept(visitor).(*spec.ApiSpec)
 	return
-}
-
-func WithErrorCallback(filename string, callback ErrCallback) option {
-	return func(p *parser.ApiParser) {
-		p.RemoveErrorListeners()
-		errListener := NewErrorListener(0, filename, callback)
-		p.AddErrorListener(errListener)
-	}
 }
 
 func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.ApiSpec) error {
@@ -335,4 +326,26 @@ func (p *Parser) readContent(filename string) (string, error) {
 	}
 
 	return string(data), nil
+}
+
+func (p *Parser) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
+	str := fmt.Sprintf(`%s line %d:%d  %s`, p.prefix, line, column, msg)
+	if p.debug {
+		fmt.Println("[debug]", str)
+	}
+	panic(str)
+}
+
+var ParserDebug = WithParserDebug()
+
+func WithParserDebug() ParserOption {
+	return func(p *Parser) {
+		p.debug = true
+	}
+}
+
+func WithParserPrefix(prefix string) ParserOption {
+	return func(p *Parser) {
+		p.prefix = prefix
+	}
 }
