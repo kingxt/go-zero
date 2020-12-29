@@ -11,7 +11,8 @@ WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
 COMMENT:            '/*' .*? '*/';
 LINE_COMMENT:       '//' ~[\r\n]*;
 STRING:             '"' (~["\\] | EscapeSequence)* '"';
-LINE_VALUE:         ':' [ \t]* (STRING|(~[\r\n/"]*));
+RAW_STRING:         '`' (~[`\\\r\n] | EscapeSequence)+ '`';
+LINE_VALUE:         ':' [ \t]* (STRING|(~[\r\n/"`]*));
 ID:         Letter LetterOrDigit*;
 
 

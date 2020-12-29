@@ -10,6 +10,7 @@ import (
 const (
 	versionRegex     = `(?m)"v[1-9][0-9]*"`
 	importValueRegex = `(?m)"(/?[a-zA-Z][a-zA-Z0-9_]*)+.api"`
+	tagRegex         = `(?m)\x60[a-z]+:".+"\x60`
 )
 
 func match(p *ApiParserParser, text string) {
@@ -44,6 +45,36 @@ func checkKeyValue(p *ApiParserParser) {
 		return unicode.IsSpace(r)
 	})
 	setCurrentTokenText(p, v)
+}
+
+func checkFieldName(p *ApiParserParser) {
+	v := getCurrentTokenText(p)
+	switch v {
+	case "var", "const", "package", "import", "func", "return",
+		"defer", "go", "select", "interface", "struct", "break", "case",
+		"continue", "for", "fallthrough", "else", "if", "switch", "goto",
+		"default", "chan", "type", "map", "range":
+		notifyErrorListeners(p, expecting("ID", fmt.Sprintf("golang keyword '%s'", v)))
+	default:
+	}
+}
+
+func isAnonymous(p *ApiParserParser) bool {
+	token := p.GetCurrentToken()
+	nextToken := token.GetTokenSource().NextToken()
+	return token.GetLine() != nextToken.GetLine()
+}
+
+func checkTag(p *ApiParserParser) {
+	v := getCurrentTokenText(p)
+	if !matchRegex(v, tagRegex) {
+		notifyErrorListeners(p, mismatched("key-value tag", v))
+	}
+}
+
+func isInterface(p *ApiParserParser) bool {
+	v := getCurrentTokenText(p)
+	return v == "interface"
 }
 
 func getCurrentTokenText(p *ApiParserParser) string {

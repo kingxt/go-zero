@@ -34,6 +34,39 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParserParser#infoSpec.
 	VisitInfoSpec(ctx *InfoSpecContext) interface{}
 
+	// Visit a parse tree produced by ApiParserParser#typeSpec.
+	VisitTypeSpec(ctx *TypeSpecContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeLit.
+	VisitTypeLit(ctx *TypeLitContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeBlock.
+	VisitTypeBlock(ctx *TypeBlockContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeBody.
+	VisitTypeBody(ctx *TypeBodyContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeStruct.
+	VisitTypeStruct(ctx *TypeStructContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeAlias.
+	VisitTypeAlias(ctx *TypeAliasContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#field.
+	VisitField(ctx *FieldContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#dataType.
+	VisitDataType(ctx *DataTypeContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#pointerType.
+	VisitPointerType(ctx *PointerTypeContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#mapType.
+	VisitMapType(ctx *MapTypeContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#arrayType.
+	VisitArrayType(ctx *ArrayTypeContext) interface{}
+
 	// Visit a parse tree produced by ApiParserParser#kvLit.
 	VisitKvLit(ctx *KvLitContext) interface{}
 
