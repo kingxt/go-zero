@@ -32,12 +32,14 @@ typeBlock:      doc=commentSpec? {match(p,"type")}typeToken=ID lp='(' typeBody+ 
 typeBody:       typeAlias|typeStruct;
 typeStruct:     {checkFieldName(p)}structName=ID {match(p,"struct")}structToken=ID? lbrace='{'  comment=commentSpec? field+ rbrace='}';
 typeAlias:      {checkFieldName(p)}alias=ID assign='='? dataType comment=commentSpec?;
-field:          doc=commentSpec?{isAnonymous(p)}?fieldName=ID dataType {checkTag(p)}tag=RAW_STRING? comment=commentSpec?;
+field:          ({isAnonymous(p)}? anonymousFiled) | normalField;
+normalField:    doc=commentSpec? fieldName=ID dataType {checkTag(p)}tag=RAW_STRING? comment=commentSpec?;
+anonymousFiled: doc=commentSpec? star='*'? ID comment=commentSpec?;
 dataType:       {isInterface(p)}ID
                 |mapType
                 |arrayType
-                |'interface{}'
-                |'time.Time'
+                |inter='interface{}'
+                |time='time.Time'
                 |pointerType
                 |typeStruct
                 ;

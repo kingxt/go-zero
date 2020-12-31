@@ -31,6 +31,7 @@ type (
 		Text() string
 		Start() int
 		Stop() int
+		Equal(expr Expr) bool
 	}
 )
 
@@ -84,26 +85,36 @@ func NewTextExpr(v string) *defaultExpr {
 }
 
 func (v *ApiVisitor) newExprWithTerminalNode(node antlr.TerminalNode) *defaultExpr {
-	instance := &defaultExpr{}
-	if node != nil {
-		token := node.GetSymbol()
-		return v.newExprWithToken(token)
+	if node == nil {
+		return nil
 	}
+	token := node.GetSymbol()
+	return v.newExprWithToken(token)
+}
+
+func (v *ApiVisitor) newExprWithToken(token antlr.Token) *defaultExpr {
+	if token == nil {
+		return nil
+	}
+	instance := &defaultExpr{}
+	instance.prefix = v.prefix
+	instance.v = token.GetText()
+	instance.line = token.GetLine()
+	instance.column = token.GetColumn()
+	instance.start = token.GetStart()
+	instance.stop = token.GetStop()
 
 	return instance
 }
 
-func (v *ApiVisitor) newExprWithToken(token antlr.Token) *defaultExpr {
+func (v *ApiVisitor) newExprWithText(text string, line, column, start, stop int) *defaultExpr {
 	instance := &defaultExpr{}
-	if token != nil {
-		instance.prefix = v.prefix
-		instance.v = token.GetText()
-		instance.line = token.GetLine()
-		instance.column = token.GetColumn()
-		instance.start = token.GetStart()
-		instance.stop = token.GetStop()
-	}
-
+	instance.prefix = v.prefix
+	instance.v = text
+	instance.line = line
+	instance.column = column
+	instance.start = start
+	instance.stop = stop
 	return instance
 }
 
@@ -131,28 +142,36 @@ func (e *defaultExpr) Stop() int {
 	return e.stop
 }
 
-func ExprEqual(expr1, expr2 Expr) bool {
-	if expr1 == nil {
-		if expr2 != nil {
+func (e *defaultExpr) Equal(expr Expr) bool {
+	if e == nil {
+		if expr != nil {
 			return false
 		}
 		return true
 	}
 
-	if expr2 == nil {
+	if expr == nil {
 		return false
 	}
 
-	return expr1.Text() == expr2.Text()
+	return e.v == expr.Text()
 }
 
 func EqualDoc(spec1, spec2 Spec) bool {
-	if !ExprEqual(spec1.Doc(), spec2.Doc()) {
-		return false
+	if spec1.Doc() != nil {
+		if spec2 == nil {
+			return false
+		}
+		if !spec1.Doc().Equal(spec2.Doc()) {
+			return false
+		}
 	}
 
-	if !ExprEqual(spec1.Comment(), spec2.Comment()) {
-		return false
+	if spec1.Comment() != nil {
+		if spec2.Comment() == nil {
+			return false
+		}
+		return spec1.Comment().Equal(spec2.Comment())
 	}
 
 	return true

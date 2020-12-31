@@ -55,6 +55,12 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParserParser#field.
 	VisitField(ctx *FieldContext) interface{}
 
+	// Visit a parse tree produced by ApiParserParser#normalField.
+	VisitNormalField(ctx *NormalFieldContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#anonymousFiled.
+	VisitAnonymousFiled(ctx *AnonymousFiledContext) interface{}
+
 	// Visit a parse tree produced by ApiParserParser#dataType.
 	VisitDataType(ctx *DataTypeContext) interface{}
 

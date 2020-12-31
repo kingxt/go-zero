@@ -31,6 +31,18 @@ func (s *SyntaxExpr) Format() error {
 }
 
 func (s *SyntaxExpr) Equal(v interface{}) bool {
+	if s == nil {
+		if v != nil {
+			return false
+		}
+
+		return true
+	}
+
+	if v == nil {
+		return false
+	}
+
 	syntax, ok := v.(*SyntaxExpr)
 	if !ok {
 		return false
@@ -40,9 +52,9 @@ func (s *SyntaxExpr) Equal(v interface{}) bool {
 		return false
 	}
 
-	return ExprEqual(s.Syntax, syntax.Syntax) &&
-		ExprEqual(s.Assign, syntax.Assign) &&
-		ExprEqual(s.Version, syntax.Version)
+	return s.Syntax.Equal(syntax.Syntax) &&
+		s.Assign.Equal(syntax.Assign) &&
+		s.Version.Equal(syntax.Version)
 }
 
 func (s *SyntaxExpr) Doc() Expr {

@@ -15,109 +15,118 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 22, 225,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 22, 243,
 	4, 2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7,
 	4, 8, 9, 8, 4, 9, 9, 9, 4, 10, 9, 10, 4, 11, 9, 11, 4, 12, 9, 12, 4, 13,
 	9, 13, 4, 14, 9, 14, 4, 15, 9, 15, 4, 16, 9, 16, 4, 17, 9, 17, 4, 18, 9,
 	18, 4, 19, 9, 19, 4, 20, 9, 20, 4, 21, 9, 21, 4, 22, 9, 22, 4, 23, 9, 23,
-	3, 2, 7, 2, 48, 10, 2, 12, 2, 14, 2, 51, 11, 2, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 5, 3, 58, 10, 3, 3, 4, 5, 4, 61, 10, 4, 3, 4, 3, 4, 3, 4, 3, 4, 3,
-	4, 3, 4, 5, 4, 69, 10, 4, 3, 5, 3, 5, 5, 5, 73, 10, 5, 3, 6, 5, 6, 76,
-	10, 6, 3, 6, 3, 6, 3, 6, 3, 6, 5, 6, 82, 10, 6, 3, 7, 3, 7, 3, 7, 3, 7,
-	5, 7, 88, 10, 7, 3, 7, 6, 7, 91, 10, 7, 13, 7, 14, 7, 92, 3, 7, 3, 7, 3,
-	8, 5, 8, 98, 10, 8, 3, 8, 3, 8, 5, 8, 102, 10, 8, 3, 9, 3, 9, 3, 9, 3,
-	10, 5, 10, 108, 10, 10, 3, 10, 3, 10, 3, 10, 3, 10, 5, 10, 114, 10, 10,
-	3, 10, 6, 10, 117, 10, 10, 13, 10, 14, 10, 118, 3, 10, 3, 10, 3, 11, 3,
-	11, 5, 11, 125, 10, 11, 3, 12, 5, 12, 128, 10, 12, 3, 12, 3, 12, 3, 12,
-	3, 12, 3, 13, 5, 13, 135, 10, 13, 3, 13, 3, 13, 3, 13, 3, 13, 6, 13, 141,
-	10, 13, 13, 13, 14, 13, 142, 3, 13, 3, 13, 3, 14, 3, 14, 5, 14, 149, 10,
-	14, 3, 15, 3, 15, 3, 15, 3, 15, 5, 15, 155, 10, 15, 3, 15, 3, 15, 5, 15,
-	159, 10, 15, 3, 15, 6, 15, 162, 10, 15, 13, 15, 14, 15, 163, 3, 15, 3,
-	15, 3, 16, 3, 16, 3, 16, 5, 16, 171, 10, 16, 3, 16, 3, 16, 5, 16, 175,
-	10, 16, 3, 17, 5, 17, 178, 10, 17, 3, 17, 3, 17, 3, 17, 3, 17, 3, 17, 5,
-	17, 185, 10, 17, 3, 17, 5, 17, 188, 10, 17, 3, 18, 3, 18, 3, 18, 3, 18,
-	3, 18, 3, 18, 3, 18, 3, 18, 5, 18, 198, 10, 18, 3, 19, 3, 19, 3, 19, 3,
-	20, 3, 20, 3, 20, 3, 20, 3, 20, 3, 20, 3, 20, 3, 21, 3, 21, 3, 21, 3, 21,
-	3, 22, 5, 22, 215, 10, 22, 3, 22, 3, 22, 3, 22, 3, 22, 5, 22, 221, 10,
-	22, 3, 23, 3, 23, 3, 23, 2, 2, 24, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20,
-	22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 2, 3, 3, 2, 17, 18, 2,
-	240, 2, 49, 3, 2, 2, 2, 4, 57, 3, 2, 2, 2, 6, 60, 3, 2, 2, 2, 8, 72, 3,
-	2, 2, 2, 10, 75, 3, 2, 2, 2, 12, 83, 3, 2, 2, 2, 14, 97, 3, 2, 2, 2, 16,
-	103, 3, 2, 2, 2, 18, 107, 3, 2, 2, 2, 20, 124, 3, 2, 2, 2, 22, 127, 3,
-	2, 2, 2, 24, 134, 3, 2, 2, 2, 26, 148, 3, 2, 2, 2, 28, 150, 3, 2, 2, 2,
-	30, 167, 3, 2, 2, 2, 32, 177, 3, 2, 2, 2, 34, 197, 3, 2, 2, 2, 36, 199,
-	3, 2, 2, 2, 38, 202, 3, 2, 2, 2, 40, 209, 3, 2, 2, 2, 42, 214, 3, 2, 2,
-	2, 44, 222, 3, 2, 2, 2, 46, 48, 5, 4, 3, 2, 47, 46, 3, 2, 2, 2, 48, 51,
-	3, 2, 2, 2, 49, 47, 3, 2, 2, 2, 49, 50, 3, 2, 2, 2, 50, 3, 3, 2, 2, 2,
-	51, 49, 3, 2, 2, 2, 52, 58, 5, 6, 4, 2, 53, 58, 5, 8, 5, 2, 54, 58, 5,
-	18, 10, 2, 55, 58, 5, 20, 11, 2, 56, 58, 5, 44, 23, 2, 57, 52, 3, 2, 2,
-	2, 57, 53, 3, 2, 2, 2, 57, 54, 3, 2, 2, 2, 57, 55, 3, 2, 2, 2, 57, 56,
-	3, 2, 2, 2, 58, 5, 3, 2, 2, 2, 59, 61, 5, 44, 23, 2, 60, 59, 3, 2, 2, 2,
-	60, 61, 3, 2, 2, 2, 61, 62, 3, 2, 2, 2, 62, 63, 8, 4, 1, 2, 63, 64, 7,
-	22, 2, 2, 64, 65, 7, 3, 2, 2, 65, 66, 8, 4, 1, 2, 66, 68, 7, 19, 2, 2,
-	67, 69, 5, 44, 23, 2, 68, 67, 3, 2, 2, 2, 68, 69, 3, 2, 2, 2, 69, 7, 3,
-	2, 2, 2, 70, 73, 5, 10, 6, 2, 71, 73, 5, 12, 7, 2, 72, 70, 3, 2, 2, 2,
-	72, 71, 3, 2, 2, 2, 73, 9, 3, 2, 2, 2, 74, 76, 5, 44, 23, 2, 75, 74, 3,
-	2, 2, 2, 75, 76, 3, 2, 2, 2, 76, 77, 3, 2, 2, 2, 77, 78, 8, 6, 1, 2, 78,
-	79, 7, 22, 2, 2, 79, 81, 5, 16, 9, 2, 80, 82, 5, 44, 23, 2, 81, 80, 3,
-	2, 2, 2, 81, 82, 3, 2, 2, 2, 82, 11, 3, 2, 2, 2, 83, 84, 8, 7, 1, 2, 84,
-	85, 7, 22, 2, 2, 85, 87, 7, 4, 2, 2, 86, 88, 5, 44, 23, 2, 87, 86, 3, 2,
-	2, 2, 87, 88, 3, 2, 2, 2, 88, 90, 3, 2, 2, 2, 89, 91, 5, 14, 8, 2, 90,
-	89, 3, 2, 2, 2, 91, 92, 3, 2, 2, 2, 92, 90, 3, 2, 2, 2, 92, 93, 3, 2, 2,
-	2, 93, 94, 3, 2, 2, 2, 94, 95, 7, 5, 2, 2, 95, 13, 3, 2, 2, 2, 96, 98,
-	5, 44, 23, 2, 97, 96, 3, 2, 2, 2, 97, 98, 3, 2, 2, 2, 98, 99, 3, 2, 2,
-	2, 99, 101, 5, 16, 9, 2, 100, 102, 5, 44, 23, 2, 101, 100, 3, 2, 2, 2,
-	101, 102, 3, 2, 2, 2, 102, 15, 3, 2, 2, 2, 103, 104, 8, 9, 1, 2, 104, 105,
-	7, 19, 2, 2, 105, 17, 3, 2, 2, 2, 106, 108, 5, 44, 23, 2, 107, 106, 3,
-	2, 2, 2, 107, 108, 3, 2, 2, 2, 108, 109, 3, 2, 2, 2, 109, 110, 8, 10, 1,
-	2, 110, 111, 7, 22, 2, 2, 111, 113, 7, 4, 2, 2, 112, 114, 5, 44, 23, 2,
-	113, 112, 3, 2, 2, 2, 113, 114, 3, 2, 2, 2, 114, 116, 3, 2, 2, 2, 115,
-	117, 5, 42, 22, 2, 116, 115, 3, 2, 2, 2, 117, 118, 3, 2, 2, 2, 118, 116,
-	3, 2, 2, 2, 118, 119, 3, 2, 2, 2, 119, 120, 3, 2, 2, 2, 120, 121, 7, 5,
-	2, 2, 121, 19, 3, 2, 2, 2, 122, 125, 5, 22, 12, 2, 123, 125, 5, 24, 13,
-	2, 124, 122, 3, 2, 2, 2, 124, 123, 3, 2, 2, 2, 125, 21, 3, 2, 2, 2, 126,
-	128, 5, 44, 23, 2, 127, 126, 3, 2, 2, 2, 127, 128, 3, 2, 2, 2, 128, 129,
-	3, 2, 2, 2, 129, 130, 8, 12, 1, 2, 130, 131, 7, 22, 2, 2, 131, 132, 5,
-	26, 14, 2, 132, 23, 3, 2, 2, 2, 133, 135, 5, 44, 23, 2, 134, 133, 3, 2,
-	2, 2, 134, 135, 3, 2, 2, 2, 135, 136, 3, 2, 2, 2, 136, 137, 8, 13, 1, 2,
-	137, 138, 7, 22, 2, 2, 138, 140, 7, 4, 2, 2, 139, 141, 5, 26, 14, 2, 140,
-	139, 3, 2, 2, 2, 141, 142, 3, 2, 2, 2, 142, 140, 3, 2, 2, 2, 142, 143,
-	3, 2, 2, 2, 143, 144, 3, 2, 2, 2, 144, 145, 7, 5, 2, 2, 145, 25, 3, 2,
-	2, 2, 146, 149, 5, 30, 16, 2, 147, 149, 5, 28, 15, 2, 148, 146, 3, 2, 2,
-	2, 148, 147, 3, 2, 2, 2, 149, 27, 3, 2, 2, 2, 150, 151, 8, 15, 1, 2, 151,
-	152, 7, 22, 2, 2, 152, 154, 8, 15, 1, 2, 153, 155, 7, 22, 2, 2, 154, 153,
-	3, 2, 2, 2, 154, 155, 3, 2, 2, 2, 155, 156, 3, 2, 2, 2, 156, 158, 7, 6,
-	2, 2, 157, 159, 5, 44, 23, 2, 158, 157, 3, 2, 2, 2, 158, 159, 3, 2, 2,
-	2, 159, 161, 3, 2, 2, 2, 160, 162, 5, 32, 17, 2, 161, 160, 3, 2, 2, 2,
-	162, 163, 3, 2, 2, 2, 163, 161, 3, 2, 2, 2, 163, 164, 3, 2, 2, 2, 164,
-	165, 3, 2, 2, 2, 165, 166, 7, 7, 2, 2, 166, 29, 3, 2, 2, 2, 167, 168, 8,
-	16, 1, 2, 168, 170, 7, 22, 2, 2, 169, 171, 7, 3, 2, 2, 170, 169, 3, 2,
-	2, 2, 170, 171, 3, 2, 2, 2, 171, 172, 3, 2, 2, 2, 172, 174, 5, 34, 18,
-	2, 173, 175, 5, 44, 23, 2, 174, 173, 3, 2, 2, 2, 174, 175, 3, 2, 2, 2,
-	175, 31, 3, 2, 2, 2, 176, 178, 5, 44, 23, 2, 177, 176, 3, 2, 2, 2, 177,
-	178, 3, 2, 2, 2, 178, 179, 3, 2, 2, 2, 179, 180, 6, 17, 2, 2, 180, 181,
-	7, 22, 2, 2, 181, 182, 5, 34, 18, 2, 182, 184, 8, 17, 1, 2, 183, 185, 7,
-	20, 2, 2, 184, 183, 3, 2, 2, 2, 184, 185, 3, 2, 2, 2, 185, 187, 3, 2, 2,
-	2, 186, 188, 5, 44, 23, 2, 187, 186, 3, 2, 2, 2, 187, 188, 3, 2, 2, 2,
-	188, 33, 3, 2, 2, 2, 189, 190, 8, 18, 1, 2, 190, 198, 7, 22, 2, 2, 191,
-	198, 5, 38, 20, 2, 192, 198, 5, 40, 21, 2, 193, 198, 7, 14, 2, 2, 194,
-	198, 7, 8, 2, 2, 195, 198, 5, 36, 19, 2, 196, 198, 5, 28, 15, 2, 197, 189,
-	3, 2, 2, 2, 197, 191, 3, 2, 2, 2, 197, 192, 3, 2, 2, 2, 197, 193, 3, 2,
-	2, 2, 197, 194, 3, 2, 2, 2, 197, 195, 3, 2, 2, 2, 197, 196, 3, 2, 2, 2,
-	198, 35, 3, 2, 2, 2, 199, 200, 7, 9, 2, 2, 200, 201, 7, 22, 2, 2, 201,
-	37, 3, 2, 2, 2, 202, 203, 8, 20, 1, 2, 203, 204, 7, 22, 2, 2, 204, 205,
-	7, 10, 2, 2, 205, 206, 7, 22, 2, 2, 206, 207, 7, 11, 2, 2, 207, 208, 5,
-	34, 18, 2, 208, 39, 3, 2, 2, 2, 209, 210, 7, 10, 2, 2, 210, 211, 7, 11,
-	2, 2, 211, 212, 5, 34, 18, 2, 212, 41, 3, 2, 2, 2, 213, 215, 5, 44, 23,
-	2, 214, 213, 3, 2, 2, 2, 214, 215, 3, 2, 2, 2, 215, 216, 3, 2, 2, 2, 216,
-	217, 7, 22, 2, 2, 217, 218, 8, 22, 1, 2, 218, 220, 7, 21, 2, 2, 219, 221,
-	5, 44, 23, 2, 220, 219, 3, 2, 2, 2, 220, 221, 3, 2, 2, 2, 221, 43, 3, 2,
-	2, 2, 222, 223, 9, 2, 2, 2, 223, 45, 3, 2, 2, 2, 32, 49, 57, 60, 68, 72,
-	75, 81, 87, 92, 97, 101, 107, 113, 118, 124, 127, 134, 142, 148, 154, 158,
-	163, 170, 174, 177, 184, 187, 197, 214, 220,
+	4, 24, 9, 24, 4, 25, 9, 25, 3, 2, 7, 2, 52, 10, 2, 12, 2, 14, 2, 55, 11,
+	2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 62, 10, 3, 3, 4, 5, 4, 65, 10, 4,
+	3, 4, 3, 4, 3, 4, 3, 4, 3, 4, 3, 4, 5, 4, 73, 10, 4, 3, 5, 3, 5, 5, 5,
+	77, 10, 5, 3, 6, 5, 6, 80, 10, 6, 3, 6, 3, 6, 3, 6, 3, 6, 5, 6, 86, 10,
+	6, 3, 7, 3, 7, 3, 7, 3, 7, 5, 7, 92, 10, 7, 3, 7, 6, 7, 95, 10, 7, 13,
+	7, 14, 7, 96, 3, 7, 3, 7, 3, 8, 5, 8, 102, 10, 8, 3, 8, 3, 8, 5, 8, 106,
+	10, 8, 3, 9, 3, 9, 3, 9, 3, 10, 5, 10, 112, 10, 10, 3, 10, 3, 10, 3, 10,
+	3, 10, 5, 10, 118, 10, 10, 3, 10, 6, 10, 121, 10, 10, 13, 10, 14, 10, 122,
+	3, 10, 3, 10, 3, 11, 3, 11, 5, 11, 129, 10, 11, 3, 12, 5, 12, 132, 10,
+	12, 3, 12, 3, 12, 3, 12, 3, 12, 3, 13, 5, 13, 139, 10, 13, 3, 13, 3, 13,
+	3, 13, 3, 13, 6, 13, 145, 10, 13, 13, 13, 14, 13, 146, 3, 13, 3, 13, 3,
+	14, 3, 14, 5, 14, 153, 10, 14, 3, 15, 3, 15, 3, 15, 3, 15, 5, 15, 159,
+	10, 15, 3, 15, 3, 15, 5, 15, 163, 10, 15, 3, 15, 6, 15, 166, 10, 15, 13,
+	15, 14, 15, 167, 3, 15, 3, 15, 3, 16, 3, 16, 3, 16, 5, 16, 175, 10, 16,
+	3, 16, 3, 16, 5, 16, 179, 10, 16, 3, 17, 3, 17, 3, 17, 5, 17, 184, 10,
+	17, 3, 18, 5, 18, 187, 10, 18, 3, 18, 3, 18, 3, 18, 3, 18, 5, 18, 193,
+	10, 18, 3, 18, 5, 18, 196, 10, 18, 3, 19, 5, 19, 199, 10, 19, 3, 19, 5,
+	19, 202, 10, 19, 3, 19, 3, 19, 5, 19, 206, 10, 19, 3, 20, 3, 20, 3, 20,
+	3, 20, 3, 20, 3, 20, 3, 20, 3, 20, 5, 20, 216, 10, 20, 3, 21, 3, 21, 3,
+	21, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 3, 22, 3, 23, 3, 23, 3, 23,
+	3, 23, 3, 24, 5, 24, 233, 10, 24, 3, 24, 3, 24, 3, 24, 3, 24, 5, 24, 239,
+	10, 24, 3, 25, 3, 25, 3, 25, 2, 2, 26, 2, 4, 6, 8, 10, 12, 14, 16, 18,
+	20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 2, 3, 3, 2,
+	17, 18, 2, 260, 2, 53, 3, 2, 2, 2, 4, 61, 3, 2, 2, 2, 6, 64, 3, 2, 2, 2,
+	8, 76, 3, 2, 2, 2, 10, 79, 3, 2, 2, 2, 12, 87, 3, 2, 2, 2, 14, 101, 3,
+	2, 2, 2, 16, 107, 3, 2, 2, 2, 18, 111, 3, 2, 2, 2, 20, 128, 3, 2, 2, 2,
+	22, 131, 3, 2, 2, 2, 24, 138, 3, 2, 2, 2, 26, 152, 3, 2, 2, 2, 28, 154,
+	3, 2, 2, 2, 30, 171, 3, 2, 2, 2, 32, 183, 3, 2, 2, 2, 34, 186, 3, 2, 2,
+	2, 36, 198, 3, 2, 2, 2, 38, 215, 3, 2, 2, 2, 40, 217, 3, 2, 2, 2, 42, 220,
+	3, 2, 2, 2, 44, 227, 3, 2, 2, 2, 46, 232, 3, 2, 2, 2, 48, 240, 3, 2, 2,
+	2, 50, 52, 5, 4, 3, 2, 51, 50, 3, 2, 2, 2, 52, 55, 3, 2, 2, 2, 53, 51,
+	3, 2, 2, 2, 53, 54, 3, 2, 2, 2, 54, 3, 3, 2, 2, 2, 55, 53, 3, 2, 2, 2,
+	56, 62, 5, 6, 4, 2, 57, 62, 5, 8, 5, 2, 58, 62, 5, 18, 10, 2, 59, 62, 5,
+	20, 11, 2, 60, 62, 5, 48, 25, 2, 61, 56, 3, 2, 2, 2, 61, 57, 3, 2, 2, 2,
+	61, 58, 3, 2, 2, 2, 61, 59, 3, 2, 2, 2, 61, 60, 3, 2, 2, 2, 62, 5, 3, 2,
+	2, 2, 63, 65, 5, 48, 25, 2, 64, 63, 3, 2, 2, 2, 64, 65, 3, 2, 2, 2, 65,
+	66, 3, 2, 2, 2, 66, 67, 8, 4, 1, 2, 67, 68, 7, 22, 2, 2, 68, 69, 7, 3,
+	2, 2, 69, 70, 8, 4, 1, 2, 70, 72, 7, 19, 2, 2, 71, 73, 5, 48, 25, 2, 72,
+	71, 3, 2, 2, 2, 72, 73, 3, 2, 2, 2, 73, 7, 3, 2, 2, 2, 74, 77, 5, 10, 6,
+	2, 75, 77, 5, 12, 7, 2, 76, 74, 3, 2, 2, 2, 76, 75, 3, 2, 2, 2, 77, 9,
+	3, 2, 2, 2, 78, 80, 5, 48, 25, 2, 79, 78, 3, 2, 2, 2, 79, 80, 3, 2, 2,
+	2, 80, 81, 3, 2, 2, 2, 81, 82, 8, 6, 1, 2, 82, 83, 7, 22, 2, 2, 83, 85,
+	5, 16, 9, 2, 84, 86, 5, 48, 25, 2, 85, 84, 3, 2, 2, 2, 85, 86, 3, 2, 2,
+	2, 86, 11, 3, 2, 2, 2, 87, 88, 8, 7, 1, 2, 88, 89, 7, 22, 2, 2, 89, 91,
+	7, 4, 2, 2, 90, 92, 5, 48, 25, 2, 91, 90, 3, 2, 2, 2, 91, 92, 3, 2, 2,
+	2, 92, 94, 3, 2, 2, 2, 93, 95, 5, 14, 8, 2, 94, 93, 3, 2, 2, 2, 95, 96,
+	3, 2, 2, 2, 96, 94, 3, 2, 2, 2, 96, 97, 3, 2, 2, 2, 97, 98, 3, 2, 2, 2,
+	98, 99, 7, 5, 2, 2, 99, 13, 3, 2, 2, 2, 100, 102, 5, 48, 25, 2, 101, 100,
+	3, 2, 2, 2, 101, 102, 3, 2, 2, 2, 102, 103, 3, 2, 2, 2, 103, 105, 5, 16,
+	9, 2, 104, 106, 5, 48, 25, 2, 105, 104, 3, 2, 2, 2, 105, 106, 3, 2, 2,
+	2, 106, 15, 3, 2, 2, 2, 107, 108, 8, 9, 1, 2, 108, 109, 7, 19, 2, 2, 109,
+	17, 3, 2, 2, 2, 110, 112, 5, 48, 25, 2, 111, 110, 3, 2, 2, 2, 111, 112,
+	3, 2, 2, 2, 112, 113, 3, 2, 2, 2, 113, 114, 8, 10, 1, 2, 114, 115, 7, 22,
+	2, 2, 115, 117, 7, 4, 2, 2, 116, 118, 5, 48, 25, 2, 117, 116, 3, 2, 2,
+	2, 117, 118, 3, 2, 2, 2, 118, 120, 3, 2, 2, 2, 119, 121, 5, 46, 24, 2,
+	120, 119, 3, 2, 2, 2, 121, 122, 3, 2, 2, 2, 122, 120, 3, 2, 2, 2, 122,
+	123, 3, 2, 2, 2, 123, 124, 3, 2, 2, 2, 124, 125, 7, 5, 2, 2, 125, 19, 3,
+	2, 2, 2, 126, 129, 5, 22, 12, 2, 127, 129, 5, 24, 13, 2, 128, 126, 3, 2,
+	2, 2, 128, 127, 3, 2, 2, 2, 129, 21, 3, 2, 2, 2, 130, 132, 5, 48, 25, 2,
+	131, 130, 3, 2, 2, 2, 131, 132, 3, 2, 2, 2, 132, 133, 3, 2, 2, 2, 133,
+	134, 8, 12, 1, 2, 134, 135, 7, 22, 2, 2, 135, 136, 5, 26, 14, 2, 136, 23,
+	3, 2, 2, 2, 137, 139, 5, 48, 25, 2, 138, 137, 3, 2, 2, 2, 138, 139, 3,
+	2, 2, 2, 139, 140, 3, 2, 2, 2, 140, 141, 8, 13, 1, 2, 141, 142, 7, 22,
+	2, 2, 142, 144, 7, 4, 2, 2, 143, 145, 5, 26, 14, 2, 144, 143, 3, 2, 2,
+	2, 145, 146, 3, 2, 2, 2, 146, 144, 3, 2, 2, 2, 146, 147, 3, 2, 2, 2, 147,
+	148, 3, 2, 2, 2, 148, 149, 7, 5, 2, 2, 149, 25, 3, 2, 2, 2, 150, 153, 5,
+	30, 16, 2, 151, 153, 5, 28, 15, 2, 152, 150, 3, 2, 2, 2, 152, 151, 3, 2,
+	2, 2, 153, 27, 3, 2, 2, 2, 154, 155, 8, 15, 1, 2, 155, 156, 7, 22, 2, 2,
+	156, 158, 8, 15, 1, 2, 157, 159, 7, 22, 2, 2, 158, 157, 3, 2, 2, 2, 158,
+	159, 3, 2, 2, 2, 159, 160, 3, 2, 2, 2, 160, 162, 7, 6, 2, 2, 161, 163,
+	5, 48, 25, 2, 162, 161, 3, 2, 2, 2, 162, 163, 3, 2, 2, 2, 163, 165, 3,
+	2, 2, 2, 164, 166, 5, 32, 17, 2, 165, 164, 3, 2, 2, 2, 166, 167, 3, 2,
+	2, 2, 167, 165, 3, 2, 2, 2, 167, 168, 3, 2, 2, 2, 168, 169, 3, 2, 2, 2,
+	169, 170, 7, 7, 2, 2, 170, 29, 3, 2, 2, 2, 171, 172, 8, 16, 1, 2, 172,
+	174, 7, 22, 2, 2, 173, 175, 7, 3, 2, 2, 174, 173, 3, 2, 2, 2, 174, 175,
+	3, 2, 2, 2, 175, 176, 3, 2, 2, 2, 176, 178, 5, 38, 20, 2, 177, 179, 5,
+	48, 25, 2, 178, 177, 3, 2, 2, 2, 178, 179, 3, 2, 2, 2, 179, 31, 3, 2, 2,
+	2, 180, 181, 6, 17, 2, 2, 181, 184, 5, 36, 19, 2, 182, 184, 5, 34, 18,
+	2, 183, 180, 3, 2, 2, 2, 183, 182, 3, 2, 2, 2, 184, 33, 3, 2, 2, 2, 185,
+	187, 5, 48, 25, 2, 186, 185, 3, 2, 2, 2, 186, 187, 3, 2, 2, 2, 187, 188,
+	3, 2, 2, 2, 188, 189, 7, 22, 2, 2, 189, 190, 5, 38, 20, 2, 190, 192, 8,
+	18, 1, 2, 191, 193, 7, 20, 2, 2, 192, 191, 3, 2, 2, 2, 192, 193, 3, 2,
+	2, 2, 193, 195, 3, 2, 2, 2, 194, 196, 5, 48, 25, 2, 195, 194, 3, 2, 2,
+	2, 195, 196, 3, 2, 2, 2, 196, 35, 3, 2, 2, 2, 197, 199, 5, 48, 25, 2, 198,
+	197, 3, 2, 2, 2, 198, 199, 3, 2, 2, 2, 199, 201, 3, 2, 2, 2, 200, 202,
+	7, 8, 2, 2, 201, 200, 3, 2, 2, 2, 201, 202, 3, 2, 2, 2, 202, 203, 3, 2,
+	2, 2, 203, 205, 7, 22, 2, 2, 204, 206, 5, 48, 25, 2, 205, 204, 3, 2, 2,
+	2, 205, 206, 3, 2, 2, 2, 206, 37, 3, 2, 2, 2, 207, 208, 8, 20, 1, 2, 208,
+	216, 7, 22, 2, 2, 209, 216, 5, 42, 22, 2, 210, 216, 5, 44, 23, 2, 211,
+	216, 7, 14, 2, 2, 212, 216, 7, 9, 2, 2, 213, 216, 5, 40, 21, 2, 214, 216,
+	5, 28, 15, 2, 215, 207, 3, 2, 2, 2, 215, 209, 3, 2, 2, 2, 215, 210, 3,
+	2, 2, 2, 215, 211, 3, 2, 2, 2, 215, 212, 3, 2, 2, 2, 215, 213, 3, 2, 2,
+	2, 215, 214, 3, 2, 2, 2, 216, 39, 3, 2, 2, 2, 217, 218, 7, 8, 2, 2, 218,
+	219, 7, 22, 2, 2, 219, 41, 3, 2, 2, 2, 220, 221, 8, 22, 1, 2, 221, 222,
+	7, 22, 2, 2, 222, 223, 7, 10, 2, 2, 223, 224, 7, 22, 2, 2, 224, 225, 7,
+	11, 2, 2, 225, 226, 5, 38, 20, 2, 226, 43, 3, 2, 2, 2, 227, 228, 7, 10,
+	2, 2, 228, 229, 7, 11, 2, 2, 229, 230, 5, 38, 20, 2, 230, 45, 3, 2, 2,
+	2, 231, 233, 5, 48, 25, 2, 232, 231, 3, 2, 2, 2, 232, 233, 3, 2, 2, 2,
+	233, 234, 3, 2, 2, 2, 234, 235, 7, 22, 2, 2, 235, 236, 8, 24, 1, 2, 236,
+	238, 7, 21, 2, 2, 237, 239, 5, 48, 25, 2, 238, 237, 3, 2, 2, 2, 238, 239,
+	3, 2, 2, 2, 239, 47, 3, 2, 2, 2, 240, 241, 9, 2, 2, 2, 241, 49, 3, 2, 2,
+	2, 36, 53, 61, 64, 72, 76, 79, 85, 91, 96, 101, 105, 111, 117, 122, 128,
+	131, 138, 146, 152, 158, 162, 167, 174, 178, 183, 186, 192, 195, 198, 201,
+	205, 215, 232, 238,
 }
 var literalNames = []string{
-	"", "'='", "'('", "')'", "'{'", "'}'", "'time.Time'", "'*'", "'['", "']'",
+	"", "'='", "'('", "')'", "'{'", "'}'", "'*'", "'time.Time'", "'['", "']'",
 	"'@doc'", "'@handler'", "'interface{}'", "'@server'",
 }
 var symbolicNames = []string{
@@ -129,8 +138,8 @@ var symbolicNames = []string{
 var ruleNames = []string{
 	"api", "spec", "syntaxLit", "importSpec", "importLit", "importBlock", "importBlockValue",
 	"importValue", "infoSpec", "typeSpec", "typeLit", "typeBlock", "typeBody",
-	"typeStruct", "typeAlias", "field", "dataType", "pointerType", "mapType",
-	"arrayType", "kvLit", "commentSpec",
+	"typeStruct", "typeAlias", "field", "normalField", "anonymousFiled", "dataType",
+	"pointerType", "mapType", "arrayType", "kvLit", "commentSpec",
 }
 
 type ApiParserParser struct {
@@ -205,12 +214,14 @@ const (
 	ApiParserParserRULE_typeStruct       = 13
 	ApiParserParserRULE_typeAlias        = 14
 	ApiParserParserRULE_field            = 15
-	ApiParserParserRULE_dataType         = 16
-	ApiParserParserRULE_pointerType      = 17
-	ApiParserParserRULE_mapType          = 18
-	ApiParserParserRULE_arrayType        = 19
-	ApiParserParserRULE_kvLit            = 20
-	ApiParserParserRULE_commentSpec      = 21
+	ApiParserParserRULE_normalField      = 16
+	ApiParserParserRULE_anonymousFiled   = 17
+	ApiParserParserRULE_dataType         = 18
+	ApiParserParserRULE_pointerType      = 19
+	ApiParserParserRULE_mapType          = 20
+	ApiParserParserRULE_arrayType        = 21
+	ApiParserParserRULE_kvLit            = 22
+	ApiParserParserRULE_commentSpec      = 23
 )
 
 // IApiContext is an interface to support dynamic dispatch.
@@ -314,17 +325,17 @@ func (p *ApiParserParser) Api() (localctx IApiContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(47)
+	p.SetState(51)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserParserCOMMENT)|(1<<ApiParserParserLINE_COMMENT)|(1<<ApiParserParserID))) != 0 {
 		{
-			p.SetState(44)
+			p.SetState(48)
 			p.Spec()
 		}
 
-		p.SetState(49)
+		p.SetState(53)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
@@ -458,41 +469,41 @@ func (p *ApiParserParser) Spec() (localctx ISpecContext) {
 		}
 	}()
 
-	p.SetState(55)
+	p.SetState(59)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 1, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(50)
+			p.SetState(54)
 			p.SyntaxLit()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(51)
+			p.SetState(55)
 			p.ImportSpec()
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(52)
+			p.SetState(56)
 			p.InfoSpec()
 		}
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(53)
+			p.SetState(57)
 			p.TypeSpec()
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(54)
+			p.SetState(58)
 			p.CommentSpec()
 		}
 
@@ -665,13 +676,13 @@ func (p *ApiParserParser) SyntaxLit() (localctx ISyntaxLitContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(58)
+	p.SetState(62)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(57)
+			p.SetState(61)
 
 			var _x = p.CommentSpec()
 
@@ -681,14 +692,14 @@ func (p *ApiParserParser) SyntaxLit() (localctx ISyntaxLitContext) {
 	}
 	match(p, "syntax")
 	{
-		p.SetState(61)
+		p.SetState(65)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*SyntaxLitContext).syntaxToken = _m
 	}
 	{
-		p.SetState(62)
+		p.SetState(66)
 
 		var _m = p.Match(ApiParserParserT__0)
 
@@ -696,18 +707,18 @@ func (p *ApiParserParser) SyntaxLit() (localctx ISyntaxLitContext) {
 	}
 	checkVersion(p)
 	{
-		p.SetState(64)
+		p.SetState(68)
 
 		var _m = p.Match(ApiParserParserSTRING)
 
 		localctx.(*SyntaxLitContext).version = _m
 	}
-	p.SetState(66)
+	p.SetState(70)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 3, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(65)
+			p.SetState(69)
 
 			var _x = p.CommentSpec()
 
@@ -815,20 +826,20 @@ func (p *ApiParserParser) ImportSpec() (localctx IImportSpecContext) {
 		}
 	}()
 
-	p.SetState(70)
+	p.SetState(74)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 4, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(68)
+			p.SetState(72)
 			p.ImportLit()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(69)
+			p.SetState(73)
 			p.ImportBlock()
 		}
 
@@ -985,13 +996,13 @@ func (p *ApiParserParser) ImportLit() (localctx IImportLitContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(73)
+	p.SetState(77)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(72)
+			p.SetState(76)
 
 			var _x = p.CommentSpec()
 
@@ -1001,22 +1012,22 @@ func (p *ApiParserParser) ImportLit() (localctx IImportLitContext) {
 	}
 	match(p, "import")
 	{
-		p.SetState(76)
+		p.SetState(80)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*ImportLitContext).importToken = _m
 	}
 	{
-		p.SetState(77)
+		p.SetState(81)
 		p.ImportValue()
 	}
-	p.SetState(79)
+	p.SetState(83)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 6, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(78)
+			p.SetState(82)
 
 			var _x = p.CommentSpec()
 
@@ -1167,22 +1178,22 @@ func (p *ApiParserParser) ImportBlock() (localctx IImportBlockContext) {
 	p.EnterOuterAlt(localctx, 1)
 	match(p, "import")
 	{
-		p.SetState(82)
+		p.SetState(86)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*ImportBlockContext).importToken = _m
 	}
 	{
-		p.SetState(83)
+		p.SetState(87)
 		p.Match(ApiParserParserT__1)
 	}
-	p.SetState(85)
+	p.SetState(89)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 7, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(84)
+			p.SetState(88)
 
 			var _x = p.CommentSpec()
 
@@ -1190,22 +1201,22 @@ func (p *ApiParserParser) ImportBlock() (localctx IImportBlockContext) {
 		}
 
 	}
-	p.SetState(88)
+	p.SetState(92)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserParserCOMMENT)|(1<<ApiParserParserLINE_COMMENT)|(1<<ApiParserParserSTRING))) != 0) {
 		{
-			p.SetState(87)
+			p.SetState(91)
 			p.ImportBlockValue()
 		}
 
-		p.SetState(90)
+		p.SetState(94)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(92)
+		p.SetState(96)
 		p.Match(ApiParserParserT__2)
 	}
 
@@ -1345,13 +1356,13 @@ func (p *ApiParserParser) ImportBlockValue() (localctx IImportBlockValueContext)
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(95)
+	p.SetState(99)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(94)
+			p.SetState(98)
 
 			var _x = p.CommentSpec()
 
@@ -1360,15 +1371,15 @@ func (p *ApiParserParser) ImportBlockValue() (localctx IImportBlockValueContext)
 
 	}
 	{
-		p.SetState(97)
+		p.SetState(101)
 		p.ImportValue()
 	}
-	p.SetState(99)
+	p.SetState(103)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 10, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(98)
+			p.SetState(102)
 
 			var _x = p.CommentSpec()
 
@@ -1463,7 +1474,7 @@ func (p *ApiParserParser) ImportValue() (localctx IImportValueContext) {
 	p.EnterOuterAlt(localctx, 1)
 	checkImportValue(p)
 	{
-		p.SetState(102)
+		p.SetState(106)
 		p.Match(ApiParserParserSTRING)
 	}
 
@@ -1653,13 +1664,13 @@ func (p *ApiParserParser) InfoSpec() (localctx IInfoSpecContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(105)
+	p.SetState(109)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(104)
+			p.SetState(108)
 
 			var _x = p.CommentSpec()
 
@@ -1669,25 +1680,25 @@ func (p *ApiParserParser) InfoSpec() (localctx IInfoSpecContext) {
 	}
 	match(p, "info")
 	{
-		p.SetState(108)
+		p.SetState(112)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*InfoSpecContext).infoToken = _m
 	}
 	{
-		p.SetState(109)
+		p.SetState(113)
 
 		var _m = p.Match(ApiParserParserT__1)
 
 		localctx.(*InfoSpecContext).lp = _m
 	}
-	p.SetState(111)
+	p.SetState(115)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 12, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(110)
+			p.SetState(114)
 
 			var _x = p.CommentSpec()
 
@@ -1695,22 +1706,22 @@ func (p *ApiParserParser) InfoSpec() (localctx IInfoSpecContext) {
 		}
 
 	}
-	p.SetState(114)
+	p.SetState(118)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = (((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<ApiParserParserCOMMENT)|(1<<ApiParserParserLINE_COMMENT)|(1<<ApiParserParserID))) != 0) {
 		{
-			p.SetState(113)
+			p.SetState(117)
 			p.KvLit()
 		}
 
-		p.SetState(116)
+		p.SetState(120)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(118)
+		p.SetState(122)
 
 		var _m = p.Match(ApiParserParserT__2)
 
@@ -1816,20 +1827,20 @@ func (p *ApiParserParser) TypeSpec() (localctx ITypeSpecContext) {
 		}
 	}()
 
-	p.SetState(122)
+	p.SetState(126)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 14, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(120)
+			p.SetState(124)
 			p.TypeLit()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(121)
+			p.SetState(125)
 			p.TypeBlock()
 		}
 
@@ -1962,13 +1973,13 @@ func (p *ApiParserParser) TypeLit() (localctx ITypeLitContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(125)
+	p.SetState(129)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(124)
+			p.SetState(128)
 
 			var _x = p.CommentSpec()
 
@@ -1978,14 +1989,14 @@ func (p *ApiParserParser) TypeLit() (localctx ITypeLitContext) {
 	}
 	match(p, "type")
 	{
-		p.SetState(128)
+		p.SetState(132)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*TypeLitContext).typeToken = _m
 	}
 	{
-		p.SetState(129)
+		p.SetState(133)
 		p.TypeBody()
 	}
 
@@ -2151,13 +2162,13 @@ func (p *ApiParserParser) TypeBlock() (localctx ITypeBlockContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(132)
+	p.SetState(136)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(131)
+			p.SetState(135)
 
 			var _x = p.CommentSpec()
 
@@ -2167,35 +2178,35 @@ func (p *ApiParserParser) TypeBlock() (localctx ITypeBlockContext) {
 	}
 	match(p, "type")
 	{
-		p.SetState(135)
+		p.SetState(139)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*TypeBlockContext).typeToken = _m
 	}
 	{
-		p.SetState(136)
+		p.SetState(140)
 
 		var _m = p.Match(ApiParserParserT__1)
 
 		localctx.(*TypeBlockContext).lp = _m
 	}
-	p.SetState(138)
+	p.SetState(142)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ok := true; ok; ok = _la == ApiParserParserID {
 		{
-			p.SetState(137)
+			p.SetState(141)
 			p.TypeBody()
 		}
 
-		p.SetState(140)
+		p.SetState(144)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(142)
+		p.SetState(146)
 
 		var _m = p.Match(ApiParserParserT__2)
 
@@ -2301,20 +2312,20 @@ func (p *ApiParserParser) TypeBody() (localctx ITypeBodyContext) {
 		}
 	}()
 
-	p.SetState(146)
+	p.SetState(150)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 18, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(144)
+			p.SetState(148)
 			p.TypeAlias()
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(145)
+			p.SetState(149)
 			p.TypeStruct()
 		}
 
@@ -2501,20 +2512,20 @@ func (p *ApiParserParser) TypeStruct() (localctx ITypeStructContext) {
 	p.EnterOuterAlt(localctx, 1)
 	checkFieldName(p)
 	{
-		p.SetState(149)
+		p.SetState(153)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*TypeStructContext).structName = _m
 	}
 	match(p, "struct")
-	p.SetState(152)
+	p.SetState(156)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserID {
 		{
-			p.SetState(151)
+			p.SetState(155)
 
 			var _m = p.Match(ApiParserParserID)
 
@@ -2523,18 +2534,18 @@ func (p *ApiParserParser) TypeStruct() (localctx ITypeStructContext) {
 
 	}
 	{
-		p.SetState(154)
+		p.SetState(158)
 
 		var _m = p.Match(ApiParserParserT__3)
 
 		localctx.(*TypeStructContext).lbrace = _m
 	}
-	p.SetState(156)
+	p.SetState(160)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 20, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(155)
+			p.SetState(159)
 
 			var _x = p.CommentSpec()
 
@@ -2542,14 +2553,14 @@ func (p *ApiParserParser) TypeStruct() (localctx ITypeStructContext) {
 		}
 
 	}
-	p.SetState(159)
+	p.SetState(163)
 	p.GetErrorHandler().Sync(p)
 	_alt = 1
 	for ok := true; ok; ok = _alt != 2 && _alt != antlr.ATNInvalidAltNumber {
 		switch _alt {
 		case 1:
 			{
-				p.SetState(158)
+				p.SetState(162)
 				p.Field()
 			}
 
@@ -2557,12 +2568,12 @@ func (p *ApiParserParser) TypeStruct() (localctx ITypeStructContext) {
 			panic(antlr.NewNoViableAltException(p, nil, nil, nil, nil, nil))
 		}
 
-		p.SetState(161)
+		p.SetState(165)
 		p.GetErrorHandler().Sync(p)
 		_alt = p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 21, p.GetParserRuleContext())
 	}
 	{
-		p.SetState(163)
+		p.SetState(167)
 
 		var _m = p.Match(ApiParserParserT__4)
 
@@ -2709,19 +2720,19 @@ func (p *ApiParserParser) TypeAlias() (localctx ITypeAliasContext) {
 	p.EnterOuterAlt(localctx, 1)
 	checkFieldName(p)
 	{
-		p.SetState(166)
+		p.SetState(170)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*TypeAliasContext).alias = _m
 	}
-	p.SetState(168)
+	p.SetState(172)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserT__0 {
 		{
-			p.SetState(167)
+			p.SetState(171)
 
 			var _m = p.Match(ApiParserParserT__0)
 
@@ -2730,15 +2741,15 @@ func (p *ApiParserParser) TypeAlias() (localctx ITypeAliasContext) {
 
 	}
 	{
-		p.SetState(170)
+		p.SetState(174)
 		p.DataType()
 	}
-	p.SetState(172)
+	p.SetState(176)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 23, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(171)
+			p.SetState(175)
 
 			var _x = p.CommentSpec()
 
@@ -2757,41 +2768,13 @@ type IFieldContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
-	// GetFieldName returns the fieldName token.
-	GetFieldName() antlr.Token
-
-	// GetTag returns the tag token.
-	GetTag() antlr.Token
-
-	// SetFieldName sets the fieldName token.
-	SetFieldName(antlr.Token)
-
-	// SetTag sets the tag token.
-	SetTag(antlr.Token)
-
-	// GetDoc returns the doc rule contexts.
-	GetDoc() ICommentSpecContext
-
-	// GetComment returns the comment rule contexts.
-	GetComment() ICommentSpecContext
-
-	// SetDoc sets the doc rule contexts.
-	SetDoc(ICommentSpecContext)
-
-	// SetComment sets the comment rule contexts.
-	SetComment(ICommentSpecContext)
-
 	// IsFieldContext differentiates from other interfaces.
 	IsFieldContext()
 }
 
 type FieldContext struct {
 	*antlr.BaseParserRuleContext
-	parser    antlr.Parser
-	doc       ICommentSpecContext
-	fieldName antlr.Token
-	tag       antlr.Token
-	comment   ICommentSpecContext
+	parser antlr.Parser
 }
 
 func NewEmptyFieldContext() *FieldContext {
@@ -2816,61 +2799,24 @@ func NewFieldContext(parser antlr.Parser, parent antlr.ParserRuleContext, invoki
 
 func (s *FieldContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *FieldContext) GetFieldName() antlr.Token { return s.fieldName }
-
-func (s *FieldContext) GetTag() antlr.Token { return s.tag }
-
-func (s *FieldContext) SetFieldName(v antlr.Token) { s.fieldName = v }
-
-func (s *FieldContext) SetTag(v antlr.Token) { s.tag = v }
-
-func (s *FieldContext) GetDoc() ICommentSpecContext { return s.doc }
-
-func (s *FieldContext) GetComment() ICommentSpecContext { return s.comment }
-
-func (s *FieldContext) SetDoc(v ICommentSpecContext) { s.doc = v }
-
-func (s *FieldContext) SetComment(v ICommentSpecContext) { s.comment = v }
-
-func (s *FieldContext) DataType() IDataTypeContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDataTypeContext)(nil)).Elem(), 0)
+func (s *FieldContext) AnonymousFiled() IAnonymousFiledContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IAnonymousFiledContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(IDataTypeContext)
+	return t.(IAnonymousFiledContext)
 }
 
-func (s *FieldContext) ID() antlr.TerminalNode {
-	return s.GetToken(ApiParserParserID, 0)
-}
-
-func (s *FieldContext) AllCommentSpec() []ICommentSpecContext {
-	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ICommentSpecContext)(nil)).Elem())
-	var tst = make([]ICommentSpecContext, len(ts))
-
-	for i, t := range ts {
-		if t != nil {
-			tst[i] = t.(ICommentSpecContext)
-		}
-	}
-
-	return tst
-}
-
-func (s *FieldContext) CommentSpec(i int) ICommentSpecContext {
-	var t = s.GetTypedRuleContext(reflect.TypeOf((*ICommentSpecContext)(nil)).Elem(), i)
+func (s *FieldContext) NormalField() INormalFieldContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*INormalFieldContext)(nil)).Elem(), 0)
 
 	if t == nil {
 		return nil
 	}
 
-	return t.(ICommentSpecContext)
-}
-
-func (s *FieldContext) RAW_STRING() antlr.TerminalNode {
-	return s.GetToken(ApiParserParserRAW_STRING, 0)
+	return t.(INormalFieldContext)
 }
 
 func (s *FieldContext) GetRuleContext() antlr.RuleContext {
@@ -2911,60 +2857,432 @@ func (p *ApiParserParser) Field() (localctx IFieldContext) {
 		}
 	}()
 
-	p.EnterOuterAlt(localctx, 1)
-	p.SetState(175)
+	p.SetState(181)
 	p.GetErrorHandler().Sync(p)
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 24, p.GetParserRuleContext()) {
+	case 1:
+		p.EnterOuterAlt(localctx, 1)
+		p.SetState(178)
 
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 24, p.GetParserRuleContext()) == 1 {
+		if !(isAnonymous(p)) {
+			panic(antlr.NewFailedPredicateException(p, "isAnonymous(p)", ""))
+		}
 		{
-			p.SetState(174)
+			p.SetState(179)
+			p.AnonymousFiled()
+		}
+
+	case 2:
+		p.EnterOuterAlt(localctx, 2)
+		{
+			p.SetState(180)
+			p.NormalField()
+		}
+
+	}
+
+	return localctx
+}
+
+// INormalFieldContext is an interface to support dynamic dispatch.
+type INormalFieldContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// GetFieldName returns the fieldName token.
+	GetFieldName() antlr.Token
+
+	// GetTag returns the tag token.
+	GetTag() antlr.Token
+
+	// SetFieldName sets the fieldName token.
+	SetFieldName(antlr.Token)
+
+	// SetTag sets the tag token.
+	SetTag(antlr.Token)
+
+	// GetDoc returns the doc rule contexts.
+	GetDoc() ICommentSpecContext
+
+	// GetComment returns the comment rule contexts.
+	GetComment() ICommentSpecContext
+
+	// SetDoc sets the doc rule contexts.
+	SetDoc(ICommentSpecContext)
+
+	// SetComment sets the comment rule contexts.
+	SetComment(ICommentSpecContext)
+
+	// IsNormalFieldContext differentiates from other interfaces.
+	IsNormalFieldContext()
+}
+
+type NormalFieldContext struct {
+	*antlr.BaseParserRuleContext
+	parser    antlr.Parser
+	doc       ICommentSpecContext
+	fieldName antlr.Token
+	tag       antlr.Token
+	comment   ICommentSpecContext
+}
+
+func NewEmptyNormalFieldContext() *NormalFieldContext {
+	var p = new(NormalFieldContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = ApiParserParserRULE_normalField
+	return p
+}
+
+func (*NormalFieldContext) IsNormalFieldContext() {}
+
+func NewNormalFieldContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *NormalFieldContext {
+	var p = new(NormalFieldContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = ApiParserParserRULE_normalField
+
+	return p
+}
+
+func (s *NormalFieldContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *NormalFieldContext) GetFieldName() antlr.Token { return s.fieldName }
+
+func (s *NormalFieldContext) GetTag() antlr.Token { return s.tag }
+
+func (s *NormalFieldContext) SetFieldName(v antlr.Token) { s.fieldName = v }
+
+func (s *NormalFieldContext) SetTag(v antlr.Token) { s.tag = v }
+
+func (s *NormalFieldContext) GetDoc() ICommentSpecContext { return s.doc }
+
+func (s *NormalFieldContext) GetComment() ICommentSpecContext { return s.comment }
+
+func (s *NormalFieldContext) SetDoc(v ICommentSpecContext) { s.doc = v }
+
+func (s *NormalFieldContext) SetComment(v ICommentSpecContext) { s.comment = v }
+
+func (s *NormalFieldContext) DataType() IDataTypeContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IDataTypeContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IDataTypeContext)
+}
+
+func (s *NormalFieldContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserParserID, 0)
+}
+
+func (s *NormalFieldContext) AllCommentSpec() []ICommentSpecContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ICommentSpecContext)(nil)).Elem())
+	var tst = make([]ICommentSpecContext, len(ts))
+
+	for i, t := range ts {
+		if t != nil {
+			tst[i] = t.(ICommentSpecContext)
+		}
+	}
+
+	return tst
+}
+
+func (s *NormalFieldContext) CommentSpec(i int) ICommentSpecContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ICommentSpecContext)(nil)).Elem(), i)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ICommentSpecContext)
+}
+
+func (s *NormalFieldContext) RAW_STRING() antlr.TerminalNode {
+	return s.GetToken(ApiParserParserRAW_STRING, 0)
+}
+
+func (s *NormalFieldContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *NormalFieldContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *NormalFieldContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case ApiParserVisitor:
+		return t.VisitNormalField(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *ApiParserParser) NormalField() (localctx INormalFieldContext) {
+	localctx = NewNormalFieldContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 32, ApiParserParserRULE_normalField)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	p.SetState(184)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
+		{
+			p.SetState(183)
 
 			var _x = p.CommentSpec()
 
-			localctx.(*FieldContext).doc = _x
+			localctx.(*NormalFieldContext).doc = _x
 		}
 
 	}
-	p.SetState(177)
-
-	if !(isAnonymous(p)) {
-		panic(antlr.NewFailedPredicateException(p, "isAnonymous(p)", ""))
-	}
 	{
-		p.SetState(178)
+		p.SetState(186)
 
 		var _m = p.Match(ApiParserParserID)
 
-		localctx.(*FieldContext).fieldName = _m
+		localctx.(*NormalFieldContext).fieldName = _m
 	}
 	{
-		p.SetState(179)
+		p.SetState(187)
 		p.DataType()
 	}
 	checkTag(p)
-	p.SetState(182)
-	p.GetErrorHandler().Sync(p)
-
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 25, p.GetParserRuleContext()) == 1 {
-		{
-			p.SetState(181)
-
-			var _m = p.Match(ApiParserParserRAW_STRING)
-
-			localctx.(*FieldContext).tag = _m
-		}
-
-	}
-	p.SetState(185)
+	p.SetState(190)
 	p.GetErrorHandler().Sync(p)
 
 	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 26, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(184)
+			p.SetState(189)
+
+			var _m = p.Match(ApiParserParserRAW_STRING)
+
+			localctx.(*NormalFieldContext).tag = _m
+		}
+
+	}
+	p.SetState(193)
+	p.GetErrorHandler().Sync(p)
+
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 27, p.GetParserRuleContext()) == 1 {
+		{
+			p.SetState(192)
 
 			var _x = p.CommentSpec()
 
-			localctx.(*FieldContext).comment = _x
+			localctx.(*NormalFieldContext).comment = _x
+		}
+
+	}
+
+	return localctx
+}
+
+// IAnonymousFiledContext is an interface to support dynamic dispatch.
+type IAnonymousFiledContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// GetStar returns the star token.
+	GetStar() antlr.Token
+
+	// SetStar sets the star token.
+	SetStar(antlr.Token)
+
+	// GetDoc returns the doc rule contexts.
+	GetDoc() ICommentSpecContext
+
+	// GetComment returns the comment rule contexts.
+	GetComment() ICommentSpecContext
+
+	// SetDoc sets the doc rule contexts.
+	SetDoc(ICommentSpecContext)
+
+	// SetComment sets the comment rule contexts.
+	SetComment(ICommentSpecContext)
+
+	// IsAnonymousFiledContext differentiates from other interfaces.
+	IsAnonymousFiledContext()
+}
+
+type AnonymousFiledContext struct {
+	*antlr.BaseParserRuleContext
+	parser  antlr.Parser
+	doc     ICommentSpecContext
+	star    antlr.Token
+	comment ICommentSpecContext
+}
+
+func NewEmptyAnonymousFiledContext() *AnonymousFiledContext {
+	var p = new(AnonymousFiledContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = ApiParserParserRULE_anonymousFiled
+	return p
+}
+
+func (*AnonymousFiledContext) IsAnonymousFiledContext() {}
+
+func NewAnonymousFiledContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *AnonymousFiledContext {
+	var p = new(AnonymousFiledContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = ApiParserParserRULE_anonymousFiled
+
+	return p
+}
+
+func (s *AnonymousFiledContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *AnonymousFiledContext) GetStar() antlr.Token { return s.star }
+
+func (s *AnonymousFiledContext) SetStar(v antlr.Token) { s.star = v }
+
+func (s *AnonymousFiledContext) GetDoc() ICommentSpecContext { return s.doc }
+
+func (s *AnonymousFiledContext) GetComment() ICommentSpecContext { return s.comment }
+
+func (s *AnonymousFiledContext) SetDoc(v ICommentSpecContext) { s.doc = v }
+
+func (s *AnonymousFiledContext) SetComment(v ICommentSpecContext) { s.comment = v }
+
+func (s *AnonymousFiledContext) ID() antlr.TerminalNode {
+	return s.GetToken(ApiParserParserID, 0)
+}
+
+func (s *AnonymousFiledContext) AllCommentSpec() []ICommentSpecContext {
+	var ts = s.GetTypedRuleContexts(reflect.TypeOf((*ICommentSpecContext)(nil)).Elem())
+	var tst = make([]ICommentSpecContext, len(ts))
+
+	for i, t := range ts {
+		if t != nil {
+			tst[i] = t.(ICommentSpecContext)
+		}
+	}
+
+	return tst
+}
+
+func (s *AnonymousFiledContext) CommentSpec(i int) ICommentSpecContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*ICommentSpecContext)(nil)).Elem(), i)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(ICommentSpecContext)
+}
+
+func (s *AnonymousFiledContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *AnonymousFiledContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *AnonymousFiledContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case ApiParserVisitor:
+		return t.VisitAnonymousFiled(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *ApiParserParser) AnonymousFiled() (localctx IAnonymousFiledContext) {
+	localctx = NewAnonymousFiledContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 34, ApiParserParserRULE_anonymousFiled)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	p.SetState(196)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
+		{
+			p.SetState(195)
+
+			var _x = p.CommentSpec()
+
+			localctx.(*AnonymousFiledContext).doc = _x
+		}
+
+	}
+	p.SetState(199)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	if _la == ApiParserParserT__5 {
+		{
+			p.SetState(198)
+
+			var _m = p.Match(ApiParserParserT__5)
+
+			localctx.(*AnonymousFiledContext).star = _m
+		}
+
+	}
+	{
+		p.SetState(201)
+		p.Match(ApiParserParserID)
+	}
+	p.SetState(203)
+	p.GetErrorHandler().Sync(p)
+
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 30, p.GetParserRuleContext()) == 1 {
+		{
+			p.SetState(202)
+
+			var _x = p.CommentSpec()
+
+			localctx.(*AnonymousFiledContext).comment = _x
 		}
 
 	}
@@ -2979,6 +3297,18 @@ type IDataTypeContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetInter returns the inter token.
+	GetInter() antlr.Token
+
+	// GetTime returns the time token.
+	GetTime() antlr.Token
+
+	// SetInter sets the inter token.
+	SetInter(antlr.Token)
+
+	// SetTime sets the time token.
+	SetTime(antlr.Token)
+
 	// IsDataTypeContext differentiates from other interfaces.
 	IsDataTypeContext()
 }
@@ -2986,6 +3316,8 @@ type IDataTypeContext interface {
 type DataTypeContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	inter  antlr.Token
+	time   antlr.Token
 }
 
 func NewEmptyDataTypeContext() *DataTypeContext {
@@ -3009,6 +3341,14 @@ func NewDataTypeContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 }
 
 func (s *DataTypeContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *DataTypeContext) GetInter() antlr.Token { return s.inter }
+
+func (s *DataTypeContext) GetTime() antlr.Token { return s.time }
+
+func (s *DataTypeContext) SetInter(v antlr.Token) { s.inter = v }
+
+func (s *DataTypeContext) SetTime(v antlr.Token) { s.time = v }
 
 func (s *DataTypeContext) ID() antlr.TerminalNode {
 	return s.GetToken(ApiParserParserID, 0)
@@ -3078,7 +3418,7 @@ func (s *DataTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *ApiParserParser) DataType() (localctx IDataTypeContext) {
 	localctx = NewDataTypeContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 32, ApiParserParserRULE_dataType)
+	p.EnterRule(localctx, 36, ApiParserParserRULE_dataType)
 
 	defer func() {
 		p.ExitRule()
@@ -3096,56 +3436,62 @@ func (p *ApiParserParser) DataType() (localctx IDataTypeContext) {
 		}
 	}()
 
-	p.SetState(195)
+	p.SetState(213)
 	p.GetErrorHandler().Sync(p)
-	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 27, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 31, p.GetParserRuleContext()) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		isInterface(p)
 		{
-			p.SetState(188)
+			p.SetState(206)
 			p.Match(ApiParserParserID)
 		}
 
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(189)
+			p.SetState(207)
 			p.MapType()
 		}
 
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(190)
+			p.SetState(208)
 			p.ArrayType()
 		}
 
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(191)
-			p.Match(ApiParserParserINTERFACE)
+			p.SetState(209)
+
+			var _m = p.Match(ApiParserParserINTERFACE)
+
+			localctx.(*DataTypeContext).inter = _m
 		}
 
 	case 5:
 		p.EnterOuterAlt(localctx, 5)
 		{
-			p.SetState(192)
-			p.Match(ApiParserParserT__5)
+			p.SetState(210)
+
+			var _m = p.Match(ApiParserParserT__6)
+
+			localctx.(*DataTypeContext).time = _m
 		}
 
 	case 6:
 		p.EnterOuterAlt(localctx, 6)
 		{
-			p.SetState(193)
+			p.SetState(211)
 			p.PointerType()
 		}
 
 	case 7:
 		p.EnterOuterAlt(localctx, 7)
 		{
-			p.SetState(194)
+			p.SetState(212)
 			p.TypeStruct()
 		}
 
@@ -3227,7 +3573,7 @@ func (s *PointerTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 func (p *ApiParserParser) PointerType() (localctx IPointerTypeContext) {
 	localctx = NewPointerTypeContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 34, ApiParserParserRULE_pointerType)
+	p.EnterRule(localctx, 38, ApiParserParserRULE_pointerType)
 
 	defer func() {
 		p.ExitRule()
@@ -3247,14 +3593,14 @@ func (p *ApiParserParser) PointerType() (localctx IPointerTypeContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(197)
+		p.SetState(215)
 
-		var _m = p.Match(ApiParserParserT__6)
+		var _m = p.Match(ApiParserParserT__5)
 
 		localctx.(*PointerTypeContext).star = _m
 	}
 	{
-		p.SetState(198)
+		p.SetState(216)
 		p.Match(ApiParserParserID)
 	}
 
@@ -3392,7 +3738,7 @@ func (s *MapTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *ApiParserParser) MapType() (localctx IMapTypeContext) {
 	localctx = NewMapTypeContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 36, ApiParserParserRULE_mapType)
+	p.EnterRule(localctx, 40, ApiParserParserRULE_mapType)
 
 	defer func() {
 		p.ExitRule()
@@ -3413,35 +3759,35 @@ func (p *ApiParserParser) MapType() (localctx IMapTypeContext) {
 	p.EnterOuterAlt(localctx, 1)
 	match(p, "map")
 	{
-		p.SetState(201)
+		p.SetState(219)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*MapTypeContext).mapToken = _m
 	}
 	{
-		p.SetState(202)
+		p.SetState(220)
 
 		var _m = p.Match(ApiParserParserT__7)
 
 		localctx.(*MapTypeContext).lbrack = _m
 	}
 	{
-		p.SetState(203)
+		p.SetState(221)
 
 		var _m = p.Match(ApiParserParserID)
 
 		localctx.(*MapTypeContext).key = _m
 	}
 	{
-		p.SetState(204)
+		p.SetState(222)
 
 		var _m = p.Match(ApiParserParserT__8)
 
 		localctx.(*MapTypeContext).rbrack = _m
 	}
 	{
-		p.SetState(205)
+		p.SetState(223)
 
 		var _x = p.DataType()
 
@@ -3541,7 +3887,7 @@ func (s *ArrayTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *ApiParserParser) ArrayType() (localctx IArrayTypeContext) {
 	localctx = NewArrayTypeContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 38, ApiParserParserRULE_arrayType)
+	p.EnterRule(localctx, 42, ApiParserParserRULE_arrayType)
 
 	defer func() {
 		p.ExitRule()
@@ -3561,21 +3907,21 @@ func (p *ApiParserParser) ArrayType() (localctx IArrayTypeContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(207)
+		p.SetState(225)
 
 		var _m = p.Match(ApiParserParserT__7)
 
 		localctx.(*ArrayTypeContext).lbrack = _m
 	}
 	{
-		p.SetState(208)
+		p.SetState(226)
 
 		var _m = p.Match(ApiParserParserT__8)
 
 		localctx.(*ArrayTypeContext).rbrack = _m
 	}
 	{
-		p.SetState(209)
+		p.SetState(227)
 		p.DataType()
 	}
 
@@ -3715,7 +4061,7 @@ func (s *KvLitContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *ApiParserParser) KvLit() (localctx IKvLitContext) {
 	localctx = NewKvLitContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 40, ApiParserParserRULE_kvLit)
+	p.EnterRule(localctx, 44, ApiParserParserRULE_kvLit)
 	var _la int
 
 	defer func() {
@@ -3735,13 +4081,13 @@ func (p *ApiParserParser) KvLit() (localctx IKvLitContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(212)
+	p.SetState(230)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT {
 		{
-			p.SetState(211)
+			p.SetState(229)
 
 			var _x = p.CommentSpec()
 
@@ -3750,7 +4096,7 @@ func (p *ApiParserParser) KvLit() (localctx IKvLitContext) {
 
 	}
 	{
-		p.SetState(214)
+		p.SetState(232)
 
 		var _m = p.Match(ApiParserParserID)
 
@@ -3758,18 +4104,18 @@ func (p *ApiParserParser) KvLit() (localctx IKvLitContext) {
 	}
 	checkKeyValue(p)
 	{
-		p.SetState(216)
+		p.SetState(234)
 
 		var _m = p.Match(ApiParserParserLINE_VALUE)
 
 		localctx.(*KvLitContext).value = _m
 	}
-	p.SetState(218)
+	p.SetState(236)
 	p.GetErrorHandler().Sync(p)
 
-	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 29, p.GetParserRuleContext()) == 1 {
+	if p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 33, p.GetParserRuleContext()) == 1 {
 		{
-			p.SetState(217)
+			p.SetState(235)
 
 			var _x = p.CommentSpec()
 
@@ -3847,7 +4193,7 @@ func (s *CommentSpecContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 func (p *ApiParserParser) CommentSpec() (localctx ICommentSpecContext) {
 	localctx = NewCommentSpecContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 42, ApiParserParserRULE_commentSpec)
+	p.EnterRule(localctx, 46, ApiParserParserRULE_commentSpec)
 	var _la int
 
 	defer func() {
@@ -3868,7 +4214,7 @@ func (p *ApiParserParser) CommentSpec() (localctx ICommentSpecContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(220)
+		p.SetState(238)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == ApiParserParserCOMMENT || _la == ApiParserParserLINE_COMMENT) {

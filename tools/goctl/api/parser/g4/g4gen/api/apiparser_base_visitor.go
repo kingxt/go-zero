@@ -71,6 +71,14 @@ func (v *BaseApiParserVisitor) VisitField(ctx *FieldContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseApiParserVisitor) VisitNormalField(ctx *NormalFieldContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitAnonymousFiled(ctx *AnonymousFiledContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseApiParserVisitor) VisitDataType(ctx *DataTypeContext) interface{} {
 	return v.VisitChildren(ctx)
 }

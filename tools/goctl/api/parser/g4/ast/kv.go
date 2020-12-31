@@ -28,6 +28,18 @@ func (k *KvExpr) Format() error {
 }
 
 func (k *KvExpr) Equal(v interface{}) bool {
+	if k == nil {
+		if v != nil {
+			return false
+		}
+
+		return true
+	}
+
+	if v == nil {
+		return false
+	}
+
 	kv, ok := v.(*KvExpr)
 	if !ok {
 		return false
@@ -37,8 +49,7 @@ func (k *KvExpr) Equal(v interface{}) bool {
 		return false
 	}
 
-	return ExprEqual(k.Key, kv.Key) &&
-		ExprEqual(k.Value, kv.Value)
+	return k.Key.Equal(kv.Key) && k.Value.Equal(kv.Value)
 }
 
 func (k *KvExpr) Doc() Expr {

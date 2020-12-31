@@ -5,6 +5,9 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/anonymous"
 )
 
 const (
@@ -49,32 +52,67 @@ func checkKeyValue(p *ApiParserParser) {
 
 func checkFieldName(p *ApiParserParser) {
 	v := getCurrentTokenText(p)
-	switch v {
+	if IsGolangKeyWord(v) {
+		notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", v))
+	}
+}
+
+func IsGolangKeyWord(text string) bool {
+	switch text {
 	case "var", "const", "package", "import", "func", "return",
 		"defer", "go", "select", "interface", "struct", "break", "case",
 		"continue", "for", "fallthrough", "else", "if", "switch", "goto",
 		"default", "chan", "type", "map", "range":
-		notifyErrorListeners(p, expecting("ID", fmt.Sprintf("golang keyword '%s'", v)))
+		return true
 	default:
+		return false
 	}
 }
 
 func isAnonymous(p *ApiParserParser) bool {
-	token := p.GetCurrentToken()
-	nextToken := token.GetTokenSource().NextToken()
-	return token.GetLine() != nextToken.GetLine()
+	text := p.GetTokenStream().GetAllText()
+	defaultParser := NewBaseParser()
+	v, err := defaultParser.Accept(func(ap *anonymous.AnonymousParserParser) interface{} {
+		iAnonymousFiledContext := ap.AnonymousFiled()
+		if iAnonymousFiledContext != nil {
+			ctx := iAnonymousFiledContext.(*anonymous.AnonymousFiledContext)
+			currentText := ctx.GetText()
+			if IsGolangKeyWord(ctx.ID().GetText()) {
+				panic(fmt.Errorf("expecting ID, found golang keyword: '%s'", ctx.ID().GetText()))
+			}
+			return currentText
+		}
+		return ""
+	}, text)
+	if err != nil {
+		notifyErrorListeners(p, err.Error())
+	}
+	str := v.(string)
+	replace := func(s string) string {
+		v := strings.ReplaceAll(s, " ", "")
+		v = strings.ReplaceAll(v, "\r", "")
+		v = strings.ReplaceAll(v, "\n", "")
+		v = strings.ReplaceAll(v, "\t", "")
+		return v
+	}
+	return replace(text) == replace(str)
 }
 
 func checkTag(p *ApiParserParser) {
 	v := getCurrentTokenText(p)
+	if v == "" || v == "<EOF>" {
+		return
+	}
 	if !matchRegex(v, tagRegex) {
 		notifyErrorListeners(p, mismatched("key-value tag", v))
 	}
 }
 
-func isInterface(p *ApiParserParser) bool {
+func isInterface(p *ApiParserParser) {
 	v := getCurrentTokenText(p)
-	return v == "interface"
+	if IsGolangKeyWord(v) {
+		notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", v))
+	}
 }
 
 func getCurrentTokenText(p *ApiParserParser) string {
@@ -102,6 +140,9 @@ func notifyErrorListeners(p *ApiParserParser, msg string) {
 func matchRegex(text, str string) bool {
 	re := regexp.MustCompile(str)
 	v := re.FindString(text)
+	text = strings.TrimFunc(text, func(r rune) bool {
+		return unicode.IsSpace(r)
+	})
 	return v == text
 }
 
@@ -111,4 +152,42 @@ func expecting(expecting, found string) string {
 
 func mismatched(expecting, found string) string {
 	return fmt.Sprintf(`mismatched '%s', found input '%s'`, expecting, found)
+}
+
+type BaseParser struct {
+	*anonymous.AnonymousParserParser
+	antlr.DefaultErrorListener
+}
+
+func NewBaseParser() *BaseParser {
+	return &BaseParser{}
+}
+
+func (p *BaseParser) Accept(fn func(p *anonymous.AnonymousParserParser) interface{}, content string) (v interface{}, err error) {
+	defer func() {
+		p := recover()
+		if p != nil {
+			switch e := p.(type) {
+			case error:
+				err = e
+			default:
+				err = fmt.Errorf("%+v", p)
+			}
+		}
+	}()
+
+	inputStream := antlr.NewInputStream(content)
+	lexer := anonymous.NewAnonymousParserLexer(inputStream)
+	lexer.RemoveErrorListeners()
+	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
+	anonymousParser := anonymous.NewAnonymousParserParser(tokens)
+	anonymousParser.RemoveErrorListeners()
+	anonymousParser.AddErrorListener(p)
+	v = fn(anonymousParser)
+	return
+}
+
+func (p *BaseParser) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
+	str := fmt.Sprintf(`line %d:%d  %s`, line, column, msg)
+	panic(str)
 }

@@ -37,12 +37,24 @@ func (i *InfoExpr) Format() error {
 }
 
 func (i *InfoExpr) Equal(v interface{}) bool {
+	if i == nil {
+		if v != nil {
+			return false
+		}
+
+		return true
+	}
+
+	if v == nil {
+		return false
+	}
+
 	info, ok := v.(*InfoExpr)
 	if !ok {
 		return false
 	}
 
-	if i.Info.Text() != info.Info.Text() {
+	if !i.Info.Equal(info.Info) {
 		return false
 	}
 
