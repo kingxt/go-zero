@@ -43,7 +43,7 @@ func NewApiVisitor(options ...VisitorOption) *ApiVisitor {
 	return v
 }
 
-func (v *ApiVisitor) fmtErrorf(expr Expr, msg string) {
+func (v *ApiVisitor) panic(expr Expr, msg string) {
 	panic(fmt.Sprintf("%s line %d:%d  %s", v.prefix, expr.Line(), expr.Column(), msg))
 }
 

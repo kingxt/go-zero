@@ -1,5 +1,5 @@
 package ast
 
-var holder PlaceHolder
+var Holder PlaceHolder
 
 type PlaceHolder struct{}

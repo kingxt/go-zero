@@ -83,14 +83,6 @@ func (i *ImportExpr) Format() error {
 }
 
 func (i *ImportExpr) Equal(v interface{}) bool {
-	if i == nil {
-		if v != nil {
-			return false
-		}
-
-		return true
-	}
-
 	if v == nil {
 		return false
 	}

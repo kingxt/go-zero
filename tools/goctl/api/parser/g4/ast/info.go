@@ -26,7 +26,7 @@ func (v *ApiVisitor) VisitInfoSpec(ctx *api.InfoSpecContext) interface{} {
 		expr.Kvs = append(expr.Kvs, kvExpr)
 	}
 	if v.infoFlag {
-		v.fmtErrorf(expr.Info, "duplicate declaration 'info'")
+		v.panic(expr.Info, "duplicate declaration 'info'")
 	}
 	return &expr
 }
@@ -37,14 +37,6 @@ func (i *InfoExpr) Format() error {
 }
 
 func (i *InfoExpr) Equal(v interface{}) bool {
-	if i == nil {
-		if v != nil {
-			return false
-		}
-
-		return true
-	}
-
 	if v == nil {
 		return false
 	}

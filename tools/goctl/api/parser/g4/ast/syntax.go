@@ -31,14 +31,6 @@ func (s *SyntaxExpr) Format() error {
 }
 
 func (s *SyntaxExpr) Equal(v interface{}) bool {
-	if s == nil {
-		if v != nil {
-			return false
-		}
-
-		return true
-	}
-
 	if v == nil {
 		return false
 	}

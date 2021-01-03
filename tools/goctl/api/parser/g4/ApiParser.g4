@@ -27,13 +27,16 @@ typeSpec:       typeLit
                 |typeBlock;
 
 // eg: type (...)
-typeLit:        doc=commentSpec?{match(p,"type")}typeToken=ID  typeBody;
-typeBlock:      doc=commentSpec? {match(p,"type")}typeToken=ID lp='(' typeBody+ rp=')';
-typeBody:       typeAlias|typeStruct;
-typeStruct:     {checkFieldName(p)}structName=ID {match(p,"struct")}structToken=ID? lbrace='{'  comment=commentSpec? field+ rbrace='}';
-typeAlias:      {checkFieldName(p)}alias=ID assign='='? dataType comment=commentSpec?;
-field:          ({isAnonymous(p)}? anonymousFiled) | normalField;
-normalField:    doc=commentSpec? fieldName=ID dataType {checkTag(p)}tag=RAW_STRING? comment=commentSpec?;
+typeLit:        doc=commentSpec?{match(p,"type")}typeToken=ID  typeLitBody;
+typeBlock:      {match(p,"type")}typeToken=ID lp='(' typeBlockBody+ rp=')';
+typeLitBody:    typeStruct|typeAlias;
+typeBlockBody: typeBlockStruct|typeBlockAlias;
+typeStruct:     {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  comment=commentSpec? field+ rbrace='}';
+typeAlias:      {checkKeyword(p)}alias=ID assign='='? dataType comment=commentSpec?;
+typeBlockStruct:doc=commentSpec?  {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  comment=commentSpec? field+ rbrace='}';
+typeBlockAlias: doc=commentSpec? {checkKeyword(p)}alias=ID assign='='? dataType comment=commentSpec?;
+field:          {isNormal(p)}? normalField|anonymousFiled ;
+normalField:    doc=commentSpec? {checkKeyword(p)}fieldName=ID dataType tag=RAW_STRING? comment=commentSpec?;
 anonymousFiled: doc=commentSpec? star='*'? ID comment=commentSpec?;
 dataType:       {isInterface(p)}ID
                 |mapType
@@ -43,8 +46,8 @@ dataType:       {isInterface(p)}ID
                 |pointerType
                 |typeStruct
                 ;
-pointerType:        star='*' ID;
-mapType:            {match(p,"map")}mapToken=ID lbrack='[' key=ID rbrack=']' value=dataType;
+pointerType:        star='*' {checkKeyword(p)}ID;
+mapType:            {match(p,"map")}mapToken=ID lbrack='[' {checkKey(p)}key=ID rbrack=']' value=dataType;
 arrayType:          lbrack='[' rbrack=']' dataType;
 
 // kv

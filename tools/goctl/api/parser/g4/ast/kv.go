@@ -28,14 +28,6 @@ func (k *KvExpr) Format() error {
 }
 
 func (k *KvExpr) Equal(v interface{}) bool {
-	if k == nil {
-		if v != nil {
-			return false
-		}
-
-		return true
-	}
-
 	if v == nil {
 		return false
 	}

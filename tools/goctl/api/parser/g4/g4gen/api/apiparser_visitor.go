@@ -43,14 +43,23 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParserParser#typeBlock.
 	VisitTypeBlock(ctx *TypeBlockContext) interface{}
 
-	// Visit a parse tree produced by ApiParserParser#typeBody.
-	VisitTypeBody(ctx *TypeBodyContext) interface{}
+	// Visit a parse tree produced by ApiParserParser#typeLitBody.
+	VisitTypeLitBody(ctx *TypeLitBodyContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeBlockBody.
+	VisitTypeBlockBody(ctx *TypeBlockBodyContext) interface{}
 
 	// Visit a parse tree produced by ApiParserParser#typeStruct.
 	VisitTypeStruct(ctx *TypeStructContext) interface{}
 
 	// Visit a parse tree produced by ApiParserParser#typeAlias.
 	VisitTypeAlias(ctx *TypeAliasContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeBlockStruct.
+	VisitTypeBlockStruct(ctx *TypeBlockStructContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#typeBlockAlias.
+	VisitTypeBlockAlias(ctx *TypeBlockAliasContext) interface{}
 
 	// Visit a parse tree produced by ApiParserParser#field.
 	VisitField(ctx *FieldContext) interface{}

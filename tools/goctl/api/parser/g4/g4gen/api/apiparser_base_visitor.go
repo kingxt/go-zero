@@ -55,7 +55,11 @@ func (v *BaseApiParserVisitor) VisitTypeBlock(ctx *TypeBlockContext) interface{}
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitTypeBody(ctx *TypeBodyContext) interface{} {
+func (v *BaseApiParserVisitor) VisitTypeLitBody(ctx *TypeLitBodyContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitTypeBlockBody(ctx *TypeBlockBodyContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -64,6 +68,14 @@ func (v *BaseApiParserVisitor) VisitTypeStruct(ctx *TypeStructContext) interface
 }
 
 func (v *BaseApiParserVisitor) VisitTypeAlias(ctx *TypeAliasContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitTypeBlockStruct(ctx *TypeBlockStructContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitTypeBlockAlias(ctx *TypeBlockAliasContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

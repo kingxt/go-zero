@@ -160,8 +160,8 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 		routeMap := make(map[string]PlaceHolder)
 
 		for _, g := range list {
-			handlerMap[g.Handler] = holder
-			routeMap[g.Method+g.Path] = holder
+			handlerMap[g.Handler] = Holder
+			routeMap[g.Method+g.Path] = Holder
 		}
 
 		return handlerMap, routeMap
@@ -178,7 +178,7 @@ func (p *Parser) valid(mainApi *spec.ApiSpec, filename string, nestedApi *spec.A
 	}
 
 	for _, each := range mainApi.Types {
-		mainTypeMap[each.Name] = holder
+		mainTypeMap[each.Name] = Holder
 	}
 
 	// duplicate route check

@@ -16,8 +16,31 @@ const (
 	tagRegex         = `(?m)\x60[a-z]+:".+"\x60`
 )
 
+var holder = struct{}{}
+var kind = map[string]struct{}{
+	"bool":       holder,
+	"int":        holder,
+	"int8":       holder,
+	"int16":      holder,
+	"int32":      holder,
+	"int64":      holder,
+	"uint":       holder,
+	"uint8":      holder,
+	"uint16":     holder,
+	"uint32":     holder,
+	"uint64":     holder,
+	"uintptr":    holder,
+	"float32":    holder,
+	"float64":    holder,
+	"complex64":  holder,
+	"complex128": holder,
+	"array":      holder,
+	"string":     holder,
+}
+
 func match(p *ApiParserParser, text string) {
 	v := getCurrentTokenText(p)
+
 	if v != text {
 		notifyErrorListeners(p, expecting(text, v))
 	}
@@ -50,14 +73,32 @@ func checkKeyValue(p *ApiParserParser) {
 	setCurrentTokenText(p, v)
 }
 
-func checkFieldName(p *ApiParserParser) {
+func checkKeyword(p *ApiParserParser) {
 	v := getCurrentTokenText(p)
 	if IsGolangKeyWord(v) {
 		notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", v))
 	}
 }
 
-func IsGolangKeyWord(text string) bool {
+func checkKey(p *ApiParserParser) {
+	v := getCurrentTokenText(p)
+	if IsGolangKeyWord(v) {
+		notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", v))
+	}
+
+	if _, ok := kind[v]; !ok {
+		notifyErrorListeners(p, fmt.Sprintf("expecting golang basic type, found : '%s'", v))
+	}
+
+}
+
+func IsGolangKeyWord(text string, excepts ...string) bool {
+	for _, each := range excepts {
+		if text == each {
+			return false
+		}
+	}
+
 	switch text {
 	case "var", "const", "package", "import", "func", "return",
 		"defer", "go", "select", "interface", "struct", "break", "case",
@@ -69,43 +110,45 @@ func IsGolangKeyWord(text string) bool {
 	}
 }
 
-func isAnonymous(p *ApiParserParser) bool {
-	text := p.GetTokenStream().GetAllText()
-	defaultParser := NewBaseParser()
-	v, err := defaultParser.Accept(func(ap *anonymous.AnonymousParserParser) interface{} {
-		iAnonymousFiledContext := ap.AnonymousFiled()
-		if iAnonymousFiledContext != nil {
-			ctx := iAnonymousFiledContext.(*anonymous.AnonymousFiledContext)
-			currentText := ctx.GetText()
-			if IsGolangKeyWord(ctx.ID().GetText()) {
-				panic(fmt.Errorf("expecting ID, found golang keyword: '%s'", ctx.ID().GetText()))
+func isNormal(p *ApiParserParser) bool {
+	ct := p.GetTokenStream().(*antlr.CommonTokenStream)
+	line := p.GetCurrentToken().GetLine()
+	tokens := ct.GetAllTokens()
+	var list []string
+	for _, token := range tokens {
+		if token.GetLine() == line {
+			text := token.GetText()
+			if strings.HasPrefix(text, "//") {
+				continue
 			}
-			return currentText
+			if strings.HasPrefix(text, "/*") {
+				continue
+			}
+			if text == "<EOF>" {
+				continue
+			}
+			list = append(list, text)
 		}
-		return ""
-	}, text)
-	if err != nil {
-		notifyErrorListeners(p, err.Error())
 	}
-	str := v.(string)
-	replace := func(s string) string {
-		v := strings.ReplaceAll(s, " ", "")
-		v = strings.ReplaceAll(v, "\r", "")
-		v = strings.ReplaceAll(v, "\n", "")
-		v = strings.ReplaceAll(v, "\t", "")
-		return v
+	if len(list) == 1 {
+		t := strings.TrimPrefix(list[0], "*")
+		if IsGolangKeyWord(t) {
+			notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", t))
+		}
 	}
-	return replace(text) == replace(str)
+	if len(list) > 1 {
+		if list[0] == "*" {
+			t := strings.TrimPrefix(list[1], "*")
+			if IsGolangKeyWord(t) {
+				notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", t))
+			}
+		}
+	}
+	return len(list) > 1
 }
 
-func checkTag(p *ApiParserParser) {
-	v := getCurrentTokenText(p)
-	if v == "" || v == "<EOF>" {
-		return
-	}
-	if !matchRegex(v, tagRegex) {
-		notifyErrorListeners(p, mismatched("key-value tag", v))
-	}
+func MatchTag(v string) bool {
+	return matchRegex(v, tagRegex)
 }
 
 func isInterface(p *ApiParserParser) {
