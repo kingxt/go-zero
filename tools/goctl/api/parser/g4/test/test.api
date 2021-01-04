@@ -73,6 +73,8 @@ type (
         VInterface interface{} `json:"vInterface"`
         // time without json tag
         T time.Time
+        // inline
+        FooBar
     }
 )
 
