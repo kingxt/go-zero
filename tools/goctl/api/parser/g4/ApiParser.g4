@@ -54,7 +54,7 @@ arrayType:          lbrack='[' rbrack=']' dataType;
 
 // service
 serviceSpec:    atServer? serviceApi;
-atServer:       ATSERVER lp='(' comment=commentSpec? kvLit+ rp=')' commentSpec*;
+atServer:       ATSERVER lp='(' kvLit+ rp=')' commentSpec*;
 serviceApi:     {match(p,"service")}serviceToken=ID serviceName lbrace='{' comment=commentSpec? serviceRoute* rbrace='}';
 serviceRoute:   atDoc? (atServer|atHandler) route;
 atDoc:          ATDOC lp='(' ((comment=commentSpec? kvLit+)|STRING) rp=')';
@@ -62,7 +62,7 @@ atHandler:      doc=commentSpec* ATHANDLER ID comment=commentSpec?;
 route:          doc=commentSpec* {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=body? comment=commentSpec?;
 body:           lp='(' {checkKeyword(p)}ID rp=')';
 // kv
-kvLit:          doc=commentSpec* key=ID {checkKeyValue(p)}value=LINE_VALUE comment=commentSpec*;
+kvLit:          doc=commentSpec* key=ID {checkKeyValue(p)}value=LINE_VALUE comment=commentSpec?;
 
 // comment
 commentSpec:        COMMENT|LINE_COMMENT;

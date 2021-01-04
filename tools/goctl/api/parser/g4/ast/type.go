@@ -8,6 +8,13 @@ import (
 )
 
 type (
+	TypeExpr interface {
+		Doc() Expr
+		Comment() Expr
+		Format() error
+		Equal(v interface{}) bool
+		NameExpr() Expr
+	}
 	TypeAlias struct {
 		Name        Expr
 		Assign      Expr
@@ -81,7 +88,7 @@ type (
 
 func (v *ApiVisitor) VisitTypeSpec(ctx *api.TypeSpecContext) interface{} {
 	if ctx.TypeLit() != nil {
-		return ctx.TypeLit().Accept(v)
+		return []Spec{ctx.TypeLit().Accept(v).(Spec)}
 	}
 	return ctx.TypeBlock().Accept(v)
 }
@@ -304,6 +311,10 @@ func (v *ApiVisitor) VisitArrayType(ctx *api.ArrayTypeContext) interface{} {
 	}
 }
 
+func (a *TypeAlias) NameExpr() Expr {
+	return a.Name
+}
+
 func (a *TypeAlias) Doc() Expr {
 	return a.DocExpr
 }
@@ -492,7 +503,7 @@ func (p *Pointer) Equal(dt DataType) bool {
 	return p.Name.Equal(v.Name)
 }
 
-func (s *TypeStruct) Expr() Expr {
+func (s *TypeStruct) NameExpr() Expr {
 	return s.Name
 }
 

@@ -299,8 +299,8 @@ func TestServiceApi(t *testing.T) {
 		}
 		`)
 		assert.Nil(t, err)
-		api := v.(*ast.Api)
-		assert.True(t, api.Equal(&ast.Api{
+		api := v.(*ast.ServiceApi)
+		assert.True(t, api.Equal(&ast.ServiceApi{
 			ServiceToken: ast.NewTextExpr("service"),
 			Name:         ast.NewTextExpr("foo-api"),
 			Lbrace:       ast.NewTextExpr("{"),
@@ -357,5 +357,219 @@ func TestServiceApi(t *testing.T) {
 		@handler foo
 		}`)
 		assert.Error(t, err)
+	})
+}
+
+func TestAtServer(t *testing.T) {
+	fn := func(p *api.ApiParserParser, v *ast.ApiVisitor) interface{} {
+		return p.AtServer().Accept(v)
+	}
+	t.Run("normal", func(t *testing.T) {
+		v, err := parser.Accept(fn, `
+		@server(
+			// foo
+			foo1: bar1 // bar
+			// foo
+			foo2: "bar2" // bar
+			/**foo*/
+			foo3: "foo
+			bar" /**bar*/		
+		)
+		`)
+		assert.Nil(t, err)
+		as := v.(*ast.AtServer)
+		assert.True(t, as.Equal(&ast.AtServer{
+			AtServerToken: ast.NewTextExpr("@server"),
+			Lp:            ast.NewTextExpr("("),
+			Rp:            ast.NewTextExpr(")"),
+			Kv: []*ast.KvExpr{
+				{
+					Key:         ast.NewTextExpr("foo1"),
+					Value:       ast.NewTextExpr("bar1"),
+					DocExpr:     ast.NewTextExpr("// foo"),
+					CommentExpr: ast.NewTextExpr("// bar"),
+				},
+				{
+					Key:         ast.NewTextExpr("foo2"),
+					Value:       ast.NewTextExpr(`"bar2"`),
+					DocExpr:     ast.NewTextExpr("// foo"),
+					CommentExpr: ast.NewTextExpr("// bar"),
+				},
+				{
+					Key: ast.NewTextExpr("foo3"),
+					Value: ast.NewTextExpr(`"foo
+			bar"`),
+					DocExpr:     ast.NewTextExpr("/**foo*/"),
+					CommentExpr: ast.NewTextExpr("/**bar*/"),
+				},
+			},
+		}))
+	})
+
+	t.Run("wrong", func(t *testing.T) {
+		_, err := parser.Accept(fn, `server (
+			foo:bar
+		)`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, `@server ()`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, `@server (
+			foo: bar
+		`)
+		assert.Error(t, err)
+	})
+}
+
+func TestServiceSpec(t *testing.T) {
+	fn := func(p *api.ApiParserParser, v *ast.ApiVisitor) interface{} {
+		return p.ServiceSpec().Accept(v)
+	}
+	t.Run("normal", func(t *testing.T) {
+		v, err := parser.Accept(fn, `
+		@server(
+			// foo
+			foo1: bar1 // bar
+			// foo
+			foo2: "bar2" // bar
+			/**foo*/
+			foo3: "foo
+			bar" /**bar*/		
+		)
+		service foo-api{
+			@doc("foo")
+			// foo/bar
+			// foo
+			@handler foo // bar
+			// foo/bar
+			// foo
+			post /foo (Foo) returns (Bar) // bar
+		}
+		`)
+		assert.Nil(t, err)
+		service := v.(*ast.Service)
+		assert.True(t, service.Equal(&ast.Service{
+			AtServer: &ast.AtServer{
+				AtServerToken: ast.NewTextExpr("@server"),
+				Lp:            ast.NewTextExpr("("),
+				Rp:            ast.NewTextExpr(")"),
+				Kv: []*ast.KvExpr{
+					{
+						Key:         ast.NewTextExpr("foo1"),
+						Value:       ast.NewTextExpr("bar1"),
+						DocExpr:     ast.NewTextExpr("// foo"),
+						CommentExpr: ast.NewTextExpr("// bar"),
+					},
+					{
+						Key:         ast.NewTextExpr("foo2"),
+						Value:       ast.NewTextExpr(`"bar2"`),
+						DocExpr:     ast.NewTextExpr("// foo"),
+						CommentExpr: ast.NewTextExpr("// bar"),
+					},
+					{
+						Key: ast.NewTextExpr("foo3"),
+						Value: ast.NewTextExpr(`"foo
+			bar"`),
+						DocExpr:     ast.NewTextExpr("/**foo*/"),
+						CommentExpr: ast.NewTextExpr("/**bar*/"),
+					},
+				},
+			},
+			ServiceApi: &ast.ServiceApi{
+				ServiceToken: ast.NewTextExpr("service"),
+				Name:         ast.NewTextExpr("foo-api"),
+				Lbrace:       ast.NewTextExpr("{"),
+				Rbrace:       ast.NewTextExpr("}"),
+				ServiceRoute: []*ast.ServiceRoute{
+					{
+						AtDoc: &ast.AtDoc{
+							AtDocToken: ast.NewTextExpr("@doc"),
+							Lp:         ast.NewTextExpr("("),
+							Rp:         ast.NewTextExpr(")"),
+							LineDoc:    ast.NewTextExpr(`"foo"`),
+						},
+						AtHandler: &ast.AtHandler{
+							AtHandlerToken: ast.NewTextExpr("@handler"),
+							Name:           ast.NewTextExpr("foo"),
+							DocExpr:        ast.NewTextExpr("// foo"),
+							CommentExpr:    ast.NewTextExpr("// bar"),
+						},
+						Route: &ast.Route{
+							Method: ast.NewTextExpr("post"),
+							Path:   ast.NewTextExpr("/foo"),
+							Req: &ast.Body{
+								Lp:   ast.NewTextExpr("("),
+								Rp:   ast.NewTextExpr(")"),
+								Name: ast.NewTextExpr("Foo"),
+							},
+							ReturnToken: ast.NewTextExpr("returns"),
+							Reply: &ast.Body{
+								Lp:   ast.NewTextExpr("("),
+								Rp:   ast.NewTextExpr(")"),
+								Name: ast.NewTextExpr("Bar"),
+							},
+							DocExpr:     ast.NewTextExpr("// foo"),
+							CommentExpr: ast.NewTextExpr("// bar"),
+						},
+					},
+				},
+			},
+		}))
+
+		v, err = parser.Accept(fn, `
+		service foo-api{
+			@doc("foo")
+			// foo/bar
+			// foo
+			@handler foo // bar
+			// foo/bar
+			// foo
+			post /foo (Foo) returns (Bar) // bar
+		}
+		`)
+		assert.Nil(t, err)
+		service = v.(*ast.Service)
+		assert.True(t, service.Equal(&ast.Service{
+			ServiceApi: &ast.ServiceApi{
+				ServiceToken: ast.NewTextExpr("service"),
+				Name:         ast.NewTextExpr("foo-api"),
+				Lbrace:       ast.NewTextExpr("{"),
+				Rbrace:       ast.NewTextExpr("}"),
+				ServiceRoute: []*ast.ServiceRoute{
+					{
+						AtDoc: &ast.AtDoc{
+							AtDocToken: ast.NewTextExpr("@doc"),
+							Lp:         ast.NewTextExpr("("),
+							Rp:         ast.NewTextExpr(")"),
+							LineDoc:    ast.NewTextExpr(`"foo"`),
+						},
+						AtHandler: &ast.AtHandler{
+							AtHandlerToken: ast.NewTextExpr("@handler"),
+							Name:           ast.NewTextExpr("foo"),
+							DocExpr:        ast.NewTextExpr("// foo"),
+							CommentExpr:    ast.NewTextExpr("// bar"),
+						},
+						Route: &ast.Route{
+							Method: ast.NewTextExpr("post"),
+							Path:   ast.NewTextExpr("/foo"),
+							Req: &ast.Body{
+								Lp:   ast.NewTextExpr("("),
+								Rp:   ast.NewTextExpr(")"),
+								Name: ast.NewTextExpr("Foo"),
+							},
+							ReturnToken: ast.NewTextExpr("returns"),
+							Reply: &ast.Body{
+								Lp:   ast.NewTextExpr("("),
+								Rp:   ast.NewTextExpr(")"),
+								Name: ast.NewTextExpr("Bar"),
+							},
+							DocExpr:     ast.NewTextExpr("// foo"),
+							CommentExpr: ast.NewTextExpr("// bar"),
+						},
+					},
+				},
+			},
+		}))
 	})
 }

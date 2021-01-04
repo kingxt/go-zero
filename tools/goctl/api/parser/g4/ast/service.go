@@ -8,18 +8,18 @@ import (
 )
 
 type Service struct {
-	AtServer *AtServer
-	Api      *Api
+	AtServer   *AtServer
+	ServiceApi *ServiceApi
 }
 
 type AtServer struct {
 	AtServerToken Expr
 	Lp            Expr
 	Rp            Expr
-	Kv            []KvExpr
+	Kv            []*KvExpr
 }
 
-type Api struct {
+type ServiceApi struct {
 	ServiceToken Expr
 	Name         Expr
 	Lbrace       Expr
@@ -70,7 +70,7 @@ func (v *ApiVisitor) VisitServiceSpec(ctx *api.ServiceSpecContext) interface{} {
 	if ctx.AtServer() != nil {
 		serviceSpec.AtServer = ctx.AtServer().Accept(v).(*AtServer)
 	}
-	serviceSpec.Api = ctx.ServiceApi().Accept(v).(*Api)
+	serviceSpec.ServiceApi = ctx.ServiceApi().Accept(v).(*ServiceApi)
 	return &serviceSpec
 }
 
@@ -80,13 +80,13 @@ func (v *ApiVisitor) VisitAtServer(ctx *api.AtServerContext) interface{} {
 	atServer.Lp = v.newExprWithToken(ctx.GetLp())
 	atServer.Rp = v.newExprWithToken(ctx.GetRp())
 	for _, each := range ctx.AllKvLit() {
-		atServer.Kv = append(atServer.Kv, each.Accept(v).(KvExpr))
+		atServer.Kv = append(atServer.Kv, each.Accept(v).(*KvExpr))
 	}
 	return &atServer
 }
 
 func (v *ApiVisitor) VisitServiceApi(ctx *api.ServiceApiContext) interface{} {
-	var serviceApi Api
+	var serviceApi ServiceApi
 	serviceApi.ServiceToken = v.newExprWithToken(ctx.GetServiceToken())
 	serviceName := ctx.ServiceName()
 	serviceApi.Name = v.newExprWithText(serviceName.GetText(), serviceName.GetStart().GetLine(), serviceName.GetStart().GetColumn(), serviceName.GetStart().GetStart(), serviceName.GetStop().GetStop())
@@ -351,7 +351,7 @@ func (a *AtServer) Equal(v interface{}) bool {
 		return false
 	}
 
-	var expecting, actual []KvExpr
+	var expecting, actual []*KvExpr
 	expecting = append(expecting, a.Kv...)
 	actual = append(actual, atServer.Kv...)
 	if len(expecting) != len(actual) {
@@ -407,17 +407,17 @@ func (s *ServiceRoute) Format() error {
 	return nil
 }
 
-func (a *Api) Format() error {
+func (a *ServiceApi) Format() error {
 	// todo
 	return nil
 }
 
-func (a *Api) Equal(v interface{}) bool {
+func (a *ServiceApi) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
 
-	api, ok := v.(*Api)
+	api, ok := v.(*ServiceApi)
 	if !ok {
 		return false
 	}
@@ -483,5 +483,5 @@ func (s *Service) Equal(v interface{}) bool {
 		}
 	}
 
-	return s.Api.Equal(service.Api)
+	return s.ServiceApi.Equal(service.ServiceApi)
 }

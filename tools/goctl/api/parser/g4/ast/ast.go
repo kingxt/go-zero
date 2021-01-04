@@ -135,6 +135,9 @@ func (e *defaultExpr) Column() int {
 }
 
 func (e *defaultExpr) Text() string {
+	if e == nil {
+		return ""
+	}
 	return e.v
 }
 
