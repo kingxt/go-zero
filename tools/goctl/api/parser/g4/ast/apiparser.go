@@ -50,7 +50,12 @@ func (p *Parser) Accept(fn func(p *api.ApiParserParser, visitor *ApiVisitor) int
 	apiParser := api.NewApiParserParser(tokens)
 	apiParser.RemoveErrorListeners()
 	apiParser.AddErrorListener(p)
-	visitor := NewApiVisitor(WithVisitorPrefix(p.prefix))
+	var visitorOptions []VisitorOption
+	visitorOptions = append(visitorOptions, WithVisitorPrefix(p.prefix))
+	if p.debug {
+		visitorOptions = append(visitorOptions, WithVisitorDebug())
+	}
+	visitor := NewApiVisitor(visitorOptions...)
 	v = fn(apiParser, visitor)
 	return
 }
@@ -129,7 +134,12 @@ func (p *Parser) invoke(filename, content string) (v *spec.ApiSpec, err error) {
 	apiParser := api.NewApiParserParser(tokens)
 	apiParser.RemoveErrorListeners()
 	apiParser.AddErrorListener(p)
-	visitor := NewApiVisitor(WithVisitorPrefix(filepath.Base(filename)))
+	var visitorOptions []VisitorOption
+	visitorOptions = append(visitorOptions, WithVisitorPrefix(filepath.Base(filename)))
+	if p.debug {
+		visitorOptions = append(visitorOptions, WithVisitorDebug())
+	}
+	visitor := NewApiVisitor(visitorOptions...)
 
 	v = apiParser.Api().Accept(visitor).(*spec.ApiSpec)
 	return

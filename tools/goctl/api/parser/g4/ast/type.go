@@ -134,7 +134,7 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *api.TypeStructContext) interface{} {
 		structExpr := v.newExprWithToken(ctx.GetStructToken())
 		structTokenText := ctx.GetStructToken().GetText()
 		if structTokenText != "struct" {
-			v.panic(structExpr, fmt.Sprintf("expecting 'struct', but found '%s'", structTokenText))
+			v.panic(structExpr, fmt.Sprintf("expecting 'struct', found input '%s'", structTokenText))
 		}
 
 		if api.IsGolangKeyWord(structTokenText, "struct") {
@@ -161,7 +161,7 @@ func (v *ApiVisitor) VisitTypeBlockStruct(ctx *api.TypeBlockStructContext) inter
 		structExpr := v.newExprWithToken(ctx.GetStructToken())
 		structTokenText := ctx.GetStructToken().GetText()
 		if structTokenText != "struct" {
-			v.panic(structExpr, fmt.Sprintf("expecting 'struct', but found '%s'", structTokenText))
+			v.panic(structExpr, fmt.Sprintf("expecting 'struct', found imput '%s'", structTokenText))
 		}
 
 		if api.IsGolangKeyWord(structTokenText, "struct") {
@@ -224,7 +224,7 @@ func (v *ApiVisitor) VisitNormalField(ctx *api.NormalFieldContext) interface{} {
 		tagText := ctx.GetTag().GetText()
 		tagExpr := v.newExprWithToken(ctx.GetTag())
 		if !api.MatchTag(tagText) {
-			v.panic(tagExpr, fmt.Sprintf("mismatched tag, but found '%s'", tagText))
+			v.panic(tagExpr, fmt.Sprintf("mismatched tag, found input '%s'", tagText))
 		}
 		field.Tag = tagExpr
 	}

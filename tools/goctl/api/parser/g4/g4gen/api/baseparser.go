@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 	"unicode"
@@ -73,6 +74,21 @@ func checkKeyValue(p *ApiParserParser) {
 	setCurrentTokenText(p, v)
 }
 
+func checkHttpMethod(p *ApiParserParser) {
+	method := getCurrentTokenText(p)
+	uppler := strings.ToUpper(method)
+	switch uppler {
+	case http.MethodPost, http.MethodGet, http.MethodHead,
+		http.MethodPut, http.MethodPatch, http.MethodDelete,
+		http.MethodConnect, http.MethodOptions, http.MethodTrace:
+		if method != strings.ToLower(method) {
+			notifyErrorListeners(p, expecting("http method lower case", method))
+		}
+	default:
+		notifyErrorListeners(p, expecting("http method", method))
+	}
+}
+
 func checkKeyword(p *ApiParserParser) {
 	v := getCurrentTokenText(p)
 	if IsGolangKeyWord(v) {
@@ -127,6 +143,9 @@ func isNormal(p *ApiParserParser) bool {
 			if text == "<EOF>" {
 				continue
 			}
+			if strings.TrimSpace(text) == "" {
+				continue
+			}
 			list = append(list, text)
 		}
 	}
@@ -142,6 +161,7 @@ func isNormal(p *ApiParserParser) bool {
 			if IsGolangKeyWord(t) {
 				notifyErrorListeners(p, fmt.Sprintf("expecting ID, found golang keyword: '%s'", t))
 			}
+			return false
 		}
 	}
 	return len(list) > 1

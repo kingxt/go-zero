@@ -44,7 +44,11 @@ func NewApiVisitor(options ...VisitorOption) *ApiVisitor {
 }
 
 func (v *ApiVisitor) panic(expr Expr, msg string) {
-	panic(fmt.Sprintf("%s line %d:%d  %s", v.prefix, expr.Line(), expr.Column(), msg))
+	errString := fmt.Sprintf("%s line %d:%d  %s", v.prefix, expr.Line(), expr.Column(), msg)
+	if v.debug {
+		fmt.Println(errString)
+	}
+	panic(errString)
 }
 
 func WithVisitorPrefix(prefix string) VisitorOption {

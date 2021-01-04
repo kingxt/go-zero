@@ -107,10 +107,50 @@ func (v *BaseApiParserVisitor) VisitArrayType(ctx *ArrayTypeContext) interface{}
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseApiParserVisitor) VisitServiceSpec(ctx *ServiceSpecContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitAtServer(ctx *AtServerContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitServiceApi(ctx *ServiceApiContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitServiceRoute(ctx *ServiceRouteContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitAtDoc(ctx *AtDocContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitAtHandler(ctx *AtHandlerContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitRoute(ctx *RouteContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitBody(ctx *BodyContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseApiParserVisitor) VisitKvLit(ctx *KvLitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BaseApiParserVisitor) VisitCommentSpec(ctx *CommentSpecContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitServiceName(ctx *ServiceNameContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseApiParserVisitor) VisitPath(ctx *PathContext) interface{} {
 	return v.VisitChildren(ctx)
 }

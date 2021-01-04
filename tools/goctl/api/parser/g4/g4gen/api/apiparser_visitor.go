@@ -82,9 +82,39 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParserParser#arrayType.
 	VisitArrayType(ctx *ArrayTypeContext) interface{}
 
+	// Visit a parse tree produced by ApiParserParser#serviceSpec.
+	VisitServiceSpec(ctx *ServiceSpecContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#atServer.
+	VisitAtServer(ctx *AtServerContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#serviceApi.
+	VisitServiceApi(ctx *ServiceApiContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#serviceRoute.
+	VisitServiceRoute(ctx *ServiceRouteContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#atDoc.
+	VisitAtDoc(ctx *AtDocContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#atHandler.
+	VisitAtHandler(ctx *AtHandlerContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#route.
+	VisitRoute(ctx *RouteContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#body.
+	VisitBody(ctx *BodyContext) interface{}
+
 	// Visit a parse tree produced by ApiParserParser#kvLit.
 	VisitKvLit(ctx *KvLitContext) interface{}
 
 	// Visit a parse tree produced by ApiParserParser#commentSpec.
 	VisitCommentSpec(ctx *CommentSpecContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#serviceName.
+	VisitServiceName(ctx *ServiceNameContext) interface{}
+
+	// Visit a parse tree produced by ApiParserParser#path.
+	VisitPath(ctx *PathContext) interface{}
 }
