@@ -124,7 +124,7 @@ func (p parser) fillTypes() error {
 				}
 			}
 		default:
-			panic(fmt.Sprintf("unknown type %+v", v))
+			return errors.New(fmt.Sprintf("unknown type %+v", v))
 		}
 	}
 	return nil
