@@ -1,10 +1,12 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 )
 
@@ -22,7 +24,11 @@ func Parse(filename string) (*spec.ApiSpec, error) {
 
 	spec := new(spec.ApiSpec)
 	p := parser{ast: ast, spec: spec}
-	p.convert2Spec()
+	err = p.convert2Spec()
+	if err != nil {
+		return nil, err
+	}
+
 	return spec, nil
 }
 
@@ -35,16 +41,20 @@ func ParseContent(content string) (*spec.ApiSpec, error) {
 
 	spec := new(spec.ApiSpec)
 	p := parser{ast: ast, spec: spec}
-	p.convert2Spec()
+	err = p.convert2Spec()
+	if err != nil {
+		return nil, err
+	}
+
 	return spec, nil
 }
 
 // todo
-func (p parser) convert2Spec() {
+func (p parser) convert2Spec() error {
 	p.fillInfo()
 	p.fillSyntax()
 	p.fillImport()
-	p.fillTypes()
+	return p.fillTypes()
 }
 
 func (p parser) fillInfo() {
@@ -70,7 +80,7 @@ func (p parser) fillImport() {
 	}
 }
 
-func (p parser) fillTypes() {
+func (p parser) fillTypes() error {
 	for _, item := range p.ast.Type {
 		switch v := (item).(type) {
 		case *ast.TypeStruct:
@@ -78,15 +88,46 @@ func (p parser) fillTypes() {
 			for _, item := range v.Fields {
 				members = append(members, p.fieldToMember(item))
 			}
-			p.spec.Types = append(p.spec.Types, spec.TypeStruct{
+			p.spec.Types = append(p.spec.Types, spec.DefineStruct{
 				RawName: v.Name.Text(),
 				Members: members,
 				Docs:    p.stringExprs(v.Doc()),
 			})
 		default:
+			return errors.New(fmt.Sprintf("unknown type %+v", v))
+		}
+	}
+
+	var findDefined = func(name string) (*spec.Type, error) {
+		for _, item := range p.spec.Types {
+			if _, ok := item.(spec.DefineStruct); ok {
+				if item.Name() == name {
+					return &item, nil
+				}
+			}
+		}
+		return nil, errors.New(fmt.Sprintf("type %s not defined", name))
+	}
+
+	for _, item := range p.spec.Types {
+		switch v := (item).(type) {
+		case spec.DefineStruct:
+			for _, member := range v.Members {
+				switch v := member.Type.(type) {
+				case spec.DefineStruct:
+					tp, err := findDefined(v.RawName)
+					if err != nil {
+						return err
+					} else {
+						member.Type = *tp
+					}
+				}
+			}
+		default:
 			panic(fmt.Sprintf("unknown type %+v", v))
 		}
 	}
+	return nil
 }
 
 func (p parser) fieldToMember(field *ast.TypeField) spec.Member {
@@ -104,8 +145,21 @@ func (p parser) astTypeToSpec(in ast.DataType) spec.Type {
 	switch v := (in).(type) {
 	case *ast.Literal:
 		raw := v.Literal.Text()
-		return spec.BasicType{RawName: raw}
+		if api.IsBasicType(raw) {
+			return spec.BasicType{RawName: raw}
+		} else {
+			return spec.DefineStruct{RawName: raw}
+		}
+	case *ast.Interface:
+		return spec.InterfaceType{RawName: v.Literal.Text()}
+	case *ast.Map:
+		return spec.MapType{RawName: v.MapExpr.Text(), Key: v.Key.Text(), Value: p.astTypeToSpec(v.Value)}
+	case *ast.Array:
+		return spec.ArrayType{RawName: v.ArrayExpr.Text(), Value: p.astTypeToSpec(v.Literal)}
+	case *ast.Pointer:
+		return spec.PointerType{RawName: v.PointerExpr.Text()}
 	}
+	panic(fmt.Sprintf("unspported type %+v", in))
 }
 
 func (p parser) stringExprs(docs []ast.Expr) []string {

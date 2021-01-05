@@ -72,12 +72,7 @@ type (
 		Name() string
 	}
 
-	PointerType struct {
-		RawName string
-		Type    Type
-	}
-
-	TypeStruct struct {
+	DefineStruct struct {
 		RawName string
 		Members []Member
 		Docs    Doc
@@ -105,13 +100,22 @@ type (
 		RawName string
 		Value   Type
 	}
+
+	InterfaceType struct {
+		RawName string
+	}
+
+	PointerType struct {
+		RawName string
+		Type    Type
+	}
 )
 
 func (t BasicType) Name() string {
 	return t.RawName
 }
 
-func (t TypeStruct) Name() string {
+func (t DefineStruct) Name() string {
 	return t.RawName
 }
 
@@ -124,5 +128,9 @@ func (t ArrayType) Name() string {
 }
 
 func (t PointerType) Name() string {
+	return t.RawName
+}
+
+func (t InterfaceType) Name() string {
 	return t.RawName
 }
