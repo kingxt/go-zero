@@ -43,19 +43,25 @@ func TestImport(t *testing.T) {
 		list := v.([]*ast.ImportExpr)
 		expected := []*ast.ImportExpr{
 			{
-				Import:  ast.NewTextExpr("import"),
-				Value:   ast.NewTextExpr(`"foo.api"`),
-				DocExpr: ast.NewTextExpr("/**foo*/"),
+				Import: ast.NewTextExpr("import"),
+				Value:  ast.NewTextExpr(`"foo.api"`),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("/**foo*/"),
+				},
 			},
 			{
-				Import:  ast.NewTextExpr("import"),
-				Value:   ast.NewTextExpr(`"bar.api"`),
-				DocExpr: ast.NewTextExpr("/**bar*/"),
+				Import: ast.NewTextExpr("import"),
+				Value:  ast.NewTextExpr(`"bar.api"`),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("/**bar*/"),
+				},
 			},
 			{
-				Import:      ast.NewTextExpr("import"),
-				Value:       ast.NewTextExpr(`"foo/bar.api"`),
-				DocExpr:     ast.NewTextExpr("/**foobar*/"),
+				Import: ast.NewTextExpr("import"),
+				Value:  ast.NewTextExpr(`"foo/bar.api"`),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("/**foobar*/"),
+				},
 				CommentExpr: ast.NewTextExpr("/**foobar*/"),
 			},
 		}
@@ -80,9 +86,11 @@ func TestImport(t *testing.T) {
 		list := v.([]*ast.ImportExpr)
 		for _, each := range list {
 			assert.True(t, each.Equal(&ast.ImportExpr{
-				Import:      ast.NewTextExpr("import"),
-				Value:       ast.NewTextExpr(`"foo.api"`),
-				DocExpr:     ast.NewTextExpr("/**doc*/"),
+				Import: ast.NewTextExpr("import"),
+				Value:  ast.NewTextExpr(`"foo.api"`),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("/**doc*/"),
+				},
 				CommentExpr: ast.NewTextExpr("/**line doc*/"),
 			}))
 		}
@@ -97,9 +105,11 @@ func TestImport(t *testing.T) {
 		list := v.([]*ast.ImportExpr)
 		for _, each := range list {
 			assert.True(t, each.Equal(&ast.ImportExpr{
-				Import:      ast.NewTextExpr("import"),
-				Value:       ast.NewTextExpr(`"foo.api"`),
-				DocExpr:     ast.NewTextExpr("// comment block"),
+				Import: ast.NewTextExpr("import"),
+				Value:  ast.NewTextExpr(`"foo.api"`),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("// comment block"),
+				},
 				CommentExpr: ast.NewTextExpr("// line comment"),
 			}))
 		}

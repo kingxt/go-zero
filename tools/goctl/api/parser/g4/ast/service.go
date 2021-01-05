@@ -45,7 +45,7 @@ type AtDoc struct {
 type AtHandler struct {
 	AtHandlerToken Expr
 	Name           Expr
-	DocExpr        Expr
+	DocExpr        []Expr
 	CommentExpr    Expr
 }
 
@@ -55,7 +55,7 @@ type Route struct {
 	Req         *Body
 	ReturnToken Expr
 	Reply       *Body
-	DocExpr     Expr
+	DocExpr     []Expr
 	CommentExpr Expr
 }
 
@@ -130,10 +130,10 @@ func (v *ApiVisitor) VisitAtDoc(ctx *api.AtDocContext) interface{} {
 func (v *ApiVisitor) VisitAtHandler(ctx *api.AtHandlerContext) interface{} {
 	var atHandler AtHandler
 	astHandlerExpr := v.newExprWithTerminalNode(ctx.ATHANDLER())
-	atHandler.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
-	atHandler.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	atHandler.AtHandlerToken = astHandlerExpr
 	atHandler.Name = v.newExprWithTerminalNode(ctx.ID())
+	atHandler.DocExpr = v.getDoc(ctx)
+	atHandler.CommentExpr = v.getComment(ctx)
 	return &atHandler
 }
 
@@ -156,9 +156,8 @@ func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 		}
 		route.ReturnToken = returnExpr
 	}
-	route.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
-	route.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
-
+	route.DocExpr = v.getDoc(ctx)
+	route.CommentExpr = v.getComment(ctx)
 	return &route
 }
 
@@ -199,7 +198,7 @@ func (r *Route) Format() error {
 	return nil
 }
 
-func (r *Route) Doc() Expr {
+func (r *Route) Doc() []Expr {
 	return r.DocExpr
 }
 
@@ -245,7 +244,7 @@ func (r *Route) Equal(v interface{}) bool {
 	return EqualDoc(r, route)
 }
 
-func (a *AtHandler) Doc() Expr {
+func (a *AtHandler) Doc() []Expr {
 	return a.DocExpr
 }
 

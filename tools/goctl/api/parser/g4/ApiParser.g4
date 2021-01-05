@@ -2,44 +2,48 @@ grammar ApiParser;
 
 import ApiLexer;
 
+@lexer::members{
+    const COMEMNTS = 88
+}
+
 api:            spec*;
 spec:           syntaxLit
                 |importSpec
                 |infoSpec
                 |typeSpec
                 |serviceSpec
-                |commentSpec;
+                ;
 
 // syntax
-syntaxLit:      doc=commentSpec? {match(p,"syntax")}syntaxToken=ID assign='=' {checkVersion(p)}version=STRING comment=commentSpec?;
+syntaxLit:      {match(p,"syntax")}syntaxToken=ID assign='=' {checkVersion(p)}version=STRING;
 
 // import
 importSpec:     importLit|importBlock;
-importLit:      doc=commentSpec? {match(p,"import")}importToken=ID importValue comment=commentSpec? ;
-importBlock:    {match(p,"import")}importToken=ID '(' comment=commentSpec? (importBlockValue|commentSpec)+ ')';
-importBlockValue:   doc=commentSpec? importValue comment=commentSpec?;
+importLit:      {match(p,"import")}importToken=ID importValue ;
+importBlock:    {match(p,"import")}importToken=ID '(' importBlockValue+ ')';
+importBlockValue:   importValue;
 importValue:    {checkImportValue(p)}STRING;
 
 // info
-infoSpec:       doc=commentSpec? {match(p,"info")}infoToken=ID lp='(' kvLit+ rp=')';
+infoSpec:       {match(p,"info")}infoToken=ID lp='(' kvLit+ rp=')';
 
 // type
 typeSpec:       typeLit
                 |typeBlock;
 
 // eg: type Foo int
-typeLit:        doc=commentSpec?{match(p,"type")}typeToken=ID  typeLitBody;
+typeLit:        {match(p,"type")}typeToken=ID  typeLitBody;
 // eg: type (...)
 typeBlock:      {match(p,"type")}typeToken=ID lp='(' typeBlockBody+ rp=')';
 typeLitBody:    typeStruct|typeAlias;
-typeBlockBody:  typeBlockStruct|typeBlockAlias|commentSpec;
+typeBlockBody:  typeBlockStruct|typeBlockAlias;
 typeStruct:     {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
-typeAlias:      {checkKeyword(p)}alias=ID assign='='? dataType comment=commentSpec?;
-typeBlockStruct:doc=commentSpec?  {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
-typeBlockAlias: doc=commentSpec? {checkKeyword(p)}alias=ID assign='='? dataType comment=commentSpec?;
+typeAlias:      {checkKeyword(p)}alias=ID assign='='? dataType;
+typeBlockStruct: {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
+typeBlockAlias: {checkKeyword(p)}alias=ID assign='='? dataType;
 field:          {isNormal(p)}? normalField|anonymousFiled ;
-normalField:    doc=commentSpec? {checkKeyword(p)}fieldName=ID dataType tag=RAW_STRING? comment=commentSpec?;
-anonymousFiled: doc=commentSpec? star='*'? ID comment=commentSpec?;
+normalField:    {checkKeyword(p)}fieldName=ID dataType tag=RAW_STRING?;
+anonymousFiled: star='*'? ID;
 dataType:       {isInterface(p)}ID
                 |mapType
                 |arrayType
@@ -48,23 +52,21 @@ dataType:       {isInterface(p)}ID
                 |pointerType
                 |typeStruct
                 ;
-pointerType:        star='*' {checkKeyword(p)}ID;
-mapType:            {match(p,"map")}mapToken=ID lbrack='[' {checkKey(p)}key=ID rbrack=']' value=dataType;
-arrayType:          lbrack='[' rbrack=']' dataType;
+pointerType:    star='*' {checkKeyword(p)}ID;
+mapType:        {match(p,"map")}mapToken=ID lbrack='[' {checkKey(p)}key=ID rbrack=']' value=dataType;
+arrayType:      lbrack='[' rbrack=']' dataType;
 
 // service
 serviceSpec:    atServer? serviceApi;
-atServer:       ATSERVER lp='(' kvLit+ rp=')' commentSpec*;
-serviceApi:     {match(p,"service")}serviceToken=ID serviceName lbrace='{' comment=commentSpec? serviceRoute* rbrace='}';
+atServer:       ATSERVER lp='(' kvLit+ rp=')';
+serviceApi:     {match(p,"service")}serviceToken=ID serviceName lbrace='{' serviceRoute* rbrace='}';
 serviceRoute:   atDoc? (atServer|atHandler) route;
-atDoc:          ATDOC lp='(' ((comment=commentSpec? kvLit+)|STRING) rp=')';
-atHandler:      doc=commentSpec* ATHANDLER ID comment=commentSpec?;
-route:          doc=commentSpec* {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=body? comment=commentSpec?;
+atDoc:          ATDOC lp='(' ((kvLit+)|STRING) rp=')';
+atHandler:      ATHANDLER ID;
+route:          {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=body?;
 body:           lp='(' {checkKeyword(p)}ID rp=')';
 // kv
-kvLit:          doc=commentSpec* key=ID {checkKeyValue(p)}value=LINE_VALUE comment=commentSpec?;
+kvLit:          key=ID {checkKeyValue(p)}value=LINE_VALUE;
 
-// comment
-commentSpec:        COMMENT|LINE_COMMENT;
-serviceName:        (ID '-'?)+;
-path:               (('/' (ID ('-' ID)?))|('/:' (ID ('-' ID)?)))+;
+serviceName:    (ID '-'?)+;
+path:           (('/' (ID ('-' ID)?))|('/:' (ID ('-' ID)?)))+;

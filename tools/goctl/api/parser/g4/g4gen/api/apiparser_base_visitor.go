@@ -143,10 +143,6 @@ func (v *BaseApiParserVisitor) VisitKvLit(ctx *KvLitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseApiParserVisitor) VisitCommentSpec(ctx *CommentSpecContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
 func (v *BaseApiParserVisitor) VisitServiceName(ctx *ServiceNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }

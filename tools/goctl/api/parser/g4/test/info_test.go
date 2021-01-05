@@ -82,9 +82,11 @@ line"`),
 			Info: ast.NewTextExpr("info"),
 			Kvs: []*ast.KvExpr{
 				{
-					Key:         ast.NewTextExpr("title"),
-					Value:       ast.NewTextExpr("foo"),
-					DocExpr:     ast.NewTextExpr("// foo"),
+					Key:   ast.NewTextExpr("title"),
+					Value: ast.NewTextExpr("foo"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// foo"),
+					},
 					CommentExpr: ast.NewTextExpr("// bar"),
 				},
 			},
@@ -103,9 +105,11 @@ line"`),
 			Info: ast.NewTextExpr("info"),
 			Kvs: []*ast.KvExpr{
 				{
-					Key:         ast.NewTextExpr("title"),
-					Value:       ast.NewTextExpr("foo"),
-					DocExpr:     ast.NewTextExpr("/**foo*/"),
+					Key:   ast.NewTextExpr("title"),
+					Value: ast.NewTextExpr("foo"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("/**foo*/"),
+					},
 					CommentExpr: ast.NewTextExpr("/*bar**/"),
 				},
 			},
@@ -125,14 +129,18 @@ line"`),
 			Info: ast.NewTextExpr("info"),
 			Kvs: []*ast.KvExpr{
 				{
-					Key:     ast.NewTextExpr("title"),
-					Value:   ast.NewTextExpr("foo"),
-					DocExpr: ast.NewTextExpr("// doc"),
+					Key:   ast.NewTextExpr("title"),
+					Value: ast.NewTextExpr("foo"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// doc"),
+					},
 				},
 				{
-					Key:     ast.NewTextExpr("author"),
-					Value:   ast.NewTextExpr("bar"),
-					DocExpr: ast.NewTextExpr("// doc"),
+					Key:   ast.NewTextExpr("author"),
+					Value: ast.NewTextExpr("bar"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// doc"),
+					},
 				},
 			},
 		}))

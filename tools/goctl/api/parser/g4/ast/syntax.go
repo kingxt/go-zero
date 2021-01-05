@@ -1,12 +1,14 @@
 package ast
 
-import "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+import (
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+)
 
 type SyntaxExpr struct {
 	Syntax      Expr
 	Assign      Expr
 	Version     Expr
-	DocExpr     Expr
+	DocExpr     []Expr
 	CommentExpr Expr
 }
 
@@ -14,14 +16,12 @@ func (v *ApiVisitor) VisitSyntaxLit(ctx *api.SyntaxLitContext) interface{} {
 	syntax := v.newExprWithToken(ctx.GetSyntaxToken())
 	assign := v.newExprWithToken(ctx.GetAssign())
 	version := v.newExprWithToken(ctx.GetVersion())
-	docExpr := v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
-	commentExpr := v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &SyntaxExpr{
 		Syntax:      syntax,
 		Assign:      assign,
 		Version:     version,
-		DocExpr:     docExpr,
-		CommentExpr: commentExpr,
+		DocExpr:     v.getDoc(ctx),
+		CommentExpr: v.getComment(ctx),
 	}
 }
 
@@ -49,7 +49,7 @@ func (s *SyntaxExpr) Equal(v interface{}) bool {
 		s.Version.Equal(syntax.Version)
 }
 
-func (s *SyntaxExpr) Doc() Expr {
+func (s *SyntaxExpr) Doc() []Expr {
 	return s.DocExpr
 }
 

@@ -46,7 +46,9 @@ func TestField(t *testing.T) {
 				Star:        ast.NewTextExpr("*"),
 				Name:        ast.NewTextExpr("User"),
 			},
-			DocExpr:     ast.NewTextExpr("// anonymous user"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// anonymous user"),
+			},
 			CommentExpr: ast.NewTextExpr("// pointer type"),
 		}))
 
@@ -54,9 +56,6 @@ func TestField(t *testing.T) {
 		assert.Error(t, err)
 
 		_, err = parser.Accept(fieldAccept, `map`)
-		assert.Error(t, err)
-
-		_, err = parser.Accept(fieldAccept, `*var`)
 		assert.Error(t, err)
 	})
 
@@ -365,7 +364,9 @@ func TestTypeBlock(t *testing.T) {
 		assert.True(t, alias[0].Equal(&ast.TypeAlias{
 			Name:     ast.NewTextExpr("Foo"),
 			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-			DocExpr:  ast.NewTextExpr("// doc"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// doc"),
+			},
 		}))
 
 		v, err = parser.Accept(fn, `type (
@@ -377,10 +378,12 @@ func TestTypeBlock(t *testing.T) {
 		assert.Nil(t, err)
 		st := v.([]ast.TypeExpr)
 		assert.True(t, st[0].Equal(&ast.TypeStruct{
-			Name:    ast.NewTextExpr("Foo"),
-			LBrace:  ast.NewTextExpr("{"),
-			RBrace:  ast.NewTextExpr("}"),
-			DocExpr: ast.NewTextExpr("// doc"),
+			Name:   ast.NewTextExpr("Foo"),
+			LBrace: ast.NewTextExpr("{"),
+			RBrace: ast.NewTextExpr("}"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// doc"),
+			},
 			Fields: []*ast.TypeField{
 				{
 					Name:     ast.NewTextExpr("Bar"),
@@ -419,10 +422,12 @@ func TestTypeLit(t *testing.T) {
 		assert.Nil(t, err)
 		lit = v.(*ast.TypeAlias)
 		assert.True(t, lit.Equal(&ast.TypeAlias{
-			Name:        ast.NewTextExpr("Foo"),
-			Assign:      ast.NewTextExpr("="),
-			DataType:    &ast.Literal{Literal: ast.NewTextExpr("int")},
-			DocExpr:     ast.NewTextExpr("// doc"),
+			Name:     ast.NewTextExpr("Foo"),
+			Assign:   ast.NewTextExpr("="),
+			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// doc"),
+			},
 			CommentExpr: ast.NewTextExpr("// comment"),
 		}))
 
@@ -439,10 +444,14 @@ func TestTypeLit(t *testing.T) {
 				{
 					Name:     ast.NewTextExpr("Bar"),
 					DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-					DocExpr:  ast.NewTextExpr("// comment"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// comment"),
+					},
 				},
 			},
-			DocExpr: ast.NewTextExpr("// doc"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// doc"),
+			},
 		}))
 
 		v, err = parser.Accept(fn, `
@@ -458,10 +467,14 @@ func TestTypeLit(t *testing.T) {
 				{
 					IsAnonymous: true,
 					DataType:    &ast.Literal{Literal: ast.NewTextExpr("Bar")},
-					DocExpr:     ast.NewTextExpr("// comment"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// comment"),
+					},
 				},
 			},
-			DocExpr: ast.NewTextExpr("// doc"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// doc"),
+			},
 		}))
 	})
 

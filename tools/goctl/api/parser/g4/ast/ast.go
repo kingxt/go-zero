@@ -2,12 +2,19 @@ package ast
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
 )
 
 type (
+	TokenStream interface {
+		GetStart() antlr.Token
+		GetStop() antlr.Token
+		GetParser() antlr.Parser
+	}
 	ApiVisitor struct {
 		api.BaseApiParserVisitor
 		debug    bool
@@ -18,7 +25,7 @@ type (
 	VisitorOption func(v *ApiVisitor)
 
 	Spec interface {
-		Doc() Expr
+		Doc() []Expr
 		Comment() Expr
 		Format() error
 		Equal(v interface{}) bool
@@ -165,21 +172,102 @@ func (e *defaultExpr) Equal(expr Expr) bool {
 }
 
 func EqualDoc(spec1, spec2 Spec) bool {
-	if spec1.Doc() != nil {
+	if spec1 == nil {
+		if spec2 != nil {
+			return false
+		}
+		return true
+	} else {
 		if spec2 == nil {
 			return false
 		}
-		if !spec1.Doc().Equal(spec2.Doc()) {
-			return false
+
+		var expectDoc, actualDoc []Expr
+		expectDoc = append(expectDoc, spec2.Doc()...)
+		actualDoc = append(actualDoc, spec1.Doc()...)
+		sort.Slice(expectDoc, func(i, j int) bool {
+			return expectDoc[i].Line() < expectDoc[j].Line()
+		})
+		for index, each := range actualDoc {
+			if !each.Equal(actualDoc[index]) {
+				return false
+			}
+		}
+		if spec1.Comment() != nil {
+			if spec2.Comment() == nil {
+				return false
+			}
+			if !spec1.Comment().Equal(spec2.Comment()) {
+				return false
+			}
+		} else {
+			if spec2.Comment() != nil {
+				return false
+			}
 		}
 	}
-
-	if spec1.Comment() != nil {
-		if spec2.Comment() == nil {
-			return false
-		}
-		return spec1.Comment().Equal(spec2.Comment())
-	}
-
 	return true
+}
+
+func (v *ApiVisitor) getDoc(t TokenStream) []Expr {
+	list := v.getHiddenTokensToLeft(t, api.COMEMNTS, false)
+	return list
+}
+
+func (v *ApiVisitor) getComment(t TokenStream) Expr {
+	list := v.getHiddenTokensToRight(t, api.COMEMNTS)
+	if len(list) == 0 {
+		return nil
+	}
+	commentExpr := list[0]
+	stop := t.GetStop()
+	text := stop.GetText()
+	nlCount := strings.Count(text, "\n")
+	if commentExpr.Line() != stop.GetLine()+nlCount {
+		return nil
+	}
+	return commentExpr
+}
+
+func (v *ApiVisitor) getHiddenTokensToLeft(t TokenStream, channel int, containsCommentOfDefaultChannel bool) []Expr {
+	ct := t.GetParser().GetTokenStream().(*antlr.CommonTokenStream)
+	tokens := ct.GetHiddenTokensToLeft(t.GetStart().GetTokenIndex(), channel)
+	var tmp []antlr.Token
+	for _, each := range tokens {
+		tmp = append(tmp, each)
+	}
+	var list []Expr
+	for _, each := range tmp {
+		if !containsCommentOfDefaultChannel {
+			index := each.GetTokenIndex() - 1
+			if index > 0 {
+				allTokens := ct.GetAllTokens()
+				var flag = false
+				for i := index; i >= 0; i-- {
+					tk := allTokens[i]
+					if tk.GetChannel() == antlr.LexerDefaultTokenChannel {
+						if tk.GetLine() == each.GetLine() {
+							flag = true
+							break
+						}
+					}
+				}
+				if flag {
+					continue
+				}
+			}
+		}
+		list = append(list, v.newExprWithToken(each))
+	}
+	return list
+}
+
+func (v *ApiVisitor) getHiddenTokensToRight(t TokenStream, channel int) []Expr {
+	ct := t.GetParser().GetTokenStream().(*antlr.CommonTokenStream)
+	tokens := ct.GetHiddenTokensToRight(t.GetStop().GetTokenIndex(), channel)
+	var list []Expr
+	for _, each := range tokens {
+		list = append(list, v.newExprWithToken(each))
+	}
+	return list
 }

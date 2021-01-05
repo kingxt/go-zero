@@ -97,9 +97,11 @@ func TestRoute(t *testing.T) {
 		assert.Nil(t, err)
 		route = v.(*ast.Route)
 		assert.True(t, route.Equal(&ast.Route{
-			Method:      ast.NewTextExpr("post"),
-			Path:        ast.NewTextExpr("/foo/foo-bar/:bar"),
-			DocExpr:     ast.NewTextExpr("// foo"),
+			Method: ast.NewTextExpr("post"),
+			Path:   ast.NewTextExpr("/foo/foo-bar/:bar"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// foo"),
+			},
 			CommentExpr: ast.NewTextExpr("// bar"),
 		}))
 	})
@@ -152,8 +154,10 @@ func TestAtHandler(t *testing.T) {
 		assert.True(t, atHandler.Equal(&ast.AtHandler{
 			AtHandlerToken: ast.NewTextExpr("@handler"),
 			Name:           ast.NewTextExpr("foo"),
-			DocExpr:        ast.NewTextExpr("// foo"),
-			CommentExpr:    ast.NewTextExpr("// bar"),
+			DocExpr: []ast.Expr{
+				ast.NewTextExpr("// foo"),
+			},
+			CommentExpr: ast.NewTextExpr("// bar"),
 		}))
 	})
 
@@ -214,9 +218,11 @@ func TestAtDoc(t *testing.T) {
 			Rp:         ast.NewTextExpr(")"),
 			Kv: []*ast.KvExpr{
 				{
-					Key:         ast.NewTextExpr("foo"),
-					Value:       ast.NewTextExpr("bar"),
-					DocExpr:     ast.NewTextExpr("// foo"),
+					Key:   ast.NewTextExpr("foo"),
+					Value: ast.NewTextExpr("bar"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// foo"),
+					},
 					CommentExpr: ast.NewTextExpr("// bar"),
 				},
 			},
@@ -250,8 +256,10 @@ func TestServiceRoute(t *testing.T) {
 			AtHandler: &ast.AtHandler{
 				AtHandlerToken: ast.NewTextExpr("@handler"),
 				Name:           ast.NewTextExpr("foo"),
-				DocExpr:        ast.NewTextExpr("// foo"),
-				CommentExpr:    ast.NewTextExpr("// bar"),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("// foo"),
+				},
+				CommentExpr: ast.NewTextExpr("// bar"),
 			},
 			Route: &ast.Route{
 				Method: ast.NewTextExpr("post"),
@@ -267,7 +275,9 @@ func TestServiceRoute(t *testing.T) {
 					Rp:   ast.NewTextExpr(")"),
 					Name: ast.NewTextExpr("Bar"),
 				},
-				DocExpr:     ast.NewTextExpr("// foo"),
+				DocExpr: []ast.Expr{
+					ast.NewTextExpr("// foo"),
+				},
 				CommentExpr: ast.NewTextExpr("// bar"),
 			},
 		}))
@@ -316,8 +326,10 @@ func TestServiceApi(t *testing.T) {
 					AtHandler: &ast.AtHandler{
 						AtHandlerToken: ast.NewTextExpr("@handler"),
 						Name:           ast.NewTextExpr("foo"),
-						DocExpr:        ast.NewTextExpr("// foo"),
-						CommentExpr:    ast.NewTextExpr("// bar"),
+						DocExpr: []ast.Expr{
+							ast.NewTextExpr("// foo"),
+						},
+						CommentExpr: ast.NewTextExpr("// bar"),
 					},
 					Route: &ast.Route{
 						Method: ast.NewTextExpr("post"),
@@ -333,7 +345,9 @@ func TestServiceApi(t *testing.T) {
 							Rp:   ast.NewTextExpr(")"),
 							Name: ast.NewTextExpr("Bar"),
 						},
-						DocExpr:     ast.NewTextExpr("// foo"),
+						DocExpr: []ast.Expr{
+							ast.NewTextExpr("// foo"),
+						},
 						CommentExpr: ast.NewTextExpr("// bar"),
 					},
 				},
@@ -384,22 +398,28 @@ func TestAtServer(t *testing.T) {
 			Rp:            ast.NewTextExpr(")"),
 			Kv: []*ast.KvExpr{
 				{
-					Key:         ast.NewTextExpr("foo1"),
-					Value:       ast.NewTextExpr("bar1"),
-					DocExpr:     ast.NewTextExpr("// foo"),
+					Key:   ast.NewTextExpr("foo1"),
+					Value: ast.NewTextExpr("bar1"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// foo"),
+					},
 					CommentExpr: ast.NewTextExpr("// bar"),
 				},
 				{
-					Key:         ast.NewTextExpr("foo2"),
-					Value:       ast.NewTextExpr(`"bar2"`),
-					DocExpr:     ast.NewTextExpr("// foo"),
+					Key:   ast.NewTextExpr("foo2"),
+					Value: ast.NewTextExpr(`"bar2"`),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("// foo"),
+					},
 					CommentExpr: ast.NewTextExpr("// bar"),
 				},
 				{
 					Key: ast.NewTextExpr("foo3"),
 					Value: ast.NewTextExpr(`"foo
 			bar"`),
-					DocExpr:     ast.NewTextExpr("/**foo*/"),
+					DocExpr: []ast.Expr{
+						ast.NewTextExpr("/**foo*/"),
+					},
 					CommentExpr: ast.NewTextExpr("/**bar*/"),
 				},
 			},
@@ -456,22 +476,28 @@ func TestServiceSpec(t *testing.T) {
 				Rp:            ast.NewTextExpr(")"),
 				Kv: []*ast.KvExpr{
 					{
-						Key:         ast.NewTextExpr("foo1"),
-						Value:       ast.NewTextExpr("bar1"),
-						DocExpr:     ast.NewTextExpr("// foo"),
+						Key:   ast.NewTextExpr("foo1"),
+						Value: ast.NewTextExpr("bar1"),
+						DocExpr: []ast.Expr{
+							ast.NewTextExpr("// foo"),
+						},
 						CommentExpr: ast.NewTextExpr("// bar"),
 					},
 					{
-						Key:         ast.NewTextExpr("foo2"),
-						Value:       ast.NewTextExpr(`"bar2"`),
-						DocExpr:     ast.NewTextExpr("// foo"),
+						Key:   ast.NewTextExpr("foo2"),
+						Value: ast.NewTextExpr(`"bar2"`),
+						DocExpr: []ast.Expr{
+							ast.NewTextExpr("// foo"),
+						},
 						CommentExpr: ast.NewTextExpr("// bar"),
 					},
 					{
 						Key: ast.NewTextExpr("foo3"),
 						Value: ast.NewTextExpr(`"foo
 			bar"`),
-						DocExpr:     ast.NewTextExpr("/**foo*/"),
+						DocExpr: []ast.Expr{
+							ast.NewTextExpr("/**foo*/"),
+						},
 						CommentExpr: ast.NewTextExpr("/**bar*/"),
 					},
 				},
@@ -492,8 +518,10 @@ func TestServiceSpec(t *testing.T) {
 						AtHandler: &ast.AtHandler{
 							AtHandlerToken: ast.NewTextExpr("@handler"),
 							Name:           ast.NewTextExpr("foo"),
-							DocExpr:        ast.NewTextExpr("// foo"),
-							CommentExpr:    ast.NewTextExpr("// bar"),
+							DocExpr: []ast.Expr{
+								ast.NewTextExpr("// foo"),
+							},
+							CommentExpr: ast.NewTextExpr("// bar"),
 						},
 						Route: &ast.Route{
 							Method: ast.NewTextExpr("post"),
@@ -509,7 +537,9 @@ func TestServiceSpec(t *testing.T) {
 								Rp:   ast.NewTextExpr(")"),
 								Name: ast.NewTextExpr("Bar"),
 							},
-							DocExpr:     ast.NewTextExpr("// foo"),
+							DocExpr: []ast.Expr{
+								ast.NewTextExpr("// foo"),
+							},
 							CommentExpr: ast.NewTextExpr("// bar"),
 						},
 					},
@@ -547,8 +577,10 @@ func TestServiceSpec(t *testing.T) {
 						AtHandler: &ast.AtHandler{
 							AtHandlerToken: ast.NewTextExpr("@handler"),
 							Name:           ast.NewTextExpr("foo"),
-							DocExpr:        ast.NewTextExpr("// foo"),
-							CommentExpr:    ast.NewTextExpr("// bar"),
+							DocExpr: []ast.Expr{
+								ast.NewTextExpr("// foo"),
+							},
+							CommentExpr: ast.NewTextExpr("// bar"),
 						},
 						Route: &ast.Route{
 							Method: ast.NewTextExpr("post"),
@@ -564,7 +596,9 @@ func TestServiceSpec(t *testing.T) {
 								Rp:   ast.NewTextExpr(")"),
 								Name: ast.NewTextExpr("Bar"),
 							},
-							DocExpr:     ast.NewTextExpr("// foo"),
+							DocExpr: []ast.Expr{
+								ast.NewTextExpr("// foo"),
+							},
 							CommentExpr: ast.NewTextExpr("// bar"),
 						},
 					},

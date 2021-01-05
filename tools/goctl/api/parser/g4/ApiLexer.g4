@@ -8,8 +8,8 @@ ATSERVER:           '@server';
 
 // Whitespace and comments
 WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
-COMMENT:            '/*' .*? '*/';
-LINE_COMMENT:       '//' ~[\r\n]*;
+COMMENT:            '/*' .*? '*/' -> channel(88);
+LINE_COMMENT:       '//' ~[\r\n]* -> channel(88);
 STRING:             '"' (~["\\] | EscapeSequence)* '"';
 RAW_STRING:         '`' (~[`\\\r\n] | EscapeSequence)+ '`';
 LINE_VALUE:         ':' [ \t]* (STRING|(~[\r\n/"`]*));
