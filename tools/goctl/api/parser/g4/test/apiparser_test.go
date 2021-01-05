@@ -63,6 +63,7 @@ func TestApiParser(t *testing.T) {
 		}
 		_, err = parser.ParseContent(fmt.Sprintf(`import "%s"`, file))
 		assert.Error(t, err)
+		fmt.Printf("%+v\n", err)
 	})
 
 	t.Run("normal", func(t *testing.T) {

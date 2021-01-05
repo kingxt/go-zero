@@ -300,13 +300,6 @@ func TestApi(t *testing.T) {
 						},
 					},
 					{
-						Name:     ast.NewTextExpr("T"),
-						DataType: &ast.Time{Literal: ast.NewTextExpr("time.Time")},
-						DocExpr: []ast.Expr{
-							ast.NewTextExpr("// time without json tag"),
-						},
-					},
-					{
 						IsAnonymous: true,
 						DataType:    &ast.Literal{Literal: ast.NewTextExpr("FooBar")},
 						DocExpr: []ast.Expr{

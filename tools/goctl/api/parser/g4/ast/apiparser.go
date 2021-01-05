@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
@@ -334,6 +335,7 @@ func (p *Parser) checkType(prefix string, types map[string]TypeExpr, expr DataTy
 }
 
 func (p *Parser) readContent(filename string) (string, error) {
+	filename = strings.ReplaceAll(filename, `"`, "")
 	abs, err := filepath.Abs(filename)
 	if err != nil {
 		return "", err

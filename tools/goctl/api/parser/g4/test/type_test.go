@@ -226,10 +226,8 @@ func TestDataType_Time(t *testing.T) {
 		return p.DataType().Accept(visitor)
 	}
 	t.Run("normal", func(t *testing.T) {
-		v, err := parser.Accept(dt, `time.Time`)
-		assert.Nil(t, err)
-		time := v.(ast.DataType)
-		assert.True(t, time.Equal(&ast.Time{Literal: ast.NewTextExpr("time.Time")}))
+		_, err := parser.Accept(dt, `time.Time`)
+		assert.Error(t, err)
 	})
 }
 

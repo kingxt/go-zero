@@ -72,8 +72,6 @@ type (
         VStructPointer *FooBar `json:"vStructPointer"`
         // vInterface
         VInterface interface{} `json:"vInterface"`
-        // time without json tag
-        T time.Time
         // inline
         FooBar
     }
