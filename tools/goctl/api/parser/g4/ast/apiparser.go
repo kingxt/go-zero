@@ -29,6 +29,7 @@ func NewParser(options ...ParserOption) *Parser {
 }
 
 // Accept can parse any terminalNode of api tree by fn.
+// -- for debug
 func (p *Parser) Accept(fn func(p *api.ApiParserParser, visitor *ApiVisitor) interface{}, content string) (v interface{}, err error) {
 	defer func() {
 		p := recover()
@@ -303,6 +304,9 @@ func (p *Parser) checkType(prefix string, types map[string]TypeExpr, expr DataTy
 	switch v := expr.(type) {
 	case *Literal:
 		name := v.Literal.Text()
+		if api.IsBasicType(name) {
+			return nil
+		}
 		_, ok := types[name]
 		if !ok {
 			return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
@@ -311,6 +315,9 @@ func (p *Parser) checkType(prefix string, types map[string]TypeExpr, expr DataTy
 
 	case *Pointer:
 		name := v.Name.Text()
+		if api.IsBasicType(name) {
+			return nil
+		}
 		_, ok := types[name]
 		if !ok {
 			return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",

@@ -104,7 +104,11 @@ func checkKey(p *ApiParserParser) {
 	if _, ok := kind[v]; !ok {
 		notifyErrorListeners(p, fmt.Sprintf("expecting golang basic type, found : '%s'", v))
 	}
+}
 
+func IsBasicType(text string) bool {
+	_, ok := kind[text]
+	return ok
 }
 
 func IsGolangKeyWord(text string, excepts ...string) bool {
