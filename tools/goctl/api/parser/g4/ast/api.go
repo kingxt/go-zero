@@ -8,6 +8,7 @@ import (
 )
 
 type Api struct {
+	Filename string
 	Syntax   *SyntaxExpr
 	Import   []*ImportExpr
 	importM  map[string]PlaceHolder

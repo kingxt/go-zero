@@ -8,13 +8,25 @@ import (
 )
 
 func Parser(filename string) (*spec.ApiSpec, error) {
-	parser := ast.NewParser(ast.WithPrefix(filepath.Base(filename)))
-	apiSpec, err := parser.Parse(filename)
-	return apiSpec, err
+	parser := ast.NewParser(ast.WithParserPrefix(filepath.Base(filename)))
+	ast, err := parser.Parse(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	return convert2Spec(ast)
 }
 
 func ParserContent(content string) (*spec.ApiSpec, error) {
 	parser := ast.NewParser()
-	apiSpec, err := parser.ParseContent(content)
-	return apiSpec, err
+	ast, err := parser.ParseContent(content)
+	if err != nil {
+		return nil, err
+	}
+	return convert2Spec(ast)
+}
+
+// todo
+func convert2Spec(in *ast.Api) (*spec.ApiSpec, error) {
+	return nil, nil
 }

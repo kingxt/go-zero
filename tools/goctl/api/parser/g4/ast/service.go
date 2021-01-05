@@ -12,11 +12,13 @@ type Service struct {
 	ServiceApi *ServiceApi
 }
 
+type KV []*KvExpr
+
 type AtServer struct {
 	AtServerToken Expr
 	Lp            Expr
 	Rp            Expr
-	Kv            []*KvExpr
+	Kv            KV
 }
 
 type ServiceApi struct {
@@ -410,6 +412,14 @@ func (s *ServiceRoute) Format() error {
 	return nil
 }
 
+func (s *ServiceRoute) GetHandler() Expr {
+	if s.AtHandler != nil {
+		return s.AtHandler.Name
+	} else {
+		return s.AtServer.Kv.Get("Handler")
+	}
+}
+
 func (a *ServiceApi) Format() error {
 	// todo
 	return nil
@@ -487,4 +497,13 @@ func (s *Service) Equal(v interface{}) bool {
 	}
 
 	return s.ServiceApi.Equal(service.ServiceApi)
+}
+
+func (kv KV) Get(key string) Expr {
+	for _, each := range kv {
+		if each.Key.Text() == key {
+			return each.Value
+		}
+	}
+	return nil
 }
