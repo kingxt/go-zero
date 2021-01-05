@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen"
 )
 
 var parser = NewParser(WithParserPrefix("test.api"), WithParserDebug())

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
-	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
 )
 
 var fieldAccept = func(p *api.ApiParserParser, visitor *ast.ApiVisitor) interface{} {

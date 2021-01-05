@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
 )
 
 type Service struct {
