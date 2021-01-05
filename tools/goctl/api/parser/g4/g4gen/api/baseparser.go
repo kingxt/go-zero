@@ -8,7 +8,6 @@ import (
 	"unicode"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/anonymous"
 )
 
 const (
@@ -215,42 +214,4 @@ func expecting(expecting, found string) string {
 
 func mismatched(expecting, found string) string {
 	return fmt.Sprintf(`mismatched '%s', found input '%s'`, expecting, found)
-}
-
-type BaseParser struct {
-	*anonymous.AnonymousParserParser
-	antlr.DefaultErrorListener
-}
-
-func NewBaseParser() *BaseParser {
-	return &BaseParser{}
-}
-
-func (p *BaseParser) Accept(fn func(p *anonymous.AnonymousParserParser) interface{}, content string) (v interface{}, err error) {
-	defer func() {
-		p := recover()
-		if p != nil {
-			switch e := p.(type) {
-			case error:
-				err = e
-			default:
-				err = fmt.Errorf("%+v", p)
-			}
-		}
-	}()
-
-	inputStream := antlr.NewInputStream(content)
-	lexer := anonymous.NewAnonymousParserLexer(inputStream)
-	lexer.RemoveErrorListeners()
-	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
-	anonymousParser := anonymous.NewAnonymousParserParser(tokens)
-	anonymousParser.RemoveErrorListeners()
-	anonymousParser.AddErrorListener(p)
-	v = fn(anonymousParser)
-	return
-}
-
-func (p *BaseParser) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
-	str := fmt.Sprintf(`line %d:%d  %s`, line, column, msg)
-	panic(str)
 }
