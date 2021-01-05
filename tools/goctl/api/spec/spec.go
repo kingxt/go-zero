@@ -7,31 +7,19 @@ type (
 		Properties map[string]string
 	}
 
-	LineColumn struct {
-		Line   int `json:"-"`
-		Column int `json:"-"`
-	}
-
 	ApiSyntax struct {
-		LineColumn
 		Version string
 	}
 
 	ApiSpec struct {
-		Filename string
-		Syntax   ApiSyntax
-		Import   ApiImport
-		Info     Info
-		Types    []Type
-		Service  Service
-	}
-
-	ApiImport struct {
-		List []Import
+		Info    Info
+		Syntax  ApiSyntax
+		Imports []Import
+		Types   []Type
+		Service Service
 	}
 
 	Import struct {
-		LineColumn
 		Value string
 	}
 
@@ -50,44 +38,29 @@ type (
 		// Deprecated: use Proterties instead
 		Author string
 		// Deprecated: use Proterties instead
-		Email string
-		LineColumn
+		Email      string
 		Proterties map[string]string
 	}
 
 	Member struct {
-		Annotations []Annotation
-		LineColumn
 		Name string
 		// 数据类型字面值，如：string、map[int]string、[]int64、[]*User
-		Type string
-		// it can be asserted as BasicType: int、bool、
-		// PointerType: *string、*User、
-		// MapType: map[${BasicType}]interface、
-		// ArrayType:[]int、[]User、[]*User
-		// InterfaceType: interface{}
-		// Type
-		Expr interface{}
-		Tag  string
-		// Deprecated
+		Type    Type
+		Tag     string
 		Comment string // 换成标准struct中将废弃
-		// 成员尾部注释说明
-		Comments []string
 		// 成员头顶注释说明
 		Docs     Doc
 		IsInline bool
 	}
 
 	Route struct {
-		LineColumn
-		Annotation        Annotation
-		Method            string
-		Path              string
-		RequestType       Type
-		ResponseType      Type
-		Docs              Doc
-		HandlerLineColumn LineColumn `json:"-"`
-		Handler           string
+		Annotation   Annotation
+		Method       string
+		Path         string
+		RequestType  Type
+		ResponseType Type
+		Docs         Doc
+		Handler      string
 	}
 
 	Service struct {
@@ -95,34 +68,28 @@ type (
 		Groups []Group
 	}
 
-	Type struct {
-		Name string
-		LineColumn
-		Annotations []Annotation
-		Members     []Member
-	}
-
-	// 系统预设基本数据类型
-	BasicType struct {
-		StringExpr string
-		Name       string
-		LineColumn
+	Type interface {
+		Name() string
 	}
 
 	PointerType struct {
-		StringExpr string
-		// it can be asserted as BasicType: int、bool、
-		// PointerType: *string、*User、
-		// MapType: map[${BasicType}]interface、
-		// ArrayType:[]int、[]User、[]*User
-		// InterfaceType: interface{}
-		// Type
-		Star interface{}
-		LineColumn
+		RawName string
+		Type    Type
+	}
+
+	TypeStruct struct {
+		RawName string
+		Members []Member
+		Docs    Doc
+	}
+
+	// 系统预设基本数据类型 bool int32 int64 float32
+	BasicType struct {
+		RawName string
 	}
 
 	MapType struct {
-		StringExpr string
+		RawName string
 		// only support the BasicType
 		Key string
 		// it can be asserted as BasicType: int、bool、
@@ -131,43 +98,31 @@ type (
 		// ArrayType:[]int、[]User、[]*User
 		// InterfaceType: interface{}
 		// Type
-		Value interface{}
-		LineColumn
+		Value Type
 	}
+
 	ArrayType struct {
-		StringExpr string
-		// it can be asserted as BasicType: int、bool、
-		// PointerType: *string、*User、
-		// MapType: map[${BasicType}]interface、
-		// ArrayType:[]int、[]User、[]*User
-		// InterfaceType: interface{}
-		// Type
-		ArrayType interface{}
-		LineColumn
-	}
-	InterfaceType struct {
-		StringExpr string
-		// do nothing,just for assert
-		LineColumn
-	}
-	TimeType struct {
-		StringExpr string
-		LineColumn
-	}
-	StructType struct {
-		StringExpr string
-		LineColumn
+		RawName string
+		Value   Type
 	}
 )
 
-func (spec *ApiSpec) ContainsTime() bool {
-	for _, item := range spec.Types {
-		members := item.Members
-		for _, member := range members {
-			if _, ok := member.Expr.(*TimeType); ok {
-				return true
-			}
-		}
-	}
-	return false
+func (t BasicType) Name() string {
+	return t.RawName
+}
+
+func (t TypeStruct) Name() string {
+	return t.RawName
+}
+
+func (t MapType) Name() string {
+	return t.RawName
+}
+
+func (t ArrayType) Name() string {
+	return t.RawName
+}
+
+func (t PointerType) Name() string {
+	return t.RawName
 }

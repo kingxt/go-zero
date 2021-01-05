@@ -95,7 +95,7 @@ func ApiFormatByPath(apiFilePath string) error {
 }
 
 func apiFormat(data string) (string, error) {
-	_, err := parser.ParserContent(data)
+	_, err := parser.ParseContent(data)
 	if err != nil {
 		return "", err
 	}

@@ -19,7 +19,7 @@ func DartCommand(c *cli.Context) error {
 		return errors.New("missing -dir")
 	}
 
-	api, err := parser.Parser(apiFile)
+	api, err := parser.Parse(apiFile)
 	if err != nil {
 		return err
 	}

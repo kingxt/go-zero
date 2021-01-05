@@ -41,7 +41,7 @@ func GoCommand(c *cli.Context) error {
 }
 
 func DoGenProject(apiFile, dir, style string) error {
-	api, err := parser.Parser(apiFile)
+	api, err := parser.Parse(apiFile)
 	if err != nil {
 		return err
 	}

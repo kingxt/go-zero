@@ -24,7 +24,7 @@ func TsCommand(c *cli.Context) error {
 		return errors.New("missing -dir")
 	}
 
-	api, err := parser.Parser(apiFile)
+	api, err := parser.Parse(apiFile)
 	if err != nil {
 		fmt.Println(aurora.Red("Failed"))
 		return err

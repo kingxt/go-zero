@@ -21,7 +21,7 @@ func KtCommand(c *cli.Context) error {
 		return errors.New("missing -pkg")
 	}
 
-	api, e := parser.Parser(apiFile)
+	api, e := parser.Parse(apiFile)
 	if e != nil {
 		return e
 	}
