@@ -98,24 +98,13 @@ func (p parser) fillTypes() error {
 		}
 	}
 
-	var findDefined = func(name string) (*spec.Type, error) {
-		for _, item := range p.spec.Types {
-			if _, ok := item.(spec.DefineStruct); ok {
-				if item.Name() == name {
-					return &item, nil
-				}
-			}
-		}
-		return nil, errors.New(fmt.Sprintf("type %s not defined", name))
-	}
-
 	for _, item := range p.spec.Types {
 		switch v := (item).(type) {
 		case spec.DefineStruct:
 			for _, member := range v.Members {
 				switch v := member.Type.(type) {
 				case spec.DefineStruct:
-					tp, err := findDefined(v.RawName)
+					tp, err := p.findDefinedType(v.RawName)
 					if err != nil {
 						return err
 					} else {
@@ -128,6 +117,17 @@ func (p parser) fillTypes() error {
 		}
 	}
 	return nil
+}
+
+func (p parser) findDefinedType(name string) (*spec.Type, error) {
+	for _, item := range p.spec.Types {
+		if _, ok := item.(spec.DefineStruct); ok {
+			if item.Name() == name {
+				return &item, nil
+			}
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("type %s not defined", name))
 }
 
 func (p parser) fieldToMember(field *ast.TypeField) spec.Member {
@@ -157,7 +157,12 @@ func (p parser) astTypeToSpec(in ast.DataType) spec.Type {
 	case *ast.Array:
 		return spec.ArrayType{RawName: v.ArrayExpr.Text(), Value: p.astTypeToSpec(v.Literal)}
 	case *ast.Pointer:
-		return spec.PointerType{RawName: v.PointerExpr.Text()}
+		raw := v.Name.Text()
+		if api.IsBasicType(raw) {
+			return spec.PointerType{RawName: v.PointerExpr.Text(), Type: spec.BasicType{RawName: raw}}
+		} else {
+			return spec.PointerType{RawName: v.PointerExpr.Text(), Type: spec.DefineStruct{RawName: raw}}
+		}
 	}
 	panic(fmt.Sprintf("unspported type %+v", in))
 }
@@ -168,4 +173,51 @@ func (p parser) stringExprs(docs []ast.Expr) []string {
 		result = append(result, item.Text())
 	}
 	return result
+}
+
+func (p parser) fillService() error {
+	for _, item := range p.ast.Service {
+		var group spec.Group
+		if item.AtServer != nil {
+			for _, kv := range item.AtServer.Kv {
+				group.Annotation.Properties[kv.Key.Text()] = kv.Value.Text()
+			}
+		}
+
+		for _, route := range item.ServiceApi.ServiceRoute {
+			r := spec.Route{
+				Annotation: spec.Annotation{},
+				Method:     route.Route.Method.Text(),
+				Path:       route.Route.Path.Text(),
+			}
+			if route.AtHandler != nil {
+				r.Handler = route.AtHandler.Name.Text()
+			}
+			if route.Route.Req != nil {
+				tp, err := p.findDefinedType(route.Route.Req.Name.Text())
+				if err != nil {
+					return err
+				}
+
+				r.RequestType = *tp
+			}
+			if route.Route.Reply != nil {
+				tp, err := p.findDefinedType(route.Route.Reply.Name.Text())
+				if err != nil {
+					return err
+				}
+
+				r.ResponseType = *tp
+			}
+			group.Routes = append(group.Routes, r)
+			p.spec.Service.Groups = append(p.spec.Service.Groups, group)
+
+			name := item.ServiceApi.Name.Text()
+			if len(p.spec.Service.Name) > 0 && p.spec.Service.Name != name {
+				return errors.New(fmt.Sprintf("mulit service name defined %s and %s", name, p.spec.Service.Name))
+			}
+			p.spec.Service.Name = name
+		}
+	}
+	return nil
 }
