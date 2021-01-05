@@ -21,7 +21,7 @@ importBlockValue:   doc=commentSpec? importValue comment=commentSpec?;
 importValue:    {checkImportValue(p)}STRING;
 
 // info
-infoSpec:       doc=commentSpec? {match(p,"info")}infoToken=ID lp='(' comment=commentSpec? kvLit+ rp=')';
+infoSpec:       doc=commentSpec? {match(p,"info")}infoToken=ID lp='(' kvLit+ rp=')';
 
 // type
 typeSpec:       typeLit
@@ -33,12 +33,12 @@ typeLit:        doc=commentSpec?{match(p,"type")}typeToken=ID  typeLitBody;
 typeBlock:      {match(p,"type")}typeToken=ID lp='(' typeBlockBody+ rp=')';
 typeLitBody:    typeStruct|typeAlias;
 typeBlockBody:  typeBlockStruct|typeBlockAlias|commentSpec;
-typeStruct:     {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  comment=commentSpec? field+ rbrace='}';
+typeStruct:     {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
 typeAlias:      {checkKeyword(p)}alias=ID assign='='? dataType comment=commentSpec?;
-typeBlockStruct:doc=commentSpec?  {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  comment=commentSpec? field+ rbrace='}';
+typeBlockStruct:doc=commentSpec?  {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
 typeBlockAlias: doc=commentSpec? {checkKeyword(p)}alias=ID assign='='? dataType comment=commentSpec?;
-field:          {isNormal(p)}? normalField|anonymousFiled|commentSpec ;
-normalField:    doc=commentSpec? {checkKeyword(p)}fieldName=ID? dataType tag=RAW_STRING? comment=commentSpec?;
+field:          {isNormal(p)}? normalField|anonymousFiled ;
+normalField:    doc=commentSpec? {checkKeyword(p)}fieldName=ID dataType tag=RAW_STRING? comment=commentSpec?;
 anonymousFiled: doc=commentSpec? star='*'? ID comment=commentSpec?;
 dataType:       {isInterface(p)}ID
                 |mapType

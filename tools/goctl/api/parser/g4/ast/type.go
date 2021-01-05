@@ -8,9 +8,9 @@ import (
 )
 
 type (
+	// TypeAlias、 TypeStruct
 	TypeExpr interface {
 		Doc() Expr
-		Comment() Expr
 		Format() error
 		Equal(v interface{}) bool
 		NameExpr() Expr
@@ -24,13 +24,12 @@ type (
 	}
 
 	TypeStruct struct {
-		Name        Expr
-		Struct      Expr
-		LBrace      Expr
-		RBrace      Expr
-		DocExpr     Expr
-		CommentExpr Expr
-		Fields      []*TypeField
+		Name    Expr
+		Struct  Expr
+		LBrace  Expr
+		RBrace  Expr
+		DocExpr Expr
+		Fields  []*TypeField
 	}
 
 	TypeField struct {
@@ -88,7 +87,7 @@ type (
 
 func (v *ApiVisitor) VisitTypeSpec(ctx *api.TypeSpecContext) interface{} {
 	if ctx.TypeLit() != nil {
-		return []Spec{ctx.TypeLit().Accept(v).(Spec)}
+		return []TypeExpr{ctx.TypeLit().Accept(v).(TypeExpr)}
 	}
 	return ctx.TypeBlock().Accept(v)
 }
@@ -97,13 +96,13 @@ func (v *ApiVisitor) VisitTypeLit(ctx *api.TypeLitContext) interface{} {
 	typeLit := ctx.TypeLitBody().Accept(v)
 	alias, ok := typeLit.(*TypeAlias)
 	if ok {
-		alias.DocExpr = v.getDoc(ctx.GetDoc())
+		alias.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
 		return alias
 	}
 
 	st, ok := typeLit.(*TypeStruct)
 	if ok {
-		st.DocExpr = v.getDoc(ctx.GetDoc())
+		st.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
 		return st
 	}
 
@@ -112,9 +111,9 @@ func (v *ApiVisitor) VisitTypeLit(ctx *api.TypeLitContext) interface{} {
 
 func (v *ApiVisitor) VisitTypeBlock(ctx *api.TypeBlockContext) interface{} {
 	list := ctx.AllTypeBlockBody()
-	var types []Spec
+	var types []TypeExpr
 	for _, each := range list {
-		types = append(types, each.Accept(v).(Spec))
+		types = append(types, each.Accept(v).(TypeExpr))
 
 	}
 	return types
@@ -153,10 +152,13 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *api.TypeStructContext) interface{} {
 
 	st.LBrace = v.newExprWithToken(ctx.GetLbrace())
 	st.RBrace = v.newExprWithToken(ctx.GetRbrace())
-	st.CommentExpr = v.getDoc(ctx.GetComment())
 	fields := ctx.AllField()
 	for _, each := range fields {
-		st.Fields = append(st.Fields, each.Accept(v).(*TypeField))
+		f := each.Accept(v)
+		if f == nil {
+			continue
+		}
+		st.Fields = append(st.Fields, f.(*TypeField))
 	}
 	return &st
 }
@@ -180,11 +182,14 @@ func (v *ApiVisitor) VisitTypeBlockStruct(ctx *api.TypeBlockStructContext) inter
 
 	st.LBrace = v.newExprWithToken(ctx.GetLbrace())
 	st.RBrace = v.newExprWithToken(ctx.GetRbrace())
-	st.DocExpr = v.getDoc(ctx.GetDoc())
-	st.CommentExpr = v.getDoc(ctx.GetComment())
+	st.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
 	fields := ctx.AllField()
 	for _, each := range fields {
-		st.Fields = append(st.Fields, each.Accept(v).(*TypeField))
+		f := each.Accept(v)
+		if f == nil {
+			continue
+		}
+		st.Fields = append(st.Fields, f.(*TypeField))
 	}
 	return &st
 }
@@ -194,8 +199,8 @@ func (v *ApiVisitor) VisitTypeBlockAlias(ctx *api.TypeBlockAliasContext) interfa
 	alias.Name = v.newExprWithToken(ctx.GetAlias())
 	alias.Assign = v.newExprWithToken(ctx.GetAssign())
 	alias.DataType = ctx.DataType().Accept(v).(DataType)
-	alias.DocExpr = v.getDoc(ctx.GetDoc())
-	alias.CommentExpr = v.getDoc(ctx.GetComment())
+	alias.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	alias.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &alias
 }
 
@@ -204,7 +209,7 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *api.TypeAliasContext) interface{} {
 	alias.Name = v.newExprWithToken(ctx.GetAlias())
 	alias.Assign = v.newExprWithToken(ctx.GetAssign())
 	alias.DataType = ctx.DataType().Accept(v).(DataType)
-	alias.CommentExpr = v.getDoc(ctx.GetComment())
+	alias.CommentExpr = v.getDoc(ctx.GetComment(), true, ctx.BaseParserRuleContext)
 	return &alias
 }
 
@@ -235,8 +240,8 @@ func (v *ApiVisitor) VisitNormalField(ctx *api.NormalFieldContext) interface{} {
 		}
 		field.Tag = tagExpr
 	}
-	field.DocExpr = v.getDoc(ctx.GetDoc())
-	field.CommentExpr = v.getDoc(ctx.GetComment())
+	field.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	field.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &field
 }
 
@@ -254,8 +259,8 @@ func (v *ApiVisitor) VisitAnonymousFiled(ctx *api.AnonymousFiledContext) interfa
 	} else {
 		field.DataType = &Literal{Literal: v.newExprWithTerminalNode(ctx.ID())}
 	}
-	field.DocExpr = v.getDoc(ctx.GetDoc())
-	field.CommentExpr = v.getDoc(ctx.GetComment())
+	field.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	field.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &field
 }
 
@@ -521,8 +526,10 @@ func (s *TypeStruct) Equal(dt interface{}) bool {
 		return false
 	}
 
-	if !EqualDoc(s, v) {
-		return false
+	if s.DocExpr != nil {
+		if !s.DocExpr.Equal(v.DocExpr) {
+			return false
+		}
 	}
 
 	if s.Struct != nil {
@@ -541,10 +548,10 @@ func (s *TypeStruct) Equal(dt interface{}) bool {
 	expected = append(expected, s.Fields...)
 	acual = append(acual, v.Fields...)
 	sort.Slice(expected, func(i, j int) bool {
-		return expected[i].Name.Text() < expected[j].Name.Text()
+		return expected[i].DataType.Expr().Line() < expected[j].DataType.Expr().Line()
 	})
 	sort.Slice(acual, func(i, j int) bool {
-		return acual[i].Name.Text() < acual[j].Name.Text()
+		return acual[i].DataType.Expr().Line() < acual[j].DataType.Expr().Line()
 	})
 
 	for index, each := range expected {
@@ -559,10 +566,6 @@ func (s *TypeStruct) Equal(dt interface{}) bool {
 
 func (s *TypeStruct) Doc() Expr {
 	return s.DocExpr
-}
-
-func (s *TypeStruct) Comment() Expr {
-	return s.CommentExpr
 }
 
 func (s *TypeStruct) Format() error {

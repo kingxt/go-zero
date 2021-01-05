@@ -12,8 +12,8 @@ type KvExpr struct {
 func (v *ApiVisitor) VisitKvLit(ctx *api.KvLitContext) interface{} {
 	key := v.newExprWithToken(ctx.GetKey())
 	value := v.newExprWithToken(ctx.GetValue())
-	doc := v.getDoc(ctx.GetDoc())
-	comment := v.getDoc(ctx.GetComment())
+	doc := v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	comment := v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &KvExpr{
 		Key:         key,
 		Value:       value,

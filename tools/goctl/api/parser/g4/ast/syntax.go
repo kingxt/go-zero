@@ -14,8 +14,8 @@ func (v *ApiVisitor) VisitSyntaxLit(ctx *api.SyntaxLitContext) interface{} {
 	syntax := v.newExprWithToken(ctx.GetSyntaxToken())
 	assign := v.newExprWithToken(ctx.GetAssign())
 	version := v.newExprWithToken(ctx.GetVersion())
-	docExpr := v.getDoc(ctx.GetDoc())
-	commentExpr := v.getDoc(ctx.GetComment())
+	docExpr := v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	commentExpr := v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &SyntaxExpr{
 		Syntax:      syntax,
 		Assign:      assign,

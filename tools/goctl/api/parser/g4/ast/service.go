@@ -129,9 +129,10 @@ func (v *ApiVisitor) VisitAtDoc(ctx *api.AtDocContext) interface{} {
 
 func (v *ApiVisitor) VisitAtHandler(ctx *api.AtHandlerContext) interface{} {
 	var atHandler AtHandler
-	atHandler.DocExpr = v.getDoc(ctx.GetDoc())
-	atHandler.CommentExpr = v.getDoc(ctx.GetComment())
-	atHandler.AtHandlerToken = v.newExprWithTerminalNode(ctx.ATHANDLER())
+	astHandlerExpr := v.newExprWithTerminalNode(ctx.ATHANDLER())
+	atHandler.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	atHandler.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
+	atHandler.AtHandlerToken = astHandlerExpr
 	atHandler.Name = v.newExprWithTerminalNode(ctx.ID())
 	return &atHandler
 }
@@ -139,7 +140,8 @@ func (v *ApiVisitor) VisitAtHandler(ctx *api.AtHandlerContext) interface{} {
 func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 	var route Route
 	path := ctx.Path()
-	route.Method = v.newExprWithToken(ctx.GetHttpMethod())
+	methodExpr := v.newExprWithToken(ctx.GetHttpMethod())
+	route.Method = methodExpr
 	route.Path = v.newExprWithText(path.GetText(), path.GetStart().GetLine(), path.GetStart().GetColumn(), path.GetStart().GetStart(), path.GetStop().GetStop())
 	if ctx.GetRequest() != nil {
 		route.Req = ctx.GetRequest().Accept(v).(*Body)
@@ -154,8 +156,8 @@ func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 		}
 		route.ReturnToken = returnExpr
 	}
-	route.DocExpr = v.getDoc(ctx.GetDoc())
-	route.CommentExpr = v.getDoc(ctx.GetComment())
+	route.DocExpr = v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	route.CommentExpr = v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 
 	return &route
 }
@@ -395,8 +397,10 @@ func (s *ServiceRoute) Equal(v interface{}) bool {
 		}
 	}
 
-	if !s.AtHandler.Equal(sr.AtHandler) {
-		return false
+	if s.AtHandler != nil {
+		if !s.AtHandler.Equal(sr.AtHandler) {
+			return false
+		}
 	}
 
 	return s.Route.Equal(sr.Route)

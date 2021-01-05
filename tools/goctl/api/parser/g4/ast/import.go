@@ -1,6 +1,9 @@
 package ast
 
-import "github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+import (
+	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/g4gen/api"
+)
 
 type ImportExpr struct {
 	Import      Expr
@@ -30,8 +33,8 @@ func (v *ApiVisitor) VisitImportLit(ctx *api.ImportLitContext) interface{} {
 		{
 			Import:      importToken,
 			Value:       valueExpr,
-			DocExpr:     v.getDoc(ctx.GetDoc()),
-			CommentExpr: v.getDoc(ctx.GetComment()),
+			DocExpr:     v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext),
+			CommentExpr: v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext),
 		},
 	}
 }
@@ -51,8 +54,8 @@ func (v *ApiVisitor) VisitImportBlock(ctx *api.ImportBlockContext) interface{} {
 
 func (v *ApiVisitor) VisitImportBlockValue(ctx *api.ImportBlockValueContext) interface{} {
 	value := ctx.ImportValue().Accept(v).(Expr)
-	doc := v.getDoc(ctx.GetDoc())
-	comment := v.getDoc(ctx.GetComment())
+	doc := v.getDoc(ctx.GetDoc(), true, ctx.BaseParserRuleContext)
+	comment := v.getDoc(ctx.GetComment(), false, ctx.BaseParserRuleContext)
 	return &ImportExpr{
 		Value:       value,
 		DocExpr:     doc,
@@ -64,7 +67,7 @@ func (v *ApiVisitor) VisitImportValue(ctx *api.ImportValueContext) interface{} {
 	return v.newExprWithTerminalNode(ctx.STRING())
 }
 
-func (v *ApiVisitor) getDoc(ctx api.ICommentSpecContext) Expr {
+func (v *ApiVisitor) getDoc(ctx api.ICommentSpecContext, doc bool, current ...*antlr.BaseParserRuleContext) Expr {
 	if ctx == nil {
 		return nil
 	}
@@ -74,7 +77,17 @@ func (v *ApiVisitor) getDoc(ctx api.ICommentSpecContext) Expr {
 		return nil
 	}
 
-	return ret.(Expr)
+	docExpr := ret.(Expr)
+	if len(current) > 0 {
+		line := current[0].GetStart().GetLine()
+		if doc {
+			line = line - 1
+		}
+		if docExpr.Line() != line {
+			return nil
+		}
+	}
+	return docExpr
 }
 
 func (i *ImportExpr) Format() error {

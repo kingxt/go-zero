@@ -21,6 +21,11 @@ type Api struct {
 }
 
 func (v *ApiVisitor) VisitApi(ctx *api.ApiContext) interface{} {
+	defer func() {
+		if p := recover(); p != nil {
+			panic(fmt.Errorf("%+v", p))
+		}
+	}()
 	var final Api
 	final.importM = map[string]PlaceHolder{}
 	final.typeM = map[string]PlaceHolder{}
@@ -136,7 +141,8 @@ func (v *ApiVisitor) VisitSpec(ctx *api.SpecContext) interface{} {
 		api.Info = ctx.InfoSpec().Accept(v).(*InfoExpr)
 	}
 	if ctx.TypeSpec() != nil {
-		api.Type = ctx.TypeSpec().Accept(v).([]TypeExpr)
+		tp := ctx.TypeSpec().Accept(v)
+		api.Type = tp.([]TypeExpr)
 	}
 	if ctx.ServiceSpec() != nil {
 		api.Service = []*Service{ctx.ServiceSpec().Accept(v).(*Service)}

@@ -5,18 +5,14 @@ import (
 )
 
 type InfoExpr struct {
-	Info        Expr
-	Lp          Expr
-	Rp          Expr
-	DocExpr     Expr
-	CommentExpr Expr
-	Kvs         []*KvExpr
+	Info Expr
+	Lp   Expr
+	Rp   Expr
+	Kvs  []*KvExpr
 }
 
 func (v *ApiVisitor) VisitInfoSpec(ctx *api.InfoSpecContext) interface{} {
 	var expr InfoExpr
-	expr.DocExpr = v.getDoc(ctx.GetDoc())
-	expr.CommentExpr = v.getDoc(ctx.GetComment())
 	expr.Info = v.newExprWithToken(ctx.GetInfoToken())
 	expr.Lp = v.newExprWithToken(ctx.GetLp())
 	expr.Rp = v.newExprWithToken(ctx.GetRp())
@@ -50,13 +46,9 @@ func (i *InfoExpr) Equal(v interface{}) bool {
 		return false
 	}
 
-	if !EqualDoc(i, info) {
-		return false
-	}
-
 	var expected, actual []*KvExpr
-	expected = append(expected, info.Kvs...)
-	actual = append(actual, i.Kvs...)
+	expected = append(expected, i.Kvs...)
+	actual = append(actual, info.Kvs...)
 
 	if len(expected) != len(actual) {
 		return false
@@ -70,12 +62,4 @@ func (i *InfoExpr) Equal(v interface{}) bool {
 	}
 
 	return true
-}
-
-func (i *InfoExpr) Doc() Expr {
-	return i.DocExpr
-}
-
-func (i *InfoExpr) Comment() Expr {
-	return i.CommentExpr
 }

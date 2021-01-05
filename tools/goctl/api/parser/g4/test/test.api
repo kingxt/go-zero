@@ -9,14 +9,15 @@ import(
     "bar.api" // import group comment
 )
 
-info(
+// info doc
+info(// info comment
     // author doc
     author: "songmeizi" // author comment
     // date doc
     date: 2020-01-04 // date comment
     // desc doc
-    desc: "break line // desc comment
-    desc"
+    desc: "break line
+    desc" // desc comment
 )
 
 // alias

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,6 +24,50 @@ func TestImport(t *testing.T) {
 				Import: ast.NewTextExpr("import"),
 				Value:  ast.NewTextExpr(`"foo.api"`),
 			}))
+		}
+	})
+
+	t.Run("matched block", func(t *testing.T) {
+		v, err := parser.Accept(importAccept, `
+		import (
+			/**foo*/
+			"foo.api"
+			/**bar*/
+			"bar.api"
+			/**foobar*/
+			"foo/bar.api"/**foobar*/
+		)
+		`)
+		assert.Nil(t, err)
+
+		list := v.([]*ast.ImportExpr)
+		expected := []*ast.ImportExpr{
+			{
+				Import:  ast.NewTextExpr("import"),
+				Value:   ast.NewTextExpr(`"foo.api"`),
+				DocExpr: ast.NewTextExpr("/**foo*/"),
+			},
+			{
+				Import:  ast.NewTextExpr("import"),
+				Value:   ast.NewTextExpr(`"bar.api"`),
+				DocExpr: ast.NewTextExpr("/**bar*/"),
+			},
+			{
+				Import:      ast.NewTextExpr("import"),
+				Value:       ast.NewTextExpr(`"foo/bar.api"`),
+				DocExpr:     ast.NewTextExpr("/**foobar*/"),
+				CommentExpr: ast.NewTextExpr("/**foobar*/"),
+			},
+		}
+		sort.Slice(list, func(i, j int) bool {
+			return list[i].Value.Line() < list[j].Value.Line()
+		})
+		sort.Slice(expected, func(i, j int) bool {
+			return expected[i].Value.Line() < expected[j].Value.Line()
+		})
+		assert.True(t, len(list) == len(expected))
+		for index, each := range list {
+			assert.True(t, each.Equal(expected[index]))
 		}
 	})
 

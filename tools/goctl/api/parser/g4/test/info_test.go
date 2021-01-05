@@ -88,8 +88,6 @@ line"`),
 					CommentExpr: ast.NewTextExpr("// bar"),
 				},
 			},
-			DocExpr:     ast.NewTextExpr("// doc"),
-			CommentExpr: ast.NewTextExpr("// comment"),
 		}))
 
 		v, err = parser.Accept(infoAccept, `
@@ -111,8 +109,32 @@ line"`),
 					CommentExpr: ast.NewTextExpr("/*bar**/"),
 				},
 			},
-			DocExpr:     ast.NewTextExpr("/**doc block*/"),
-			CommentExpr: ast.NewTextExpr("/**line block*/"),
+		}))
+
+		v, err = parser.Accept(infoAccept, `
+			info( 
+				// doc
+				title: foo 
+				// doc
+				author: bar
+			)
+		`)
+		assert.Nil(t, err)
+		info = v.(*ast.InfoExpr)
+		assert.True(t, info.Equal(&ast.InfoExpr{
+			Info: ast.NewTextExpr("info"),
+			Kvs: []*ast.KvExpr{
+				{
+					Key:     ast.NewTextExpr("title"),
+					Value:   ast.NewTextExpr("foo"),
+					DocExpr: ast.NewTextExpr("// doc"),
+				},
+				{
+					Key:     ast.NewTextExpr("author"),
+					Value:   ast.NewTextExpr("bar"),
+					DocExpr: ast.NewTextExpr("// doc"),
+				},
+			},
 		}))
 
 	})
