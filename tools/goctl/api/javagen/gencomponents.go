@@ -19,6 +19,7 @@ package com.xhb.logic.http.packet.{{.packet}}.model;
 import com.xhb.logic.http.DeProguardable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 {{.componentType}}
 `
 )

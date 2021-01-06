@@ -32,36 +32,20 @@ import org.json.JSONObject;
 
 public class {{.packetName}} extends HttpPacket<{{.packetName}}.{{.packetName}}Response> {
 	{{.paramsDeclaration}}
+
 	public {{.packetName}}({{.params}}{{if .HasRequestBody}}, {{.requestType}} request{{end}}) {
 		{{if .HasRequestBody}}super(request);{{else}}super(EmptyRequest.instance);{{end}}
 		{{if .HasRequestBody}}this.request = request;{{end}}{{.paramsSet}}
     }
+
 	@Override
     public HttpRequestClient.Method requestMethod() {
         return HttpRequestClient.Method.{{.method}};
     }
+
 	@Override
     public String requestUri() {
         return {{.uri}};
-    }
-	@Override
-    public {{.packetName}}Response newInstanceFrom(JSON json) {
-        return new {{.packetName}}Response(json);
-    }
-	public static class {{.packetName}}Response extends HttpResponseData {
-		private {{.responseType}} responseData;
-        {{.packetName}}Response(@NotNull JSON json) {
-            super(json);
-            JSONObject jsonObject = json.asObject();
-			if (JsonParser.hasKey(jsonObject, "data")) {
-				Gson gson = new Gson();
-				JSONObject dataJson = JsonParser.getJSONObject(jsonObject, "data");
-				responseData = gson.fromJson(dataJson.toString(), {{.responseType}}.class);
-			}
-        }
-		public {{.responseType}} get{{.responseType}} () {
-            return responseData;
-        }
     }
 }
 `
