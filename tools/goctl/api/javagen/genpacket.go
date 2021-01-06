@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 	"text/template"
@@ -16,47 +15,40 @@ import (
 )
 
 const packetTemplate = `package com.xhb.logic.http.packet.{{.packet}};
-
 import com.google.gson.Gson;
 import com.xhb.commons.JSON;
-import com.xhb.commons.JsonParser;
+import com.xhb.commons.JsonMarshal;
 import com.xhb.core.network.HttpRequestClient;
 import com.xhb.core.packet.HttpRequestPacket;
 import com.xhb.core.response.HttpResponseData;
 import com.xhb.logic.http.DeProguardable;
+{{if not .HasRequestBody}}
+import com.xhb.logic.http.request.EmptyRequest;
+{{end}}
 {{.import}}
-
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
-
-public class {{.packetName}} extends HttpRequestPacket<{{.packetName}}.{{.packetName}}Response> {
-
+public class {{.packetName}} extends HttpPacket<{{.packetName}}.{{.packetName}}Response> {
 	{{.paramsDeclaration}}
-
-	public {{.packetName}}({{.params}}{{.requestType}} request) {
-        super(request);
-		this.request = request;{{.paramsSet}}
+	public {{.packetName}}({{.params}}{{if .HasRequestBody}}, {{.requestType}} request{{end}}) {
+		{{if .HasRequestBody}}super(request);{{else}}super(EmptyRequest.instance);{{end}}
+		{{if .HasRequestBody}}this.request = request;{{end}}{{.paramsSet}}
     }
-
 	@Override
     public HttpRequestClient.Method requestMethod() {
         return HttpRequestClient.Method.{{.method}};
     }
-
 	@Override
     public String requestUri() {
         return {{.uri}};
     }
-
 	@Override
     public {{.packetName}}Response newInstanceFrom(JSON json) {
         return new {{.packetName}}Response(json);
     }
-
 	public static class {{.packetName}}Response extends HttpResponseData {
-
 		private {{.responseType}} responseData;
-
         {{.packetName}}Response(@NotNull JSON json) {
             super(json);
             JSONObject jsonObject = json.asObject();
@@ -66,13 +58,10 @@ public class {{.packetName}} extends HttpRequestPacket<{{.packetName}}.{{.packet
 				responseData = gson.fromJson(dataJson.toString(), {{.responseType}}.class);
 			}
         }
-
 		public {{.responseType}} get{{.responseType}} () {
             return responseData;
         }
     }
-
-	{{.types}}
 }
 `
 
@@ -88,10 +77,8 @@ func genPacket(dir, packetName string, api *spec.ApiSpec) error {
 
 func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName string) error {
 	packet := route.Handler
-	if len(packet) == 0 {
-		return fmt.Errorf("missing packet annotation for %q", route.Path)
-	}
 	packet = strings.Replace(packet, "Handler", "Packet", 1)
+	packet = strings.Title(packet)
 
 	javaFile := packet + ".java"
 	fp, created, err := apiutil.MaybeCreateFile(dir, "", javaFile)
@@ -103,22 +90,12 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 	}
 	defer fp.Close()
 
-	var builder strings.Builder
-	var first bool
-	tps := apiutil.GetLocalTypes(api, route)
-
-	for _, tp := range tps {
-		if first {
-			first = false
-		} else {
-			fmt.Fprintln(&builder)
-		}
-		if err := genType(&builder, tp); err != nil {
-			return err
+	var hasRequestBody = false
+	if route.RequestType != nil {
+		if defineStruct, ok := route.RequestType.(spec.DefineStruct); ok {
+			hasRequestBody = len(defineStruct.GetBodyMembers()) > 0
 		}
 	}
-	types := builder.String()
-	writeIndent(&builder, 1)
 
 	params := paramsForRoute(route)
 	paramsDeclaration := declarationForRoute(route)
@@ -126,18 +103,18 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 
 	t := template.Must(template.New("packetTemplate").Parse(packetTemplate))
 	var tmplBytes bytes.Buffer
-	err = t.Execute(&tmplBytes, map[string]string{
+	err = t.Execute(&tmplBytes, map[string]interface{}{
 		"packetName":        packet,
 		"method":            strings.ToUpper(route.Method),
 		"uri":               processUri(route),
-		"types":             strings.TrimSpace(types),
 		"responseType":      stringx.TakeOne(util.Title(route.ResponseTypeName()), "Object"),
 		"params":            params,
 		"paramsDeclaration": strings.TrimSpace(paramsDeclaration),
 		"paramsSet":         paramsSet,
 		"packet":            packetName,
 		"requestType":       util.Title(route.RequestTypeName()),
-		"import":            getImports(api, route, packetName),
+		"HasRequestBody":    hasRequestBody,
+		"import":            getImports(api, packetName),
 	})
 	if err != nil {
 		return err
@@ -146,17 +123,11 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 	return nil
 }
 
-func getImports(api *spec.ApiSpec, route spec.Route, packetName string) string {
+func getImports(api *spec.ApiSpec, packetName string) string {
 	var builder strings.Builder
-	allTypes := apiutil.GetAllTypes(api, route)
-	sharedTypes := apiutil.GetSharedTypes(api)
-	for _, at := range allTypes {
-		for _, item := range sharedTypes {
-			if item.Name == at.Name {
-				fmt.Fprintf(&builder, "import com.xhb.logic.http.packet.%s.model.%s;\n", packetName, item.Name)
-				break
-			}
-		}
+	allTypes := api.Types
+	if len(allTypes) > 0 {
+		fmt.Fprintf(&builder, "import com.xhb.logic.http.packet.%s.model.*;\n", packetName)
 	}
 	return builder.String()
 }
@@ -209,7 +180,7 @@ func paramsForRoute(route spec.Route) string {
 			builder.WriteString(fmt.Sprintf("String %s, ", cop[1:]))
 		}
 	}
-	return builder.String()
+	return strings.TrimSuffix(builder.String(), ", ")
 }
 
 func declarationForRoute(route spec.Route) string {
@@ -258,22 +229,4 @@ func processUri(route spec.Route) string {
 		result = "\"" + result
 	}
 	return result
-}
-
-func genType(writer io.Writer, tp spec.Type) error {
-	writeIndent(writer, 1)
-	fmt.Fprintf(writer, "static class %s implements DeProguardable {\n", util.Title(tp.Name))
-	for _, member := range tp.Members {
-		if err := writeProperty(writer, member, 2); err != nil {
-			return err
-		}
-	}
-
-	writeBreakline(writer)
-	writeIndent(writer, 1)
-	genGetSet(writer, tp, 2)
-	writeIndent(writer, 1)
-	fmt.Fprintln(writer, "}")
-
-	return nil
 }
