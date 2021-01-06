@@ -69,4 +69,4 @@ body:           lp='(' {checkKeyword(p)}ID? rp=')';
 kvLit:          key=ID {checkKeyValue(p)}value=LINE_VALUE;
 
 serviceName:    (ID '-'?)+;
-path:           (('/' (ID ('-' ID)?))|('/:' (ID ('-' ID)?)))+;
+path:           (('/' (ID ('-' ID)*))|('/:' (ID ('-' ID)?)))+;
