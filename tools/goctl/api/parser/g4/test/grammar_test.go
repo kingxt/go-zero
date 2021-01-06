@@ -11,6 +11,8 @@ var files = []string{
 	"empty",
 	"syntax",
 	"info",
+	"types",
+	"service",
 }
 
 func TestGrammar(t *testing.T) {
