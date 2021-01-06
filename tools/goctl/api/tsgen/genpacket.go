@@ -83,7 +83,7 @@ func genApi(api *spec.ApiSpec, caller string) (string, error) {
 		writeIndent(&builder, 1)
 		responseGeneric := "<null>"
 		if len(route.ResponseTypeName()) > 0 {
-			val, err := goTypeToTs(route.ResponseType)
+			val, err := goTypeToTs(route.ResponseType, true)
 			if err != nil {
 				return "", err
 			}
@@ -101,7 +101,7 @@ func genApi(api *spec.ApiSpec, caller string) (string, error) {
 func paramsForRoute(route spec.Route) string {
 	hasParams := pathHasParams(route)
 	hasBody := hasRequestBody(route)
-	rt, err := goTypeToTs(route.RequestType)
+	rt, err := goTypeToTs(route.RequestType, true)
 	if err != nil {
 		fmt.Println(err.Error())
 		return ""

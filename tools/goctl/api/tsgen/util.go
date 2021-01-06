@@ -13,7 +13,7 @@ import (
 
 func writeProperty(writer io.Writer, member spec.Member, indent int) error {
 	writeIndent(writer, indent)
-	ty, err := goTypeToTs(member.Type)
+	ty, err := goTypeToTs(member.Type, false)
 	if err != nil {
 		return err
 	}
@@ -46,10 +46,10 @@ func writeIndent(writer io.Writer, indent int) {
 	}
 }
 
-func goTypeToTs(tp spec.Type) (string, error) {
+func goTypeToTs(tp spec.Type, fromPacket bool) (string, error) {
 	switch v := tp.(type) {
 	case spec.DefineStruct:
-		return addPrefix(tp), nil
+		return addPrefix(tp, fromPacket), nil
 	case spec.PrimitiveType:
 		r, ok := primitiveType(tp.Name())
 		if !ok {
@@ -57,14 +57,14 @@ func goTypeToTs(tp spec.Type) (string, error) {
 		}
 		return r, nil
 	case spec.MapType:
-		valueType, err := goTypeToTs(v.Value)
+		valueType, err := goTypeToTs(v.Value, fromPacket)
 		if err != nil {
 			return "", err
 		}
 
 		return fmt.Sprintf("{ [key: string]: %s }", valueType), nil
 	case spec.ArrayType:
-		valueType, err := goTypeToTs(v.Value)
+		valueType, err := goTypeToTs(v.Value, fromPacket)
 		if err != nil {
 			return "", err
 		}
@@ -73,13 +73,16 @@ func goTypeToTs(tp spec.Type) (string, error) {
 	case spec.InterfaceType:
 		return "any", nil
 	case spec.PointerType:
-		return goTypeToTs(v.Type)
+		return goTypeToTs(v.Type, fromPacket)
 	}
 	return "", errors.New("unsupported primitive type " + tp.Name())
 }
 
-func addPrefix(tp spec.Type) string {
-	return packagePrefix + util.Title(tp.Name())
+func addPrefix(tp spec.Type, fromPacket bool) string {
+	if fromPacket {
+		return packagePrefix + util.Title(tp.Name())
+	}
+	return util.Title(tp.Name())
 }
 
 func primitiveType(tp string) (string, bool) {

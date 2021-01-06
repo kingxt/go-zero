@@ -20,6 +20,7 @@ func TsCommand(c *cli.Context) error {
 	if len(apiFile) == 0 {
 		return errors.New("missing -api")
 	}
+
 	if len(dir) == 0 {
 		return errors.New("missing -dir")
 	}
