@@ -99,10 +99,13 @@ func writeMembers(writer io.Writer, ty spec.DefineStruct, indent int) error {
 		if member.IsInline {
 			defineStruct, ok := member.Type.(spec.DefineStruct)
 			if ok {
-				writeMembers(writer, defineStruct, indent)
-			} else {
-				return errors.New("unsupported inline type %s" + member.Type.Name())
+				err := writeMembers(writer, defineStruct, indent)
+				if err != nil {
+					return err
+				}
+				continue
 			}
+			return errors.New("unsupported inline type %s" + member.Type.Name())
 		}
 
 		if !member.IsBodyMember() {

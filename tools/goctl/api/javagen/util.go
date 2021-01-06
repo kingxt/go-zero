@@ -30,6 +30,7 @@ func writeProperty(writer io.Writer, member spec.Member, indent int) error {
 	if err != nil {
 		return err
 	}
+
 	name, err := member.GetPropertyName()
 	if err != nil {
 		return err
@@ -101,7 +102,7 @@ func goTypeToJava(tp spec.Type) (string, error) {
 	case spec.InterfaceType:
 		return "Object", nil
 	case spec.PointerType:
-		return goTypeToJava(tp)
+		return goTypeToJava(v.Type)
 	}
 
 	return "", errors.New("unsupported primitive type " + tp.Name())

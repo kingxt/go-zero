@@ -73,7 +73,7 @@ func goTypeToTs(tp spec.Type) (string, error) {
 	case spec.InterfaceType:
 		return "any", nil
 	case spec.PointerType:
-		return goTypeToTs(tp)
+		return goTypeToTs(v.Type)
 	}
 	return "", errors.New("unsupported primitive type " + tp.Name())
 }
