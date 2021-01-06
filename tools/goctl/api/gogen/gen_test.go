@@ -332,7 +332,7 @@ func TestParser(t *testing.T) {
 	assert.Equal(t, api.Service.Routes()[0].Path, "/greet/from/:name")
 	assert.Equal(t, api.Service.Routes()[1].Path, "/greet/get")
 
-	assert.Equal(t, api.Service.Routes()[1].RequestType.Name(), "Request")
+	assert.Equal(t, api.Service.Routes()[1].RequestTypeName(), "Request")
 	assert.Equal(t, api.Service.Routes()[1].ResponseType, nil)
 
 	validate(t, filename)
