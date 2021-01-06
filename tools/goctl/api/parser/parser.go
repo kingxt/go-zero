@@ -231,7 +231,7 @@ func (p parser) fillService() error {
 
 				for _, char := range route.Handler {
 					if !unicode.IsDigit(char) && !unicode.IsLetter(char) {
-						errors.New(fmt.Sprintf("route [%s] handler [%s] invalid, handler name should only contains letter or digit",
+						return errors.New(fmt.Sprintf("route [%s] handler [%s] invalid, handler name should only contains letter or digit",
 							route.Path, route.Handler))
 					}
 				}
