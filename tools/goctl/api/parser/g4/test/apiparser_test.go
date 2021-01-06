@@ -95,6 +95,24 @@ func TestApiParser(t *testing.T) {
 		fmt.Printf("%+v\n", err)
 	})
 
+	t.Run("duplicateImport", func(t *testing.T) {
+		_, err := parser.ParseContent(`
+		import "foo.api"
+		import "foo.api"
+		`)
+		assert.Error(t, err)
+	})
+
+	t.Run("duplicateKey", func(t *testing.T) {
+		_, err := parser.ParseContent(`
+		info (
+			foo: bar
+			foo: bar
+		)
+		`)
+		assert.Error(t, err)
+	})
+
 	t.Run("ambiguousSyntax", func(t *testing.T) {
 		file := filepath.Join(t.TempDir(), "foo.api")
 		err := ioutil.WriteFile(file, []byte(ambiguousSyntax), os.ModePerm)
