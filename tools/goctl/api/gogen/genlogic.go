@@ -81,7 +81,7 @@ func genLogicByRoute(dir string, cfg *config.Config, group spec.Group, route spe
 	var responseString string
 	var returnString string
 	var requestString string
-	if len(route.ResponseType.Name()) > 0 {
+	if len(route.ResponseTypeName()) > 0 {
 		resp := strings.Title(route.ResponseType.Name())
 		responseString = "(*types." + resp + ", error)"
 		returnString = fmt.Sprintf("return &types.%s{}, nil", resp)
@@ -89,7 +89,7 @@ func genLogicByRoute(dir string, cfg *config.Config, group spec.Group, route spe
 		responseString = "error"
 		returnString = "return nil"
 	}
-	if len(route.RequestType.Name()) > 0 {
+	if len(route.RequestTypeName()) > 0 {
 		requestString = "req " + "types." + strings.Title(route.RequestType.Name())
 	}
 
@@ -134,7 +134,7 @@ func genLogicImports(route spec.Route, parentPkg string) string {
 	var imports []string
 	imports = append(imports, `"context"`+"\n")
 	imports = append(imports, fmt.Sprintf("\"%s\"", ctlutil.JoinPackages(parentPkg, contextDir)))
-	if len(route.ResponseType.Name()) > 0 || len(route.RequestType.Name()) > 0 {
+	if len(route.ResponseTypeName()) > 0 || len(route.RequestTypeName()) > 0 {
 		imports = append(imports, fmt.Sprintf("\"%s\"\n", ctlutil.JoinPackages(parentPkg, typesDir)))
 	}
 	imports = append(imports, fmt.Sprintf("\"%s/core/logx\"", vars.ProjectOpenSourceUrl))

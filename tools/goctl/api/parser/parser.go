@@ -49,12 +49,15 @@ func ParseContent(content string) (*spec.ApiSpec, error) {
 	return spec, nil
 }
 
-// todo
 func (p parser) convert2Spec() error {
 	p.fillInfo()
 	p.fillSyntax()
 	p.fillImport()
-	return p.fillTypes()
+	err := p.fillTypes()
+	if err != nil {
+		return err
+	}
+	return p.fillService()
 }
 
 func (p parser) fillInfo() {
@@ -196,33 +199,44 @@ func (p parser) fillService() error {
 			group.Annotation.Properties = properties
 		}
 
-		for _, route := range item.ServiceApi.ServiceRoute {
-			r := spec.Route{
+		for _, astRoute := range item.ServiceApi.ServiceRoute {
+			route := spec.Route{
 				Annotation: spec.Annotation{},
-				Method:     route.Route.Method.Text(),
-				Path:       route.Route.Path.Text(),
+				Method:     astRoute.Route.Method.Text(),
+				Path:       astRoute.Route.Path.Text(),
 			}
-			if route.AtHandler != nil {
-				r.Handler = route.AtHandler.Name.Text()
+			if astRoute.AtHandler != nil {
+				route.Handler = astRoute.AtHandler.Name.Text()
 			}
-			if route.Route.Req != nil {
-				tp, err := p.findDefinedType(route.Route.Req.Name.Text())
+
+			if astRoute.AtServer != nil {
+				var properties = make(map[string]string, 0)
+				for _, kv := range astRoute.AtServer.Kv {
+					properties[kv.Key.Text()] = kv.Value.Text()
+				}
+				route.Annotation.Properties = properties
+				if route.Handler == "" {
+					route.Handler = properties["handler"]
+				}
+			}
+
+			if astRoute.Route.Req != nil {
+				tp, err := p.findDefinedType(astRoute.Route.Req.Name.Text())
 				if err != nil {
 					return err
 				}
 
-				r.RequestType = *tp
+				route.RequestType = *tp
 			}
-			if route.Route.Reply != nil {
-				tp, err := p.findDefinedType(route.Route.Reply.Name.Text())
+			if astRoute.Route.Reply != nil {
+				tp, err := p.findDefinedType(astRoute.Route.Reply.Name.Text())
 				if err != nil {
 					return err
 				}
 
-				r.ResponseType = *tp
+				route.ResponseType = *tp
 			}
-			group.Routes = append(group.Routes, r)
-			groups = append(groups, group)
+			group.Routes = append(group.Routes, route)
 
 			name := item.ServiceApi.Name.Text()
 			if len(p.spec.Service.Name) > 0 && p.spec.Service.Name != name {
@@ -230,6 +244,7 @@ func (p parser) fillService() error {
 			}
 			p.spec.Service.Name = name
 		}
+		groups = append(groups, group)
 	}
 	p.spec.Service.Groups = groups
 	return nil

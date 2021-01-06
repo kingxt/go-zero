@@ -70,8 +70,8 @@ func genHandler(dir string, cfg *config.Config, group spec.Group, route spec.Rou
 		RequestType:    util.Title(route.RequestType.Name()),
 		LogicType:      strings.Title(getLogicName(route)),
 		Call:           strings.Title(strings.TrimSuffix(handler, "Handler")),
-		HasResp:        len(route.ResponseType.Name()) > 0,
-		HasRequest:     len(route.RequestType.Name()) > 0,
+		HasResp:        len(route.ResponseTypeName()) > 0,
+		HasRequest:     len(route.RequestTypeName()) > 0,
 	})
 }
 
@@ -125,7 +125,7 @@ func genHandlerImports(group spec.Group, route spec.Route, parentPkg string) str
 	imports = append(imports, fmt.Sprintf("\"%s\"",
 		util.JoinPackages(parentPkg, getLogicFolderPath(group, route))))
 	imports = append(imports, fmt.Sprintf("\"%s\"", util.JoinPackages(parentPkg, contextDir)))
-	if len(route.RequestType.Name()) > 0 {
+	if len(route.RequestTypeName()) > 0 {
 		imports = append(imports, fmt.Sprintf("\"%s\"\n", util.JoinPackages(parentPkg, typesDir)))
 	}
 	imports = append(imports, fmt.Sprintf("\"%s/rest/httpx\"", vars.ProjectOpenSourceUrl))

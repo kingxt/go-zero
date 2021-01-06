@@ -134,3 +134,17 @@ func (g Group) GetAnnotation(key string) string {
 	}
 	return g.Annotation.Properties[key]
 }
+
+func (r Route) ResponseTypeName() string {
+	if r.ResponseType == nil {
+		return ""
+	}
+	return r.ResponseType.Name()
+}
+
+func (r Route) RequestTypeName() string {
+	if r.RequestType == nil {
+		return ""
+	}
+	return r.RequestType.Name()
+}

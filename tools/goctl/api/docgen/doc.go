@@ -73,7 +73,7 @@ func genDoc(api *spec.ApiSpec, dir string, filename string) error {
 }
 
 func responseBody(api *spec.ApiSpec, route spec.Route) (string, error) {
-	if len(route.ResponseType.Name()) == 0 {
+	if len(route.ResponseTypeName()) == 0 {
 		return "", nil
 	}
 

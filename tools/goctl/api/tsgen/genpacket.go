@@ -82,7 +82,7 @@ func genApi(api *spec.ApiSpec, caller string) (string, error) {
 		fmt.Fprintf(&builder, "export function %s(%s) {\n", handler, paramsForRoute(route))
 		writeIndent(&builder, 1)
 		responseGeneric := "<null>"
-		if len(route.ResponseType.Name()) > 0 {
+		if len(route.ResponseTypeName()) > 0 {
 			val, err := goTypeToTs(route.ResponseType)
 			if err != nil {
 				return "", err
@@ -169,5 +169,5 @@ func hasRequestBody(route spec.Route) bool {
 		return false
 	}
 
-	return len(route.RequestType.Name()) > 0 && len(ds.GetBodyMembers()) > 0
+	return len(route.RequestTypeName()) > 0 && len(ds.GetBodyMembers()) > 0
 }
