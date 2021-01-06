@@ -24,6 +24,17 @@ const getSetTemplate = `
 {{.indent}}}
 `
 
+const boolTemplate = `
+{{.indent}}{{.decorator}}
+{{.indent}}public {{.returnType}} is{{.property}}() {
+{{.indent}}	return this.{{.propertyValue}};
+{{.indent}}}
+
+{{.indent}}public void set{{.property}}({{.type}} {{.propertyValue}}) {
+{{.indent}}	this.{{.propertyValue}} = {{.propertyValue}};
+{{.indent}}}
+`
+
 func writeProperty(writer io.Writer, member spec.Member, indent int) error {
 	writeIndent(writer, indent)
 	ty, err := goTypeToJava(member.Type)
@@ -125,14 +136,21 @@ func primitiveType(tp string) (string, bool) {
 }
 
 func genGetSet(writer io.Writer, defineStruct spec.DefineStruct, indent int) error {
-	t := template.Must(template.New("getSetTemplate").Parse(getSetTemplate))
 	for _, member := range defineStruct.Members {
-		var tmplBytes bytes.Buffer
-
 		javaType, err := goTypeToJava(member.Type)
 		if err != nil {
-			return err
+			return nil
 		}
+
+		var property = util.Title(member.Name)
+		var templateStr = getSetTemplate
+		if javaType == "boolean" {
+			templateStr = boolTemplate
+			property = strings.TrimPrefix(property, "Is")
+			property = strings.TrimPrefix(property, "is")
+		}
+		t := template.Must(template.New(templateStr).Parse(getSetTemplate))
+		var tmplBytes bytes.Buffer
 
 		tyString := javaType
 		decorator := ""
@@ -147,7 +165,7 @@ func genGetSet(writer io.Writer, defineStruct spec.DefineStruct, indent int) err
 		}
 
 		err = t.Execute(&tmplBytes, map[string]string{
-			"property":      util.Title(member.Name),
+			"property":      property,
 			"propertyValue": util.Untitle(member.Name),
 			"type":          tyString,
 			"decorator":     decorator,

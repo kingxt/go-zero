@@ -16,20 +16,10 @@ import (
 
 const packetTemplate = `package com.xhb.logic.http.packet.{{.packet}};
 
-import com.google.gson.Gson;
-import com.xhb.commons.JSON;
-import com.xhb.commons.JsonMarshal;
-import com.xhb.core.network.HttpRequestClient;
-import com.xhb.core.packet.HttpRequestPacket;
-import com.xhb.core.response.HttpResponseData;
 import com.xhb.core.packet.HttpPacket;
-{{if not .HasRequestBody}}
-import com.xhb.logic.http.request.EmptyRequest;
-{{end}}
-{{.import}}
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
+import com.xhb.logic.http.packet.tracevisual.model.*;
+import com.xhb.core.network.HttpRequestClient;
+{{.imports}}
 
 public class {{.packetName}} extends HttpPacket<{{.responseType}}> {
 	{{.paramsDeclaration}}
@@ -111,7 +101,7 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 		"packet":            packetName,
 		"requestType":       util.Title(route.RequestTypeName()),
 		"HasRequestBody":    hasRequestBody,
-		"import":            imports,
+		"imports":           imports,
 	})
 	if err != nil {
 		return err
