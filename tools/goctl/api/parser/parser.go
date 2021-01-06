@@ -185,12 +185,15 @@ func (p parser) commentExprs(comment ast.Expr) string {
 }
 
 func (p parser) fillService() error {
+	var groups []spec.Group
 	for _, item := range p.ast.Service {
 		var group spec.Group
 		if item.AtServer != nil {
+			var properties = make(map[string]string, 0)
 			for _, kv := range item.AtServer.Kv {
-				group.Annotation.Properties[kv.Key.Text()] = kv.Value.Text()
+				properties[kv.Key.Text()] = kv.Value.Text()
 			}
+			group.Annotation.Properties = properties
 		}
 
 		for _, route := range item.ServiceApi.ServiceRoute {
@@ -219,7 +222,7 @@ func (p parser) fillService() error {
 				r.ResponseType = *tp
 			}
 			group.Routes = append(group.Routes, r)
-			p.spec.Service.Groups = append(p.spec.Service.Groups, group)
+			groups = append(groups, group)
 
 			name := item.ServiceApi.Name.Text()
 			if len(p.spec.Service.Name) > 0 && p.spec.Service.Name != name {
@@ -228,5 +231,6 @@ func (p parser) fillService() error {
 			p.spec.Service.Name = name
 		}
 	}
+	p.spec.Service.Groups = groups
 	return nil
 }
