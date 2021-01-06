@@ -71,7 +71,7 @@ func (c *componentsContext) createComponent(dir, packetName string, ty spec.Type
 		return errors.New("unsupported type %s" + ty.Name())
 	}
 
-	if len(defineStruct.GetBodyMembers()) == 0 {
+	if len(defineStruct.GetBodyMembers()) == 0 && len(defineStruct.GetNonBodyMembers()) > 0 {
 		return nil
 	}
 
