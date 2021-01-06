@@ -136,10 +136,16 @@ func (p parser) findDefinedType(name string) (*spec.Type, error) {
 }
 
 func (p parser) fieldToMember(field *ast.TypeField) spec.Member {
+	var name = ""
+	var tag = ""
+	if !field.IsAnonymous {
+		field.Name.Text()
+		field.Tag.Text()
+	}
 	return spec.Member{
-		Name:     field.Name.Text(),
+		Name:     name,
 		Type:     p.astTypeToSpec(field.DataType),
-		Tag:      field.Tag.Text(),
+		Tag:      tag,
 		Comment:  p.commentExprs(field.Comment()),
 		Docs:     p.stringExprs(field.Doc()),
 		IsInline: field.IsAnonymous,
