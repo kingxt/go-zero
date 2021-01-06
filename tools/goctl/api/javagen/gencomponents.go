@@ -28,6 +28,7 @@ func genComponents(dir, packetName string, api *spec.ApiSpec) error {
 	if len(types) == 0 {
 		return nil
 	}
+
 	for _, ty := range types {
 		if err := createComponent(dir, packetName, ty, api.Types); err != nil {
 			return err

@@ -29,6 +29,7 @@ import com.xhb.logic.http.request.EmptyRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+
 public class {{.packetName}} extends HttpPacket<{{.packetName}}.{{.packetName}}Response> {
 	{{.paramsDeclaration}}
 	public {{.packetName}}({{.params}}{{if .HasRequestBody}}, {{.requestType}} request{{end}}) {
