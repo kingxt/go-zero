@@ -18,6 +18,7 @@ const getSetTemplate = `
 {{.indent}}public {{.returnType}} get{{.property}}() {
 {{.indent}}	return this.{{.propertyValue}};
 {{.indent}}}
+
 {{.indent}}public void set{{.property}}({{.type}} {{.propertyValue}}) {
 {{.indent}}	this.{{.propertyValue}} = {{.propertyValue}};
 {{.indent}}}
@@ -35,10 +36,12 @@ func writeProperty(writer io.Writer, member spec.Member, indent int) error {
 	if err != nil {
 		return err
 	}
+
 	_, err = fmt.Fprintf(writer, "private %s %s", ty, name)
 	if err != nil {
 		return err
 	}
+
 	writeDefaultValue(writer, member)
 	fmt.Fprint(writer, ";\n")
 	return err
@@ -69,10 +72,6 @@ func indentString(indent int) string {
 		result += "\t"
 	}
 	return result
-}
-
-func writeNewline(writer io.Writer) {
-	fmt.Fprint(writer, util.NL)
 }
 
 func goTypeToJava(tp spec.Type) (string, error) {

@@ -15,6 +15,7 @@ import (
 )
 
 const packetTemplate = `package com.xhb.logic.http.packet.{{.packet}};
+
 import com.google.gson.Gson;
 import com.xhb.commons.JSON;
 import com.xhb.commons.JsonMarshal;
