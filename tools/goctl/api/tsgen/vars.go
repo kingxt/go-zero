@@ -1,3 +1,6 @@
 package tsgen
 
-const packagePrefix = "components."
+const (
+	packagePrefix = "components."
+	pathPrefix    = "pathPrefix"
+)

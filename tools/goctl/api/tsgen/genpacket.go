@@ -67,31 +67,33 @@ func genHandler(dir, webApi, caller string, api *spec.ApiSpec, unwrapApi bool) e
 
 func genApi(api *spec.ApiSpec, caller string) (string, error) {
 	var builder strings.Builder
-	for _, route := range api.Service.Routes() {
-		handler := route.Handler
-		if len(handler) == 0 {
-			return "", fmt.Errorf("missing handler annotation for route %q", route.Path)
-		}
-
-		handler = util.Untitle(handler)
-		handler = strings.Replace(handler, "Handler", "", 1)
-		comment := commentForRoute(route)
-		if len(comment) > 0 {
-			fmt.Fprintf(&builder, "%s\n", comment)
-		}
-		fmt.Fprintf(&builder, "export function %s(%s) {\n", handler, paramsForRoute(route))
-		writeIndent(&builder, 1)
-		responseGeneric := "<null>"
-		if len(route.ResponseTypeName()) > 0 {
-			val, err := goTypeToTs(route.ResponseType, true)
-			if err != nil {
-				return "", err
+	for _, group := range api.Service.Groups {
+		for _, route := range group.Routes {
+			handler := route.Handler
+			if len(handler) == 0 {
+				return "", fmt.Errorf("missing handler annotation for route %q", route.Path)
 			}
-			responseGeneric = fmt.Sprintf("<%s>", val)
+
+			handler = util.Untitle(handler)
+			handler = strings.Replace(handler, "Handler", "", 1)
+			comment := commentForRoute(route)
+			if len(comment) > 0 {
+				fmt.Fprintf(&builder, "%s\n", comment)
+			}
+			fmt.Fprintf(&builder, "export function %s(%s) {\n", handler, paramsForRoute(route))
+			writeIndent(&builder, 1)
+			responseGeneric := "<null>"
+			if len(route.ResponseTypeName()) > 0 {
+				val, err := goTypeToTs(route.ResponseType, true)
+				if err != nil {
+					return "", err
+				}
+				responseGeneric = fmt.Sprintf("<%s>", val)
+			}
+			fmt.Fprintf(&builder, `return %s.%s%s(%s)`, caller, strings.ToLower(route.Method),
+				util.Title(responseGeneric), callParamsForRoute(route, group))
+			builder.WriteString("\n}\n\n")
 		}
-		fmt.Fprintf(&builder, `return %s.%s%s(%s)`, caller, strings.ToLower(route.Method),
-			util.Title(responseGeneric), callParamsForRoute(route))
-		builder.WriteString("\n}\n\n")
 	}
 
 	apis := builder.String()
@@ -136,22 +138,29 @@ func commentForRoute(route spec.Route) string {
 	return builder.String()
 }
 
-func callParamsForRoute(route spec.Route) string {
+func callParamsForRoute(route spec.Route, group spec.Group) string {
 	hasParams := pathHasParams(route)
 	hasBody := hasRequestBody(route)
 	if hasParams && hasBody {
-		return fmt.Sprintf("%s, %s, %s", pathForRoute(route), "params", "req")
+		return fmt.Sprintf("%s, %s, %s", pathForRoute(route, group), "params", "req")
 	} else if hasParams {
-		return fmt.Sprintf("%s, %s", pathForRoute(route), "params")
+		return fmt.Sprintf("%s, %s", pathForRoute(route, group), "params")
 	} else if hasBody {
-		return fmt.Sprintf("%s, %s", pathForRoute(route), "req")
+		return fmt.Sprintf("%s, %s", pathForRoute(route, group), "req")
 	}
 
-	return pathForRoute(route)
+	return pathForRoute(route, group)
 }
 
-func pathForRoute(route spec.Route) string {
-	return "\"" + route.Path + "\""
+func pathForRoute(route spec.Route, group spec.Group) string {
+	prefix := group.GetAnnotation("pathPrefix")
+	if len(prefix) == 0 {
+		return "\"" + route.Path + "\""
+	} else {
+		prefix = strings.TrimPrefix(prefix, `"`)
+		prefix = strings.TrimSuffix(prefix, `"`)
+		return fmt.Sprintf(`"%s/%s"`, prefix, strings.TrimPrefix(route.Path, "/"))
+	}
 }
 
 func pathHasParams(route spec.Route) bool {
