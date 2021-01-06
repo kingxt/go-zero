@@ -47,7 +47,7 @@ type (
 		// 数据类型字面值，如：string、map[int]string、[]int64、[]*User
 		Type    Type
 		Tag     string
-		Comment string // 换成标准struct中将废弃
+		Comment string
 		// 成员头顶注释说明
 		Docs     Doc
 		IsInline bool

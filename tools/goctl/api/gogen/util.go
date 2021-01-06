@@ -26,15 +26,15 @@ func getParentPackage(dir string) (string, error) {
 	return filepath.ToSlash(filepath.Join(projectCtx.Path, strings.TrimPrefix(projectCtx.WorkDir, projectCtx.Dir))), nil
 }
 
-func writeProperty(writer io.Writer, name, tp, tag, comment string, indent int) error {
+func writeProperty(writer io.Writer, name, tag, comment string, tp spec.Type, indent int) error {
 	util.WriteIndent(writer, indent)
 	var err error
 	if len(comment) > 0 {
 		comment = strings.TrimPrefix(comment, "//")
 		comment = "//" + comment
-		_, err = fmt.Fprintf(writer, "%s %s %s %s\n", strings.Title(name), tp, tag, comment)
+		_, err = fmt.Fprintf(writer, "%s %s %s %s\n", strings.Title(name), tp.Name(), tag, comment)
 	} else {
-		_, err = fmt.Fprintf(writer, "%s %s %s\n", strings.Title(name), tp, tag)
+		_, err = fmt.Fprintf(writer, "%s %s %s\n", strings.Title(name), tp.Name(), tag)
 	}
 	return err
 }

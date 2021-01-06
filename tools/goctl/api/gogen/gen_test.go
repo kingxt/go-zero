@@ -488,7 +488,7 @@ func TestHasImportApi(t *testing.T) {
 
 	var hasInline bool
 	for _, ty := range api.Types {
-		if ty.Name == "ImportData" {
+		if ty.Name() == "ImportData" {
 			hasInline = true
 			break
 		}

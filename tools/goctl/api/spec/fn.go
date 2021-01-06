@@ -80,7 +80,7 @@ func (m Member) GetPropertyName() (string, error) {
 }
 
 func (m Member) GetComment() string {
-	return strings.TrimSpace(strings.Join(m.Comments, "; "))
+	return strings.TrimSpace(m.Comment)
 }
 
 func (m Member) IsBodyMember() bool {
@@ -97,7 +97,7 @@ func (m Member) IsBodyMember() bool {
 	return false
 }
 
-func (t Type) GetBodyMembers() []Member {
+func (t DefineStruct) GetBodyMembers() []Member {
 	var result []Member
 	for _, member := range t.Members {
 		if member.IsBodyMember() {
@@ -107,7 +107,7 @@ func (t Type) GetBodyMembers() []Member {
 	return result
 }
 
-func (t Type) GetNonBodyMembers() []Member {
+func (t DefineStruct) GetNonBodyMembers() []Member {
 	var result []Member
 	for _, member := range t.Members {
 		if !member.IsBodyMember() {
