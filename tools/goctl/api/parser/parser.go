@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"path/filepath"
+	"unicode"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/ast"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
@@ -221,8 +222,18 @@ func (p parser) fillService() error {
 					properties[kv.Key.Text()] = kv.Value.Text()
 				}
 				route.Annotation.Properties = properties
-				if route.Handler == "" {
+				if len(route.Handler) == 0 {
 					route.Handler = properties["handler"]
+				}
+				if len(route.Handler) == 0 {
+					return fmt.Errorf("missing handler annotation for %q", route.Path)
+				}
+
+				for _, char := range route.Handler {
+					if !unicode.IsDigit(char) && !unicode.IsLetter(char) {
+						errors.New(fmt.Sprintf("route [%s] handler [%s] invalid, handler name should only contains letter or digit",
+							route.Path, route.Handler))
+					}
 				}
 			}
 

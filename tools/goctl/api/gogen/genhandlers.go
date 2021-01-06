@@ -2,12 +2,10 @@ package gogen
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"path"
 	"strings"
 	"text/template"
-	"unicode"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
 	apiutil "github.com/tal-tech/go-zero/tools/goctl/api/util"
@@ -135,17 +133,6 @@ func genHandlerImports(group spec.Group, route spec.Route, parentPkg string) str
 
 func getHandlerBaseName(route spec.Route) (string, error) {
 	handler := route.Handler
-	if len(handler) == 0 {
-		return "", fmt.Errorf("missing handler annotation for %q", route.Path)
-	}
-
-	for _, char := range handler {
-		if !unicode.IsDigit(char) && !unicode.IsLetter(char) {
-			return "", errors.New(fmt.Sprintf("route [%s] handler [%s] invalid, handler name should only contains letter or digit",
-				route.Path, handler))
-		}
-	}
-
 	handler = strings.TrimSpace(handler)
 	handler = strings.TrimSuffix(handler, "handler")
 	handler = strings.TrimSuffix(handler, "Handler")
