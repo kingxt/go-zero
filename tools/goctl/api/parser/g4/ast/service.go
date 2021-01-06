@@ -416,7 +416,7 @@ func (s *ServiceRoute) GetHandler() Expr {
 	if s.AtHandler != nil {
 		return s.AtHandler.Name
 	} else {
-		return s.AtServer.Kv.Get("Handler")
+		return s.AtServer.Kv.Get("handler")
 	}
 }
 
