@@ -146,7 +146,7 @@ func (p parser) astTypeToSpec(in ast.DataType) spec.Type {
 	case *ast.Literal:
 		raw := v.Literal.Text()
 		if api.IsBasicType(raw) {
-			return spec.BasicType{RawName: raw}
+			return spec.PrimitiveType{RawName: raw}
 		} else {
 			return spec.DefineStruct{RawName: raw}
 		}
@@ -159,7 +159,7 @@ func (p parser) astTypeToSpec(in ast.DataType) spec.Type {
 	case *ast.Pointer:
 		raw := v.Name.Text()
 		if api.IsBasicType(raw) {
-			return spec.PointerType{RawName: v.PointerExpr.Text(), Type: spec.BasicType{RawName: raw}}
+			return spec.PointerType{RawName: v.PointerExpr.Text(), Type: spec.PrimitiveType{RawName: raw}}
 		} else {
 			return spec.PointerType{RawName: v.PointerExpr.Text(), Type: spec.DefineStruct{RawName: raw}}
 		}

@@ -79,17 +79,17 @@ type (
 	}
 
 	// 系统预设基本数据类型 bool int32 int64 float32
-	BasicType struct {
+	PrimitiveType struct {
 		RawName string
 	}
 
 	MapType struct {
 		RawName string
-		// only support the BasicType
+		// only support the PrimitiveType
 		Key string
-		// it can be asserted as BasicType: int、bool、
+		// it can be asserted as PrimitiveType: int、bool、
 		// PointerType: *string、*User、
-		// MapType: map[${BasicType}]interface、
+		// MapType: map[${PrimitiveType}]interface、
 		// ArrayType:[]int、[]User、[]*User
 		// InterfaceType: interface{}
 		// Type
@@ -111,7 +111,7 @@ type (
 	}
 )
 
-func (t BasicType) Name() string {
+func (t PrimitiveType) Name() string {
 	return t.RawName
 }
 
