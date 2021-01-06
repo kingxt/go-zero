@@ -131,12 +131,12 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 		"method":            strings.ToUpper(route.Method),
 		"uri":               processUri(route),
 		"types":             strings.TrimSpace(types),
-		"responseType":      stringx.TakeOne(util.Title(route.ResponseType.Name), "Object"),
+		"responseType":      stringx.TakeOne(util.Title(route.ResponseTypeName()), "Object"),
 		"params":            params,
 		"paramsDeclaration": strings.TrimSpace(paramsDeclaration),
 		"paramsSet":         paramsSet,
 		"packet":            packetName,
-		"requestType":       util.Title(route.RequestType.Name),
+		"requestType":       util.Title(route.RequestTypeName()),
 		"import":            getImports(api, route, packetName),
 	})
 	if err != nil {

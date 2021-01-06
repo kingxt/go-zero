@@ -90,7 +90,7 @@ func genLogicByRoute(dir string, cfg *config.Config, group spec.Group, route spe
 		returnString = "return nil"
 	}
 	if len(route.RequestTypeName()) > 0 {
-		requestString = "req " + "types." + strings.Title(route.RequestType.Name())
+		requestString = "req " + "types." + strings.Title(route.RequestTypeName())
 	}
 
 	text, err := ctlutil.LoadTemplate(category, logicTemplateFile, logicTemplate)

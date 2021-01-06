@@ -67,7 +67,7 @@ func genHandler(dir string, cfg *config.Config, group spec.Group, route spec.Rou
 	return doGenToFile(dir, handler, cfg, group, route, Handler{
 		ImportPackages: genHandlerImports(group, route, parentPkg),
 		HandlerName:    handler,
-		RequestType:    util.Title(route.RequestType.Name()),
+		RequestType:    util.Title(route.RequestTypeName()),
 		LogicType:      strings.Title(getLogicName(route)),
 		Call:           strings.Title(strings.TrimSuffix(handler, "Handler")),
 		HasResp:        len(route.ResponseTypeName()) > 0,

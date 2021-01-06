@@ -58,8 +58,8 @@ func genDoc(api *spec.ApiSpec, dir string, filename string) error {
 			"routeComment":    routeComment,
 			"method":          strings.ToUpper(route.Method),
 			"uri":             route.Path,
-			"requestType":     "`" + stringx.TakeOne(route.RequestType.Name(), "-") + "`",
-			"responseType":    "`" + stringx.TakeOne(route.ResponseType.Name(), "-") + "`",
+			"requestType":     "`" + stringx.TakeOne(route.RequestTypeName(), "-") + "`",
+			"responseType":    "`" + stringx.TakeOne(route.ResponseTypeName(), "-") + "`",
 			"responseContent": responseContent,
 		})
 		if err != nil {
