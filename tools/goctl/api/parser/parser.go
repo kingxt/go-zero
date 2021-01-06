@@ -58,12 +58,14 @@ func (p parser) convert2Spec() error {
 }
 
 func (p parser) fillInfo() {
+	var proterties = make(map[string]string, 0)
 	if p.ast.Info != nil {
 		p.spec.Info = spec.Info{}
 		for _, kv := range p.ast.Info.Kvs {
-			p.spec.Info.Proterties[kv.Key.Text()] = kv.Value.Text()
+			proterties[kv.Key.Text()] = kv.Value.Text()
 		}
 	}
+	p.spec.Info.Proterties = proterties
 }
 
 func (p parser) fillSyntax() {
@@ -135,7 +137,7 @@ func (p parser) fieldToMember(field *ast.TypeField) spec.Member {
 		Name:     field.Name.Text(),
 		Type:     p.astTypeToSpec(field.DataType),
 		Tag:      field.Tag.Text(),
-		Comment:  field.Comment().Text(),
+		Comment:  p.commentExprs(field.Comment()),
 		Docs:     p.stringExprs(field.Doc()),
 		IsInline: field.IsAnonymous,
 	}
@@ -173,6 +175,13 @@ func (p parser) stringExprs(docs []ast.Expr) []string {
 		result = append(result, item.Text())
 	}
 	return result
+}
+
+func (p parser) commentExprs(comment ast.Expr) string {
+	if comment == nil {
+		return ""
+	}
+	return comment.Text()
 }
 
 func (p parser) fillService() error {
