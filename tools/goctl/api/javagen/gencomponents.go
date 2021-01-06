@@ -30,7 +30,7 @@ func genComponents(dir, packetName string, api *spec.ApiSpec) error {
 	}
 
 	for _, ty := range types {
-		if err := createComponent(dir, packetName, ty, api.Types); err != nil {
+		if err := createComponent(dir, packetName, ty); err != nil {
 			return err
 		}
 	}
@@ -38,7 +38,7 @@ func genComponents(dir, packetName string, api *spec.ApiSpec) error {
 	return nil
 }
 
-func createComponent(dir, packetName string, ty spec.Type, types []spec.Type) error {
+func createComponent(dir, packetName string, ty spec.Type) error {
 	modelFile := util.Title(ty.Name()) + ".java"
 	filename := path.Join(dir, modelDir, modelFile)
 	if err := util.RemoveOrQuit(filename); err != nil {
