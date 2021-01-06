@@ -39,6 +39,15 @@ func genComponents(dir, packetName string, api *spec.ApiSpec) error {
 }
 
 func createComponent(dir, packetName string, ty spec.Type) error {
+	defineStruct, ok := ty.(spec.DefineStruct)
+	if !ok {
+		return errors.New("unsupported type %s" + ty.Name())
+	}
+
+	if len(defineStruct.GetBodyMembers()) == 0 {
+		return nil
+	}
+
 	modelFile := util.Title(ty.Name()) + ".java"
 	filename := path.Join(dir, modelDir, modelFile)
 	if err := util.RemoveOrQuit(filename); err != nil {
@@ -54,7 +63,7 @@ func createComponent(dir, packetName string, ty spec.Type) error {
 	}
 	defer fp.Close()
 
-	tyString, err := buildType(ty)
+	tyString, err := buildType(defineStruct)
 	if err != nil {
 		return err
 	}
@@ -66,7 +75,7 @@ func createComponent(dir, packetName string, ty spec.Type) error {
 	})
 }
 
-func buildType(ty spec.Type) (string, error) {
+func buildType(ty spec.DefineStruct) (string, error) {
 	var builder strings.Builder
 	if err := writeType(&builder, ty); err != nil {
 		return "", apiutil.WrapErr(err, "Type "+ty.Name()+" generate error")
@@ -74,17 +83,8 @@ func buildType(ty spec.Type) (string, error) {
 	return builder.String(), nil
 }
 
-func writeType(writer io.Writer, tp spec.Type) error {
-	defineStruct, ok := tp.(spec.DefineStruct)
-	if !ok {
-		return errors.New("unsupported type %s" + tp.Name())
-	}
-
-	if len(defineStruct.GetBodyMembers()) == 0 {
-		return nil
-	}
-
-	fmt.Fprintf(writer, "public class %s extends HttpData {\n", util.Title(tp.Name()))
+func writeType(writer io.Writer, defineStruct spec.DefineStruct) error {
+	fmt.Fprintf(writer, "public class %s extends HttpData {\n", util.Title(defineStruct.Name()))
 	err := writeMembers(writer, defineStruct, 1)
 	if err != nil {
 		return err
