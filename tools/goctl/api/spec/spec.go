@@ -29,17 +29,17 @@ type (
 	}
 
 	Info struct {
-		// Deprecated: use Proterties instead
+		// Deprecated: use Properties instead
 		Title string
-		// Deprecated: use Proterties instead
+		// Deprecated: use Properties instead
 		Desc string
-		// Deprecated: use Proterties instead
+		// Deprecated: use Properties instead
 		Version string
-		// Deprecated: use Proterties instead
+		// Deprecated: use Properties instead
 		Author string
-		// Deprecated: use Proterties instead
+		// Deprecated: use Properties instead
 		Email      string
-		Proterties map[string]string
+		Properties map[string]string
 	}
 
 	Member struct {

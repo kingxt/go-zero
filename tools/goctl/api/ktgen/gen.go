@@ -126,7 +126,7 @@ func genBase(dir, pkg string, api *spec.ApiSpec) error {
 }
 
 func genApi(dir, pkg string, api *spec.ApiSpec) error {
-	properties := api.Info.Proterties
+	properties := api.Info.Properties
 	if properties == nil {
 		return fmt.Errorf("none properties")
 	}

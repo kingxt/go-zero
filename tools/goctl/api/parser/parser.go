@@ -61,14 +61,14 @@ func (p parser) convert2Spec() error {
 }
 
 func (p parser) fillInfo() {
-	var proterties = make(map[string]string, 0)
+	var properties = make(map[string]string, 0)
 	if p.ast.Info != nil {
 		p.spec.Info = spec.Info{}
 		for _, kv := range p.ast.Info.Kvs {
-			proterties[kv.Key.Text()] = kv.Value.Text()
+			properties[kv.Key.Text()] = kv.Value.Text()
 		}
 	}
-	p.spec.Info.Proterties = proterties
+	p.spec.Info.Properties = properties
 }
 
 func (p parser) fillSyntax() {
