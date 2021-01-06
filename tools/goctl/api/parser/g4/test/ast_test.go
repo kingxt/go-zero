@@ -9,13 +9,13 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
 )
 
-var parser = ast.NewParser(ast.WithParserPrefix("test.api"), ast.ParserDebug)
+var parser = ast.NewParser(ast.WithParserPrefix("test.api"))
 
 func TestApi(t *testing.T) {
 	fn := func(p *api.ApiParserParser, visitor *ast.ApiVisitor) interface{} {
 		return p.Api().Accept(visitor)
 	}
-	content, err := ioutil.ReadFile("./test.api")
+	content, err := ioutil.ReadFile("./apis/test.api")
 	assert.Nil(t, err)
 
 	v, err := parser.Accept(fn, string(content))
