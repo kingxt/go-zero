@@ -36,6 +36,7 @@ type (
 		Line() int
 		Column() int
 		Text() string
+		SetText(text string)
 		Start() int
 		Stop() int
 		Equal(expr Expr) bool
@@ -146,6 +147,13 @@ func (e *defaultExpr) Text() string {
 		return ""
 	}
 	return e.v
+}
+
+func (e *defaultExpr) SetText(text string) {
+	if e == nil {
+		return
+	}
+	e.v = text
 }
 
 func (e *defaultExpr) Start() int {

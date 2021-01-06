@@ -12,7 +12,7 @@ COMMENT:            '/*' .*? '*/' -> channel(88);
 LINE_COMMENT:       '//' ~[\r\n]* -> channel(88);
 STRING:             '"' (~["\\] | EscapeSequence)* '"';
 RAW_STRING:         '`' (~[`\\\r\n] | EscapeSequence)+ '`';
-LINE_VALUE:         ':' [ \t]* (STRING|(~[\r\n/"`]*));
+LINE_VALUE:         ':' [ \t]* (STRING|(~[\r\n"`]*));
 ID:         Letter LetterOrDigit*;
 
 
