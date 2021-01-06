@@ -8,17 +8,17 @@ import (
 )
 
 type Api struct {
-	Filename string
-	Syntax   *SyntaxExpr
-	Import   []*ImportExpr
-	importM  map[string]PlaceHolder
-	Info     *InfoExpr
-	Type     []TypeExpr
-	typeM    map[string]PlaceHolder
-	Service  []*Service
-	serviceM map[string]PlaceHolder
-	handlerM map[string]PlaceHolder
-	routeM   map[string]PlaceHolder
+	LinePrefix string
+	Syntax     *SyntaxExpr
+	Import     []*ImportExpr
+	importM    map[string]PlaceHolder
+	Info       *InfoExpr
+	Type       []TypeExpr
+	typeM      map[string]PlaceHolder
+	Service    []*Service
+	serviceM   map[string]PlaceHolder
+	handlerM   map[string]PlaceHolder
+	routeM     map[string]PlaceHolder
 }
 
 func (v *ApiVisitor) VisitApi(ctx *api.ApiContext) interface{} {
@@ -86,7 +86,7 @@ func (v *ApiVisitor) VisitApi(ctx *api.ApiContext) interface{} {
 				}
 			}
 			for _, route := range service.ServiceApi.ServiceRoute {
-				uniqueRoute := fmt.Sprintf("%s %s", route.Route.Method.Text(), route.Route.Path)
+				uniqueRoute := fmt.Sprintf("%s %s", route.Route.Method.Text(), route.Route.Path.Text())
 				if _, ok := final.routeM[uniqueRoute]; ok {
 					v.panic(route.Route.Method, fmt.Sprintf("duplicate route '%s'", uniqueRoute))
 				}

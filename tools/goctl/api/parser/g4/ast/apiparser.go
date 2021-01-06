@@ -12,8 +12,8 @@ import (
 
 type (
 	Parser struct {
-		prefix string
-		debug  bool
+		linePrefix string
+		debug      bool
 		antlr.DefaultErrorListener
 	}
 
@@ -52,7 +52,7 @@ func (p *Parser) Accept(fn func(p *api.ApiParserParser, visitor *ApiVisitor) int
 	apiParser.RemoveErrorListeners()
 	apiParser.AddErrorListener(p)
 	var visitorOptions []VisitorOption
-	visitorOptions = append(visitorOptions, WithVisitorPrefix(p.prefix))
+	visitorOptions = append(visitorOptions, WithVisitorPrefix(p.linePrefix))
 	if p.debug {
 		visitorOptions = append(visitorOptions, WithVisitorDebug())
 	}
@@ -98,7 +98,7 @@ func (p *Parser) parse(filename, content string) (*Api, error) {
 			return nil, err
 		}
 
-		err = p.valid(api, path, nestedApi)
+		err = p.valid(api, nestedApi)
 		if err != nil {
 			return nil, err
 		}
@@ -115,7 +115,7 @@ func (p *Parser) parse(filename, content string) (*Api, error) {
 	return allApi, nil
 }
 
-func (p *Parser) invoke(filename, content string) (v *Api, err error) {
+func (p *Parser) invoke(linePrefix, content string) (v *Api, err error) {
 	defer func() {
 		p := recover()
 		if p != nil {
@@ -127,7 +127,9 @@ func (p *Parser) invoke(filename, content string) (v *Api, err error) {
 			}
 		}
 	}()
-
+	if linePrefix != "" {
+		p.linePrefix = linePrefix
+	}
 	inputStream := antlr.NewInputStream(content)
 	lexer := api.NewApiParserLexer(inputStream)
 	lexer.RemoveErrorListeners()
@@ -136,27 +138,29 @@ func (p *Parser) invoke(filename, content string) (v *Api, err error) {
 	apiParser.RemoveErrorListeners()
 	apiParser.AddErrorListener(p)
 	var visitorOptions []VisitorOption
-	visitorOptions = append(visitorOptions, WithVisitorPrefix(filepath.Base(filename)))
+	visitorOptions = append(visitorOptions, WithVisitorPrefix(p.linePrefix))
 	if p.debug {
 		visitorOptions = append(visitorOptions, WithVisitorDebug())
 	}
 	visitor := NewApiVisitor(visitorOptions...)
 	v = apiParser.Api().Accept(visitor).(*Api)
-	v.Filename = filename
+	v.LinePrefix = p.linePrefix
 	return
 }
 
-func (p *Parser) valid(mainApi *Api, filename string, nestedApi *Api) error {
+func (p *Parser) valid(mainApi *Api, nestedApi *Api) error {
 	if len(nestedApi.Import) > 0 {
 		importToken := nestedApi.Import[0].Import
 		return fmt.Errorf("%s line %d:%d the nested api does not support import",
-			filename, importToken.Line(), importToken.Column())
+			nestedApi.LinePrefix, importToken.Line(), importToken.Column())
 	}
 
-	if mainApi.Syntax.Version != nestedApi.Syntax.Version {
-		syntaxToken := nestedApi.Syntax.Syntax
-		return fmt.Errorf("%s line %d:%d multiple syntax declaration, expecting syntax '%s', but found '%s'",
-			filename, syntaxToken.Line(), syntaxToken.Column(), mainApi.Syntax.Version, nestedApi.Syntax.Version)
+	if mainApi.Syntax != nil && nestedApi.Syntax != nil {
+		if mainApi.Syntax.Version.Text() != nestedApi.Syntax.Version.Text() {
+			syntaxToken := nestedApi.Syntax.Syntax
+			return fmt.Errorf("%s line %d:%d multiple syntax declaration, expecting syntax '%s', but found '%s'",
+				nestedApi.LinePrefix, syntaxToken.Line(), syntaxToken.Column(), mainApi.Syntax.Version.Text(), nestedApi.Syntax.Version.Text())
+		}
 	}
 
 	if len(mainApi.Service) > 0 {
@@ -164,7 +168,7 @@ func (p *Parser) valid(mainApi *Api, filename string, nestedApi *Api) error {
 		for _, service := range nestedApi.Service {
 			if mainService.ServiceApi.Name.Text() != service.ServiceApi.Name.Text() {
 				return fmt.Errorf("%s multiple service name declaration, expecting service name '%s', but found '%s'",
-					filename, mainService.ServiceApi.Name.Text(), service.ServiceApi.Name.Text())
+					nestedApi.LinePrefix, mainService.ServiceApi.Name.Text(), service.ServiceApi.Name.Text())
 			}
 		}
 	}
@@ -209,13 +213,13 @@ func (p *Parser) valid(mainApi *Api, filename string, nestedApi *Api) error {
 			handler := r.GetHandler()
 			if _, ok := mainHandlerMap[handler.Text()]; ok {
 				return fmt.Errorf("%s line %d:%d duplicate handler '%s'",
-					filename, handler.Line(), handler.Column(), handler.Text())
+					nestedApi.LinePrefix, handler.Line(), handler.Column(), handler.Text())
 			}
 
 			path := fmt.Sprintf("%s://%s", r.Route.Method.Text(), r.Route.Path.Text())
 			if _, ok := mainRouteMap[path]; ok {
 				return fmt.Errorf("%s line %d:%d duplicate route '%s'",
-					filename, r.Route.Method.Line(), r.Route.Method.Column(), r.Route.Method.Text()+" "+r.Route.Path.Text())
+					nestedApi.LinePrefix, r.Route.Method.Line(), r.Route.Method.Column(), r.Route.Method.Text()+" "+r.Route.Path.Text())
 			}
 		}
 	}
@@ -224,7 +228,7 @@ func (p *Parser) valid(mainApi *Api, filename string, nestedApi *Api) error {
 	for _, each := range nestedApi.Type {
 		if _, ok := mainTypeMap[each.NameExpr().Text()]; ok {
 			return fmt.Errorf("%s line %d:%d duplicate type declaration '%s'",
-				filename, each.NameExpr().Line(), each.NameExpr().Column(), each.NameExpr().Text())
+				nestedApi.LinePrefix, each.NameExpr().Line(), each.NameExpr().Column(), each.NameExpr().Text())
 		}
 	}
 	return nil
@@ -258,15 +262,14 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 	}
 
 	for _, api := range apiList {
-		filename := api.Filename
-		prefix := filepath.Base(filename)
+		linePrefix := api.LinePrefix
 		for _, each := range api.Type {
 			tp, ok := each.(*TypeStruct)
 			if !ok {
 				continue
 			}
 			for _, member := range tp.Fields {
-				err := p.checkType(prefix, types, member.DataType)
+				err := p.checkType(linePrefix, types, member.DataType)
 				if err != nil {
 					return err
 				}
@@ -280,7 +283,7 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 					_, ok := types[route.Req.Name.Text()]
 					if !ok {
 						return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
-							prefix, route.Req.Name.Line(), route.Req.Name.Column(), route.Req.Name.Text())
+							linePrefix, route.Req.Name.Line(), route.Req.Name.Column(), route.Req.Name.Text())
 					}
 				}
 
@@ -288,7 +291,7 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 					_, ok := types[route.Reply.Name.Text()]
 					if !ok {
 						return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
-							prefix, route.Reply.Name.Line(), route.Reply.Name.Column(), route.Reply.Name.Text())
+							linePrefix, route.Reply.Name.Line(), route.Reply.Name.Column(), route.Reply.Name.Text())
 					}
 				}
 			}
@@ -297,7 +300,7 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 	return nil
 }
 
-func (p *Parser) checkType(prefix string, types map[string]TypeExpr, expr DataType) error {
+func (p *Parser) checkType(linePrefix string, types map[string]TypeExpr, expr DataType) error {
 	if expr == nil {
 		return nil
 	}
@@ -311,7 +314,7 @@ func (p *Parser) checkType(prefix string, types map[string]TypeExpr, expr DataTy
 		_, ok := types[name]
 		if !ok {
 			return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
-				prefix, v.Literal.Line(), v.Literal.Column(), name)
+				linePrefix, v.Literal.Line(), v.Literal.Column(), name)
 		}
 
 	case *Pointer:
@@ -322,12 +325,12 @@ func (p *Parser) checkType(prefix string, types map[string]TypeExpr, expr DataTy
 		_, ok := types[name]
 		if !ok {
 			return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
-				prefix, v.Name.Line(), v.Name.Column(), name)
+				linePrefix, v.Name.Line(), v.Name.Column(), name)
 		}
 	case *Map:
-		return p.checkType(prefix, types, v.Value)
+		return p.checkType(linePrefix, types, v.Value)
 	case *Array:
-		return p.checkType(prefix, types, v.Literal)
+		return p.checkType(linePrefix, types, v.Literal)
 	default:
 		return nil
 	}
@@ -350,7 +353,7 @@ func (p *Parser) readContent(filename string) (string, error) {
 }
 
 func (p *Parser) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
-	str := fmt.Sprintf(`%s line %d:%d  %s`, p.prefix, line, column, msg)
+	str := fmt.Sprintf(`%s line %d:%d  %s`, p.linePrefix, line, column, msg)
 	if p.debug {
 		fmt.Println("[debug]", str)
 	}
@@ -367,6 +370,6 @@ func WithParserDebug() ParserOption {
 
 func WithParserPrefix(prefix string) ParserOption {
 	return func(p *Parser) {
-		p.prefix = prefix
+		p.linePrefix = prefix
 	}
 }
