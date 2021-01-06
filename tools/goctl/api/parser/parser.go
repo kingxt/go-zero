@@ -227,20 +227,10 @@ func (p parser) fillService() error {
 			}
 
 			if astRoute.Route.Req != nil {
-				tp, err := p.findDefinedType(astRoute.Route.Req.Name.Text())
-				if err != nil {
-					return err
-				}
-
-				route.RequestType = *tp
+				route.RequestType = p.astTypeToSpec(astRoute.Route.Req.Name)
 			}
 			if astRoute.Route.Reply != nil {
-				tp, err := p.findDefinedType(astRoute.Route.Reply.Name.Text())
-				if err != nil {
-					return err
-				}
-
-				route.ResponseType = *tp
+				route.ResponseType = p.astTypeToSpec(astRoute.Route.Reply.Name)
 			}
 			group.Routes = append(group.Routes, route)
 

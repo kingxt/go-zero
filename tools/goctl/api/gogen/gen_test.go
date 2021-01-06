@@ -433,7 +433,7 @@ func TestApiHasNoRequestBody(t *testing.T) {
 	defer os.Remove(filename)
 
 	_, err = parser.Parse(filename)
-	assert.NotNil(t, err)
+	assert.Nil(t, err)
 }
 
 func TestApiRoutes(t *testing.T) {
