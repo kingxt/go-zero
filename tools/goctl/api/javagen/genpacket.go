@@ -22,7 +22,7 @@ import com.xhb.commons.JsonMarshal;
 import com.xhb.core.network.HttpRequestClient;
 import com.xhb.core.packet.HttpRequestPacket;
 import com.xhb.core.response.HttpResponseData;
-import com.xhb.logic.http.DeProguardable;
+import com.xhb.core.packet.HttpPacket;
 {{if not .HasRequestBody}}
 import com.xhb.logic.http.request.EmptyRequest;
 {{end}}
@@ -31,10 +31,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-public class {{.packetName}} extends HttpPacket<{{.packetName}}.{{.packetName}}Response> {
+public class {{.packetName}} extends HttpPacket<{{.responseType}}> {
 	{{.paramsDeclaration}}
 
-	public {{.packetName}}({{.params}}{{if .HasRequestBody}}, {{.requestType}} request{{end}}) {
+	public {{.packetName}}({{.params}}{{if .HasRequestBody}}{{.requestType}} request{{end}}) {
 		{{if .HasRequestBody}}super(request);{{else}}super(EmptyRequest.instance);{{end}}
 		{{if .HasRequestBody}}this.request = request;{{end}}{{.paramsSet}}
     }
@@ -65,6 +65,9 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 	packet := route.Handler
 	packet = strings.Replace(packet, "Handler", "Packet", 1)
 	packet = strings.Title(packet)
+	if !strings.HasSuffix(packet, "Packet") {
+		packet += "Packet"
+	}
 
 	javaFile := packet + ".java"
 	fp, created, err := apiutil.MaybeCreateFile(dir, "", javaFile)
@@ -83,9 +86,17 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 		}
 	}
 
-	params := paramsForRoute(route)
+	params := strings.TrimSpace(paramsForRoute(route))
+	if len(params) > 0 && hasRequestBody {
+		params += ", "
+	}
 	paramsDeclaration := declarationForRoute(route)
 	paramsSet := paramsSet(route)
+	imports := getImports(api, packetName)
+
+	if len(route.ResponseTypeName()) == 0 {
+		imports += fmt.Sprintf("\v%s", "import com.xhb.core.response.EmptyResponse;")
+	}
 
 	t := template.Must(template.New("packetTemplate").Parse(packetTemplate))
 	var tmplBytes bytes.Buffer
@@ -93,14 +104,14 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 		"packetName":        packet,
 		"method":            strings.ToUpper(route.Method),
 		"uri":               processUri(route),
-		"responseType":      stringx.TakeOne(util.Title(route.ResponseTypeName()), "Object"),
+		"responseType":      stringx.TakeOne(util.Title(route.ResponseTypeName()), "EmptyResponse"),
 		"params":            params,
 		"paramsDeclaration": strings.TrimSpace(paramsDeclaration),
 		"paramsSet":         paramsSet,
 		"packet":            packetName,
 		"requestType":       util.Title(route.RequestTypeName()),
 		"HasRequestBody":    hasRequestBody,
-		"import":            getImports(api, packetName),
+		"import":            imports,
 	})
 	if err != nil {
 		return err
