@@ -73,10 +73,28 @@ func genDoc(api *spec.ApiSpec, dir string, filename string) error {
 }
 
 func responseBody(api *spec.ApiSpec, route spec.Route) (string, error) {
-	tps := util.GetLocalTypes(api, route)
+	if len(route.ResponseType.Name()) == 0 {
+		return "", nil
+	}
+
+	var tps = make([]spec.Type, 0)
+	tps = append(tps, route.ResponseType)
+	if definedType, ok := route.ResponseType.(spec.DefineStruct); ok {
+		associatedTypes(definedType, &tps)
+	}
 	value, err := gogen.BuildTypes(tps)
 	if err != nil {
 		return "", err
 	}
+
 	return fmt.Sprintf("\n\n```golang\n%s\n```\n", value), nil
+}
+
+func associatedTypes(tp spec.DefineStruct, tps *[]spec.Type) {
+	*tps = append(*tps, tp)
+	for _, item := range tp.Members {
+		if definedType, ok := item.Type.(spec.DefineStruct); ok {
+			associatedTypes(definedType, tps)
+		}
+	}
 }
