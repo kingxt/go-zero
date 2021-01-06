@@ -88,21 +88,6 @@ func TestApi(t *testing.T) {
 			},
 		},
 		Type: []ast.TypeExpr{
-			&ast.TypeAlias{
-				Name:     ast.NewTextExpr("Foo"),
-				DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-				DocExpr: []ast.Expr{
-					ast.NewTextExpr("alias"),
-				},
-			},
-			&ast.TypeAlias{
-				Name:     ast.NewTextExpr("Integer"),
-				Assign:   ast.NewTextExpr("="),
-				DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-				DocExpr: []ast.Expr{
-					ast.NewTextExpr("assign"),
-				},
-			},
 			&ast.TypeStruct{
 				Name:   ast.NewTextExpr("FooBar"),
 				Struct: ast.NewTextExpr("struct"),

@@ -20,11 +20,6 @@ info(// info comment
     desc" // desc comment
 )
 
-// alias
-type Foo int
-
-// assign
-type Integer = int
 
 type (
     FooBar struct{

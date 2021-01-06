@@ -256,38 +256,19 @@ func TestAlias(t *testing.T) {
 		return p.TypeAlias().Accept(visitor)
 	}
 	t.Run("normal", func(t *testing.T) {
-		v, err := parser.Accept(fn, `Foo int`)
-		assert.Nil(t, err)
-		assert.True(t, v.(*ast.TypeAlias).Equal(&ast.TypeAlias{
-			Name:     ast.NewTextExpr("Foo"),
-			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-		}))
+		_, err := parser.Accept(fn, `Foo int`)
+		assert.Error(t, err)
 
-		v, err = parser.Accept(fn, `Foo=int`)
-		assert.Nil(t, err)
-		assert.True(t, v.(*ast.TypeAlias).Equal(&ast.TypeAlias{
-			Name:     ast.NewTextExpr("Foo"),
-			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-			Assign:   ast.NewTextExpr("="),
-		}))
+		_, err = parser.Accept(fn, `Foo=int`)
+		assert.Error(t, err)
 
-		v, err = parser.Accept(fn, `
+		_, err = parser.Accept(fn, `
 		Foo int // comment`)
-		assert.Nil(t, err)
-		assert.True(t, v.(*ast.TypeAlias).Equal(&ast.TypeAlias{
-			Name:        ast.NewTextExpr("Foo"),
-			DataType:    &ast.Literal{Literal: ast.NewTextExpr("int")},
-			CommentExpr: ast.NewTextExpr("// comment"),
-		}))
+		assert.Error(t, err)
 
-		v, err = parser.Accept(fn, `
+		_, err = parser.Accept(fn, `
 		Foo int /**comment*/`)
-		assert.Nil(t, err)
-		assert.True(t, v.(*ast.TypeAlias).Equal(&ast.TypeAlias{
-			Name:        ast.NewTextExpr("Foo"),
-			DataType:    &ast.Literal{Literal: ast.NewTextExpr("int")},
-			CommentExpr: ast.NewTextExpr("/**comment*/"),
-		}))
+		assert.Error(t, err)
 	})
 
 	t.Run("wrong", func(t *testing.T) {
@@ -357,15 +338,7 @@ func TestTypeBlock(t *testing.T) {
 			// doc
 			Foo int
 		)`)
-		assert.Nil(t, err)
-		alias := v.([]ast.TypeExpr)
-		assert.True(t, alias[0].Equal(&ast.TypeAlias{
-			Name:     ast.NewTextExpr("Foo"),
-			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-			DocExpr: []ast.Expr{
-				ast.NewTextExpr("// doc"),
-			},
-		}))
+		assert.Error(t, err)
 
 		v, err = parser.Accept(fn, `type (
 			// doc
@@ -397,39 +370,18 @@ func TestTypeLit(t *testing.T) {
 		return p.TypeLit().Accept(visitor)
 	}
 	t.Run("normal", func(t *testing.T) {
-		v, err := parser.Accept(fn, `type Foo int`)
-		assert.Nil(t, err)
-		lit := v.(*ast.TypeAlias)
-		assert.True(t, lit.Equal(&ast.TypeAlias{
-			Name:     ast.NewTextExpr("Foo"),
-			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-		}))
+		_, err := parser.Accept(fn, `type Foo int`)
+		assert.Error(t, err)
 
-		v, err = parser.Accept(fn, `type Foo = int`)
-		assert.Nil(t, err)
-		lit = v.(*ast.TypeAlias)
-		assert.True(t, lit.Equal(&ast.TypeAlias{
-			Name:     ast.NewTextExpr("Foo"),
-			Assign:   ast.NewTextExpr("="),
-			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-		}))
+		_, err = parser.Accept(fn, `type Foo = int`)
+		assert.Error(t, err)
 
-		v, err = parser.Accept(fn, `
+		_, err = parser.Accept(fn, `
 		// doc
 		type Foo = int // comment`)
-		assert.Nil(t, err)
-		lit = v.(*ast.TypeAlias)
-		assert.True(t, lit.Equal(&ast.TypeAlias{
-			Name:     ast.NewTextExpr("Foo"),
-			Assign:   ast.NewTextExpr("="),
-			DataType: &ast.Literal{Literal: ast.NewTextExpr("int")},
-			DocExpr: []ast.Expr{
-				ast.NewTextExpr("// doc"),
-			},
-			CommentExpr: ast.NewTextExpr("// comment"),
-		}))
+		assert.Error(t, err)
 
-		v, err = parser.Accept(fn, `
+		v, err := parser.Accept(fn, `
 		// doc
 		type Foo {// comment
 			Bar int

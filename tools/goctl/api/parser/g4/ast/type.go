@@ -198,6 +198,8 @@ func (v *ApiVisitor) VisitTypeBlockAlias(ctx *api.TypeBlockAliasContext) interfa
 	alias.DataType = ctx.DataType().Accept(v).(DataType)
 	alias.DocExpr = v.getDoc(ctx)
 	alias.CommentExpr = v.getComment(ctx)
+	// todo: reopen if necessary
+	v.panic(alias.Name, "unsupport alias")
 	return &alias
 }
 
@@ -208,6 +210,8 @@ func (v *ApiVisitor) VisitTypeAlias(ctx *api.TypeAliasContext) interface{} {
 	alias.DataType = ctx.DataType().Accept(v).(DataType)
 	alias.DocExpr = v.getDoc(ctx)
 	alias.CommentExpr = v.getComment(ctx)
+	// todo: reopen if necessary
+	v.panic(alias.Name, "unsupport alias")
 	return &alias
 }
 
