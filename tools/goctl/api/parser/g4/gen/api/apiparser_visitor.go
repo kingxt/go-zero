@@ -106,6 +106,9 @@ type ApiParserVisitor interface {
 	// Visit a parse tree produced by ApiParserParser#body.
 	VisitBody(ctx *BodyContext) interface{}
 
+	// Visit a parse tree produced by ApiParserParser#replybody.
+	VisitReplybody(ctx *ReplybodyContext) interface{}
+
 	// Visit a parse tree produced by ApiParserParser#kvLit.
 	VisitKvLit(ctx *KvLitContext) interface{}
 

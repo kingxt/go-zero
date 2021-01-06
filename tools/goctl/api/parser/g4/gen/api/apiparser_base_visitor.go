@@ -139,6 +139,10 @@ func (v *BaseApiParserVisitor) VisitBody(ctx *BodyContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseApiParserVisitor) VisitReplybody(ctx *ReplybodyContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseApiParserVisitor) VisitKvLit(ctx *KvLitContext) interface{} {
 	return v.VisitChildren(ctx)
 }

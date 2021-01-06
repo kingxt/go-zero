@@ -29,7 +29,7 @@ var (
 	service foo-api{
 		@doc("foo")
 		@handler foo
-		post /foo (Foo) returns (Foo)
+		post /foo (Foo) returns ([]int)
 	}
 `
 	missDeclarationApi = `
@@ -40,6 +40,28 @@ var (
 		@doc("foo")
 		@handler foo
 		post /foo (Foo) returns (Foo)
+	}
+	`
+
+	missDeclarationInArrayApi = `
+	@server(
+		foo: bar
+	)
+	service foo-api{
+		@doc("foo")
+		@handler foo
+		post /foo returns ([]Foo)
+	}
+	`
+
+	missDeclarationInArrayApi2 = `
+	@server(
+		foo: bar
+	)
+	service foo-api{
+		@doc("foo")
+		@handler foo
+		post /foo returns ([]*Foo)
 	}
 	`
 
@@ -79,6 +101,18 @@ var (
 func TestApiParser(t *testing.T) {
 	t.Run("missDeclarationApi", func(t *testing.T) {
 		_, err := parser.ParseContent(missDeclarationApi)
+		assert.Error(t, err)
+		fmt.Printf("%+v\n", err)
+	})
+
+	t.Run("missDeclarationApi", func(t *testing.T) {
+		_, err := parser.ParseContent(missDeclarationInArrayApi)
+		assert.Error(t, err)
+		fmt.Printf("%+v\n", err)
+	})
+
+	t.Run("missDeclarationApi", func(t *testing.T) {
+		_, err := parser.ParseContent(missDeclarationInArrayApi2)
 		assert.Error(t, err)
 		fmt.Printf("%+v\n", err)
 	})
@@ -243,7 +277,7 @@ func TestApiParser(t *testing.T) {
 		body := &ast.Body{
 			Lp:   ast.NewTextExpr("("),
 			Rp:   ast.NewTextExpr(")"),
-			Name: ast.NewTextExpr("Foo"),
+			Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 		}
 
 		assert.True(t, v.Equal(&ast.Api{
@@ -311,7 +345,16 @@ func TestApiParser(t *testing.T) {
 									Path:        ast.NewTextExpr("/foo"),
 									Req:         body,
 									ReturnToken: ast.NewTextExpr("returns"),
-									Reply:       body,
+									Reply: &ast.Body{
+										Lp: ast.NewTextExpr("("),
+										Rp: ast.NewTextExpr(")"),
+										Name: &ast.Array{
+											ArrayExpr: ast.NewTextExpr("[]int"),
+											LBrack:    ast.NewTextExpr("["),
+											RBrack:    ast.NewTextExpr("]"),
+											Literal:   &ast.Literal{Literal: ast.NewTextExpr("int")},
+										},
+									},
 								},
 							},
 						},

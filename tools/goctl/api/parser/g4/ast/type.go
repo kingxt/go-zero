@@ -47,6 +47,7 @@ type (
 		Expr() Expr
 		Equal(dt DataType) bool
 		Format() error
+		IsNotNil() bool
 	}
 
 	// int, bool, Foo,...
@@ -381,6 +382,10 @@ func (l *Literal) Equal(dt DataType) bool {
 	return l.Literal.Equal(v.Literal)
 }
 
+func (l *Literal) IsNotNil() bool {
+	return l != nil
+}
+
 func (i *Interface) Expr() Expr {
 	return i.Literal
 }
@@ -401,6 +406,10 @@ func (i *Interface) Equal(dt DataType) bool {
 	}
 
 	return i.Literal.Equal(v.Literal)
+}
+
+func (i *Interface) IsNotNil() bool {
+	return i != nil
 }
 
 func (m *Map) Expr() Expr {
@@ -437,6 +446,10 @@ func (m *Map) Equal(dt DataType) bool {
 	return m.Map.Equal(v.Map)
 }
 
+func (m *Map) IsNotNil() bool {
+	return m != nil
+}
+
 func (a *Array) Expr() Expr {
 	return a.ArrayExpr
 }
@@ -463,6 +476,10 @@ func (a *Array) Equal(dt DataType) bool {
 	return a.Literal.Equal(v.Literal)
 }
 
+func (a *Array) IsNotNil() bool {
+	return a != nil
+}
+
 func (t *Time) Expr() Expr {
 	return t.Literal
 }
@@ -483,6 +500,10 @@ func (t *Time) Equal(dt DataType) bool {
 	}
 
 	return t.Literal.Equal(v.Literal)
+}
+
+func (t *Time) IsNotNil() bool {
+	return t != nil
 }
 
 func (p *Pointer) Expr() Expr {
@@ -512,6 +533,10 @@ func (p *Pointer) Equal(dt DataType) bool {
 	}
 
 	return p.Name.Equal(v.Name)
+}
+
+func (p *Pointer) IsNotNil() bool {
+	return p != nil
 }
 
 func (s *TypeStruct) NameExpr() Expr {

@@ -63,8 +63,9 @@ serviceApi:     {match(p,"service")}serviceToken=ID serviceName lbrace='{' servi
 serviceRoute:   atDoc? (atServer|atHandler) route;
 atDoc:          ATDOC lp='(' ((kvLit+)|STRING) rp=')';
 atHandler:      ATHANDLER ID;
-route:          {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=body?;
-body:           lp='(' {checkKeyword(p)}ID? rp=')';
+route:          {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=replybody?;
+body:           lp='(' (ID)? rp=')';
+replybody:      lp='(' dataType? rp=')';
 // kv
 kvLit:          key=ID {checkKeyValue(p)}value=LINE_VALUE;
 

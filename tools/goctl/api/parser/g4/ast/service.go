@@ -64,7 +64,7 @@ type Route struct {
 type Body struct {
 	Lp   Expr
 	Rp   Expr
-	Name Expr
+	Name DataType
 }
 
 func (v *ApiVisitor) VisitServiceSpec(ctx *api.ServiceSpecContext) interface{} {
@@ -173,10 +173,53 @@ func (v *ApiVisitor) VisitBody(ctx *api.BodyContext) interface{} {
 	if ctx.ID() == nil {
 		return nil
 	}
+	idRxpr := v.newExprWithTerminalNode(ctx.ID())
+	if api.IsGolangKeyWord(idRxpr.Text()) {
+		v.panic(idRxpr, fmt.Sprintf("expecting 'ID', but found golang keyword '%s'", idRxpr.Text()))
+	}
 	return &Body{
 		Lp:   v.newExprWithToken(ctx.GetLp()),
 		Rp:   v.newExprWithToken(ctx.GetRp()),
-		Name: v.newExprWithTerminalNode(ctx.ID()),
+		Name: &Literal{Literal: idRxpr},
+	}
+}
+
+// note: forward compatible
+func (v *ApiVisitor) VisitReplybody(ctx *api.ReplybodyContext) interface{} {
+	if ctx.DataType() == nil {
+		return nil
+	}
+	//fmt.Printf("[warning] %s line %d:%d pointers or arrays are not recommended, the syntax will be removed in the feature\n", v.prefix, ctx.ID().GetSymbol().GetLine(), ctx.ID().GetSymbol().GetColumn())
+	dt := ctx.DataType().Accept(v).(DataType)
+	if dt == nil {
+		return nil
+	}
+	switch dataType := dt.(type) {
+	case *Array:
+		lit := dataType.Literal
+		switch lit.(type) {
+		case *Literal, *Pointer:
+			if api.IsGolangKeyWord(lit.Expr().Text()) {
+				v.panic(lit.Expr(), fmt.Sprintf("expecting 'ID', but found golang keyword '%s'", lit.Expr().Text()))
+			}
+		default:
+			v.panic(dt.Expr(), fmt.Sprintf("unsupport %s", dt.Expr().Text()))
+		}
+	case *Literal:
+		lit := dataType.Literal.Text()
+		if api.IsGolangKeyWord(dataType.Literal.Text()) {
+			v.panic(dataType.Literal, fmt.Sprintf("expecting 'ID', but found golang keyword '%s'", dataType.Literal.Text()))
+		}
+		if api.IsBasicType(lit) {
+			v.panic(dt.Expr(), fmt.Sprintf("unsupport %s", dt.Expr().Text()))
+		}
+	default:
+		v.panic(dt.Expr(), fmt.Sprintf("unsupport %s", dt.Expr().Text()))
+	}
+	return &Body{
+		Lp:   v.newExprWithToken(ctx.GetLp()),
+		Rp:   v.newExprWithToken(ctx.GetRp()),
+		Name: dt,
 	}
 }
 

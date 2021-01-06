@@ -268,9 +268,9 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 		}
 	}
 
-	for _, api := range apiList {
-		linePrefix := api.LinePrefix
-		for _, each := range api.Type {
+	for _, apiItem := range apiList {
+		linePrefix := apiItem.LinePrefix
+		for _, each := range apiItem.Type {
 			tp, ok := each.(*TypeStruct)
 			if !ok {
 				continue
@@ -283,22 +283,40 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 			}
 		}
 
-		for _, service := range api.Service {
+		for _, service := range apiItem.Service {
 			for _, each := range service.ServiceApi.ServiceRoute {
 				route := each.Route
-				if route.Req != nil && route.Req.Name.IsNotNil() {
-					_, ok := types[route.Req.Name.Text()]
+				if route.Req != nil && route.Req.Name.IsNotNil() && route.Req.Name.Expr().IsNotNil() {
+					_, ok := types[route.Req.Name.Expr().Text()]
 					if !ok {
 						return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
-							linePrefix, route.Req.Name.Line(), route.Req.Name.Column(), route.Req.Name.Text())
+							linePrefix, route.Req.Name.Expr().Line(), route.Req.Name.Expr().Column(), route.Req.Name.Expr().Text())
 					}
 				}
 
-				if route.Reply != nil && route.Reply.Name.IsNotNil() {
-					_, ok := types[route.Reply.Name.Text()]
+				if route.Reply != nil && route.Reply.Name.IsNotNil() && route.Reply.Name.Expr().IsNotNil() {
+					reply := route.Reply.Name
+					var structName string
+					switch tp := reply.(type) {
+					case *Literal:
+						structName = tp.Literal.Text()
+					case *Array:
+						switch innerTp := tp.Literal.(type) {
+						case *Literal:
+							structName = innerTp.Literal.Text()
+						case *Pointer:
+							structName = innerTp.Name.Text()
+						}
+					}
+
+					if api.IsBasicType(structName) {
+						continue
+					}
+
+					_, ok := types[structName]
 					if !ok {
 						return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
-							linePrefix, route.Reply.Name.Line(), route.Reply.Name.Column(), route.Reply.Name.Text())
+							linePrefix, route.Reply.Name.Expr().Line(), route.Reply.Name.Expr().Column(), structName)
 					}
 				}
 			}

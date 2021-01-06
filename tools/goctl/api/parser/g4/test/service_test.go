@@ -19,7 +19,7 @@ func TestBody(t *testing.T) {
 		assert.True(t, body.Equal(&ast.Body{
 			Lp:   ast.NewTextExpr("("),
 			Rp:   ast.NewTextExpr(")"),
-			Name: ast.NewTextExpr("Foo"),
+			Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 		}))
 	})
 
@@ -46,13 +46,13 @@ func TestRoute(t *testing.T) {
 			Req: &ast.Body{
 				Lp:   ast.NewTextExpr("("),
 				Rp:   ast.NewTextExpr(")"),
-				Name: ast.NewTextExpr("Foo"),
+				Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 			},
 			ReturnToken: ast.NewTextExpr("returns"),
 			Reply: &ast.Body{
 				Lp:   ast.NewTextExpr("("),
 				Rp:   ast.NewTextExpr(")"),
-				Name: ast.NewTextExpr("Bar"),
+				Name: &ast.Literal{Literal: ast.NewTextExpr("Bar")},
 			},
 		}))
 
@@ -65,7 +65,7 @@ func TestRoute(t *testing.T) {
 			Req: &ast.Body{
 				Lp:   ast.NewTextExpr("("),
 				Rp:   ast.NewTextExpr(")"),
-				Name: ast.NewTextExpr("Foo"),
+				Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 			},
 		}))
 
@@ -79,7 +79,48 @@ func TestRoute(t *testing.T) {
 			Reply: &ast.Body{
 				Lp:   ast.NewTextExpr("("),
 				Rp:   ast.NewTextExpr(")"),
-				Name: ast.NewTextExpr("Bar"),
+				Name: &ast.Literal{Literal: ast.NewTextExpr("Bar")},
+			},
+		}))
+
+		v, err = parser.Accept(fn, `post /foo/foo-bar/:bar returns ([]Bar)`)
+		assert.Nil(t, err)
+		route = v.(*ast.Route)
+		assert.True(t, route.Equal(&ast.Route{
+			Method:      ast.NewTextExpr("post"),
+			Path:        ast.NewTextExpr("/foo/foo-bar/:bar"),
+			ReturnToken: ast.NewTextExpr("returns"),
+			Reply: &ast.Body{
+				Lp: ast.NewTextExpr("("),
+				Rp: ast.NewTextExpr(")"),
+				Name: &ast.Array{
+					ArrayExpr: ast.NewTextExpr("[]Bar"),
+					LBrack:    ast.NewTextExpr("["),
+					RBrack:    ast.NewTextExpr("]"),
+					Literal:   &ast.Literal{Literal: ast.NewTextExpr("Bar")},
+				},
+			},
+		}))
+
+		v, err = parser.Accept(fn, `post /foo/foo-bar/:bar returns ([]*Bar)`)
+		assert.Nil(t, err)
+		route = v.(*ast.Route)
+		assert.True(t, route.Equal(&ast.Route{
+			Method:      ast.NewTextExpr("post"),
+			Path:        ast.NewTextExpr("/foo/foo-bar/:bar"),
+			ReturnToken: ast.NewTextExpr("returns"),
+			Reply: &ast.Body{
+				Lp: ast.NewTextExpr("("),
+				Rp: ast.NewTextExpr(")"),
+				Name: &ast.Array{
+					ArrayExpr: ast.NewTextExpr("[]*Bar"),
+					LBrack:    ast.NewTextExpr("["),
+					RBrack:    ast.NewTextExpr("]"),
+					Literal: &ast.Pointer{
+						PointerExpr: ast.NewTextExpr("*Bar"),
+						Star:        ast.NewTextExpr("*"),
+						Name:        ast.NewTextExpr("Bar"),
+					}},
 			},
 		}))
 
@@ -267,13 +308,13 @@ func TestServiceRoute(t *testing.T) {
 				Req: &ast.Body{
 					Lp:   ast.NewTextExpr("("),
 					Rp:   ast.NewTextExpr(")"),
-					Name: ast.NewTextExpr("Foo"),
+					Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 				},
 				ReturnToken: ast.NewTextExpr("returns"),
 				Reply: &ast.Body{
 					Lp:   ast.NewTextExpr("("),
 					Rp:   ast.NewTextExpr(")"),
-					Name: ast.NewTextExpr("Bar"),
+					Name: &ast.Literal{Literal: ast.NewTextExpr("Bar")},
 				},
 				DocExpr: []ast.Expr{
 					ast.NewTextExpr("// foo"),
@@ -337,13 +378,13 @@ func TestServiceApi(t *testing.T) {
 						Req: &ast.Body{
 							Lp:   ast.NewTextExpr("("),
 							Rp:   ast.NewTextExpr(")"),
-							Name: ast.NewTextExpr("Foo"),
+							Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 						},
 						ReturnToken: ast.NewTextExpr("returns"),
 						Reply: &ast.Body{
 							Lp:   ast.NewTextExpr("("),
 							Rp:   ast.NewTextExpr(")"),
-							Name: ast.NewTextExpr("Bar"),
+							Name: &ast.Literal{Literal: ast.NewTextExpr("Bar")},
 						},
 						DocExpr: []ast.Expr{
 							ast.NewTextExpr("// foo"),
@@ -529,13 +570,13 @@ func TestServiceSpec(t *testing.T) {
 							Req: &ast.Body{
 								Lp:   ast.NewTextExpr("("),
 								Rp:   ast.NewTextExpr(")"),
-								Name: ast.NewTextExpr("Foo"),
+								Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 							},
 							ReturnToken: ast.NewTextExpr("returns"),
 							Reply: &ast.Body{
 								Lp:   ast.NewTextExpr("("),
 								Rp:   ast.NewTextExpr(")"),
-								Name: ast.NewTextExpr("Bar"),
+								Name: &ast.Literal{Literal: ast.NewTextExpr("Bar")},
 							},
 							DocExpr: []ast.Expr{
 								ast.NewTextExpr("// foo"),
@@ -588,13 +629,13 @@ func TestServiceSpec(t *testing.T) {
 							Req: &ast.Body{
 								Lp:   ast.NewTextExpr("("),
 								Rp:   ast.NewTextExpr(")"),
-								Name: ast.NewTextExpr("Foo"),
+								Name: &ast.Literal{Literal: ast.NewTextExpr("Foo")},
 							},
 							ReturnToken: ast.NewTextExpr("returns"),
 							Reply: &ast.Body{
 								Lp:   ast.NewTextExpr("("),
 								Rp:   ast.NewTextExpr(")"),
-								Name: ast.NewTextExpr("Bar"),
+								Name: &ast.Literal{Literal: ast.NewTextExpr("Bar")},
 							},
 							DocExpr: []ast.Expr{
 								ast.NewTextExpr("// foo"),
