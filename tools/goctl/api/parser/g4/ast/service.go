@@ -146,10 +146,16 @@ func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 	route.Method = methodExpr
 	route.Path = v.newExprWithText(path.GetText(), path.GetStart().GetLine(), path.GetStart().GetColumn(), path.GetStart().GetStart(), path.GetStop().GetStop())
 	if ctx.GetRequest() != nil {
-		route.Req = ctx.GetRequest().Accept(v).(*Body)
+		req := ctx.GetRequest().Accept(v)
+		if req != nil {
+			route.Req = req.(*Body)
+		}
 	}
 	if ctx.GetResponse() != nil {
-		route.Reply = ctx.GetResponse().Accept(v).(*Body)
+		reply := ctx.GetResponse().Accept(v)
+		if reply != nil {
+			route.Reply = reply.(*Body)
+		}
 	}
 	if ctx.GetReturnToken() != nil {
 		returnExpr := v.newExprWithToken(ctx.GetReturnToken())
@@ -164,6 +170,9 @@ func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitBody(ctx *api.BodyContext) interface{} {
+	if ctx.ID() == nil {
+		return nil
+	}
 	return &Body{
 		Lp:   v.newExprWithToken(ctx.GetLp()),
 		Rp:   v.newExprWithToken(ctx.GetRp()),

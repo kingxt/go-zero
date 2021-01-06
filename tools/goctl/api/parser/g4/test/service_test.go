@@ -28,7 +28,7 @@ func TestBody(t *testing.T) {
 		assert.Error(t, err)
 
 		_, err = parser.Accept(fn, `()`)
-		assert.Error(t, err)
+		assert.Nil(t, err)
 	})
 }
 

@@ -182,10 +182,13 @@ func (p *Parser) valid(mainApi *Api, nestedApi *Api) error {
 		routeMap := make(map[string]PlaceHolder)
 
 		for _, g := range list {
-			var handlerName = g.GetHandler().Text()
-			handlerMap[handlerName] = Holder
-			path := fmt.Sprintf("%s://%s", g.Route.Method.Text(), g.Route.Path.Text())
-			routeMap[path] = Holder
+			handler := g.GetHandler()
+			if handler.IsNotNil() {
+				var handlerName = handler.Text()
+				handlerMap[handlerName] = Holder
+				path := fmt.Sprintf("%s://%s", g.Route.Method.Text(), g.Route.Path.Text())
+				routeMap[path] = Holder
+			}
 		}
 
 		return handlerMap, routeMap
@@ -211,6 +214,10 @@ func (p *Parser) valid(mainApi *Api, nestedApi *Api) error {
 	for _, each := range nestedApi.Service {
 		for _, r := range each.ServiceApi.ServiceRoute {
 			handler := r.GetHandler()
+			if !handler.IsNotNil() {
+				return fmt.Errorf("%s handler not exist near line %d", nestedApi.LinePrefix, r.Route.Method.Line())
+			}
+
 			if _, ok := mainHandlerMap[handler.Text()]; ok {
 				return fmt.Errorf("%s line %d:%d duplicate handler '%s'",
 					nestedApi.LinePrefix, handler.Line(), handler.Column(), handler.Text())
@@ -279,7 +286,7 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 		for _, service := range api.Service {
 			for _, each := range service.ServiceApi.ServiceRoute {
 				route := each.Route
-				if route.Req != nil {
+				if route.Req != nil && route.Req.Name.IsNotNil() {
 					_, ok := types[route.Req.Name.Text()]
 					if !ok {
 						return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",
@@ -287,7 +294,7 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 					}
 				}
 
-				if route.Reply != nil {
+				if route.Reply != nil && route.Reply.Name.IsNotNil() {
 					_, ok := types[route.Reply.Name.Text()]
 					if !ok {
 						return fmt.Errorf("%s line %d:%d can not found declaration '%s' in context",

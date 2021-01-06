@@ -139,8 +139,8 @@ func (p parser) fieldToMember(field *ast.TypeField) spec.Member {
 	var name = ""
 	var tag = ""
 	if !field.IsAnonymous {
-		field.Name.Text()
-		field.Tag.Text()
+		name = field.Name.Text()
+		tag = field.Tag.Text()
 	}
 	return spec.Member{
 		Name:     name,

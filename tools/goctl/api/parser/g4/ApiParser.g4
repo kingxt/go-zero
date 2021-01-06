@@ -64,7 +64,7 @@ serviceRoute:   atDoc? (atServer|atHandler) route;
 atDoc:          ATDOC lp='(' ((kvLit+)|STRING) rp=')';
 atHandler:      ATHANDLER ID;
 route:          {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=body?;
-body:           lp='(' {checkKeyword(p)}ID rp=')';
+body:           lp='(' {checkKeyword(p)}ID? rp=')';
 // kv
 kvLit:          key=ID {checkKeyValue(p)}value=LINE_VALUE;
 

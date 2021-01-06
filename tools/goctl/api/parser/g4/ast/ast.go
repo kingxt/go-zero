@@ -40,6 +40,7 @@ type (
 		Start() int
 		Stop() int
 		Equal(expr Expr) bool
+		IsNotNil() bool
 	}
 )
 
@@ -131,14 +132,23 @@ func (v *ApiVisitor) newExprWithText(text string, line, column, start, stop int)
 }
 
 func (e *defaultExpr) Prefix() string {
+	if e == nil {
+		return ""
+	}
 	return e.prefix
 }
 
 func (e *defaultExpr) Line() int {
+	if e == nil {
+		return 0
+	}
 	return e.line
 }
 
 func (e *defaultExpr) Column() int {
+	if e == nil {
+		return 0
+	}
 	return e.column
 }
 
@@ -157,10 +167,16 @@ func (e *defaultExpr) SetText(text string) {
 }
 
 func (e *defaultExpr) Start() int {
+	if e == nil {
+		return 0
+	}
 	return e.start
 }
 
 func (e *defaultExpr) Stop() int {
+	if e == nil {
+		return 0
+	}
 	return e.stop
 }
 
@@ -177,6 +193,10 @@ func (e *defaultExpr) Equal(expr Expr) bool {
 	}
 
 	return e.v == expr.Text()
+}
+
+func (e *defaultExpr) IsNotNil() bool {
+	return e != nil
 }
 
 func EqualDoc(spec1, spec2 Spec) bool {
