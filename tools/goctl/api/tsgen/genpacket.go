@@ -88,6 +88,7 @@ func genApi(api *spec.ApiSpec, caller string) (string, error) {
 				if err != nil {
 					return "", err
 				}
+
 				responseGeneric = fmt.Sprintf("<%s>", val)
 			}
 			fmt.Fprintf(&builder, `return %s.%s%s(%s)`, caller, strings.ToLower(route.Method),
@@ -101,6 +102,9 @@ func genApi(api *spec.ApiSpec, caller string) (string, error) {
 }
 
 func paramsForRoute(route spec.Route) string {
+	if route.RequestType == nil {
+		return ""
+	}
 	hasParams := pathHasParams(route)
 	hasBody := hasRequestBody(route)
 	rt, err := goTypeToTs(route.RequestType, true)
