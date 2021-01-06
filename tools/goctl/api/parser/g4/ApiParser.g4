@@ -34,12 +34,12 @@ typeSpec:       typeLit
 // eg: type Foo int
 typeLit:        {match(p,"type")}typeToken=ID  typeLitBody;
 // eg: type (...)
-typeBlock:      {match(p,"type")}typeToken=ID lp='(' typeBlockBody+ rp=')';
+typeBlock:      {match(p,"type")}typeToken=ID lp='(' typeBlockBody* rp=')';
 typeLitBody:    typeStruct|typeAlias;
 typeBlockBody:  typeBlockStruct|typeBlockAlias;
-typeStruct:     {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
+typeStruct:     {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field* rbrace='}';
 typeAlias:      {checkKeyword(p)}alias=ID assign='='? dataType;
-typeBlockStruct: {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field+ rbrace='}';
+typeBlockStruct: {checkKeyword(p)}structName=ID structToken=ID? lbrace='{'  field* rbrace='}';
 typeBlockAlias: {checkKeyword(p)}alias=ID assign='='? dataType;
 field:          {isNormal(p)}? normalField|anonymousFiled ;
 normalField:    {checkKeyword(p)}fieldName=ID dataType tag=RAW_STRING?;

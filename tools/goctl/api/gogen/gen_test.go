@@ -227,7 +227,7 @@ type Response struct {
 }
 
 service A-api {
-  @doc "helloworld"
+  @doc ("helloworld")
   @server(
     handler: GreetHandler
   )
@@ -247,7 +247,7 @@ type Response struct {
 }
 
 service A-api {
-  @doc "helloworld"
+  @doc ("helloworld")
   @server(
     handler: GreetHandler
   )
