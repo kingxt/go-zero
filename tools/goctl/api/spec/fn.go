@@ -160,6 +160,7 @@ func (r Route) ResponseTypeName() string {
 	if r.ResponseType == nil {
 		return ""
 	}
+
 	return r.ResponseType.Name()
 }
 
@@ -167,5 +168,20 @@ func (r Route) RequestTypeName() string {
 	if r.RequestType == nil {
 		return ""
 	}
+
 	return r.RequestType.Name()
+}
+
+func (r Route) ResponseGoTypeName(pkg ...string) string {
+	if r.ResponseType == nil {
+		return ""
+	}
+	return r.ResponseType.GolangExpr(pkg...)
+}
+
+func (r Route) RequestGoTypeName(pkg ...string) string {
+	if r.RequestType == nil {
+		return ""
+	}
+	return r.RequestType.GolangExpr(pkg...)
 }
