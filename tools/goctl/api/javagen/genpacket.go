@@ -215,5 +215,34 @@ func processUri(route spec.Route) string {
 	if strings.HasPrefix(result, "/") {
 		result = "\"" + result
 	}
-	return result
+	return result + formString(route)
+}
+
+func formString(route spec.Route) string {
+	var keyValues []string
+	if defineStruct, ok := route.RequestType.(spec.DefineStruct); ok {
+		forms := defineStruct.GetFormMembers()
+		for _, item := range forms {
+			name, err := item.GetPropertyName()
+			if err != nil {
+				panic(err)
+			}
+
+			strcat := "?"
+			if len(keyValues) > 0 {
+				strcat = "&"
+			}
+			if item.Type.Name() == "bool" {
+				name = strings.TrimPrefix(name, "Is")
+				name = strings.TrimPrefix(name, "is")
+				keyValues = append(keyValues, fmt.Sprintf(`"%s%s="request.is%s()`, strcat, name, strings.Title(name)))
+			} else {
+				keyValues = append(keyValues, fmt.Sprintf(`"%s%s="request.get%s()`, strcat, name, strings.Title(name)))
+			}
+		}
+		if len(keyValues) > 0 {
+			return " + " + strings.Join(keyValues, " + ")
+		}
+	}
+	return ""
 }
