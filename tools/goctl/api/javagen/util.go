@@ -156,7 +156,7 @@ func genGetSet(writer io.Writer, defineStruct spec.DefineStruct, indent int) err
 		decorator := ""
 		javaPrimitiveType := []string{"int", "long", "boolean", "float", "double", "short"}
 		if !stringx.Contains(javaPrimitiveType, javaType) {
-			if member.IsOptional() {
+			if member.IsOptional() || member.IsOmitEmpty() {
 				decorator = "@Nullable "
 			} else {
 				decorator = "@NotNull "

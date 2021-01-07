@@ -46,6 +46,22 @@ func (m Member) IsOptional() bool {
 	return false
 }
 
+func (m Member) IsOmitEmpty() bool {
+	if !m.IsBodyMember() {
+		return false
+	}
+
+	tag := m.Tags()
+	for _, item := range tag {
+		if item.Key == bodyTagKey {
+			if stringx.Contains(item.Options, "omitempty") {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (m Member) IsOmitempty() bool {
 	if !m.IsBodyMember() {
 		return false
