@@ -169,7 +169,19 @@ func TestRoute(t *testing.T) {
 		_, err = parser.Accept(fn, ` /foo/bar returns (Bar)`)
 		assert.Error(t, err)
 
-		_, err = parser.Accept(fn, ` post  returns (Bar)`)
+		_, err = parser.Accept(fn, ` post   returns (Bar)`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, ` post /foo/bar returns (int)`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, ` post /foo/bar returns (*int)`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, ` post /foo/bar returns ([]var)`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, ` post /foo/bar returns (const)`)
 		assert.Error(t, err)
 	})
 }

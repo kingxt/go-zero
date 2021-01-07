@@ -80,17 +80,6 @@ type defaultExpr struct {
 	start, stop  int
 }
 
-func NewExpr(prefix, v string, line, column, start, stop int) *defaultExpr {
-	return &defaultExpr{
-		prefix: prefix,
-		line:   line,
-		column: column,
-		v:      v,
-		start:  start,
-		stop:   stop,
-	}
-}
-
 func NewTextExpr(v string) *defaultExpr {
 	return &defaultExpr{
 		v: v,
