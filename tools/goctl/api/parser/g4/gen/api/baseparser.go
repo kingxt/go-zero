@@ -34,8 +34,9 @@ var kind = map[string]struct{}{
 	"float64":    holder,
 	"complex64":  holder,
 	"complex128": holder,
-	"array":      holder,
 	"string":     holder,
+	"byte":       holder,
+	"rune":       holder,
 }
 
 func match(p *ApiParserParser, text string) {
