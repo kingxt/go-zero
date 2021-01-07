@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
+	"github.com/tal-tech/go-zero/tools/goctl/api/util"
 )
 
 type (
@@ -135,6 +136,11 @@ func (v *ApiVisitor) VisitTypeBlockBody(ctx *api.TypeBlockBodyContext) interface
 func (v *ApiVisitor) VisitTypeStruct(ctx *api.TypeStructContext) interface{} {
 	var st TypeStruct
 	st.Name = v.newExprWithToken(ctx.GetStructName())
+	v.exportCheck(st.Name)
+
+	if util.UnExport(ctx.GetStructName().GetText()) {
+
+	}
 	if ctx.GetStructToken() != nil {
 		structExpr := v.newExprWithToken(ctx.GetStructToken())
 		structTokenText := ctx.GetStructToken().GetText()
@@ -165,6 +171,8 @@ func (v *ApiVisitor) VisitTypeStruct(ctx *api.TypeStructContext) interface{} {
 func (v *ApiVisitor) VisitTypeBlockStruct(ctx *api.TypeBlockStructContext) interface{} {
 	var st TypeStruct
 	st.Name = v.newExprWithToken(ctx.GetStructName())
+	v.exportCheck(st.Name)
+
 	if ctx.GetStructToken() != nil {
 		structExpr := v.newExprWithToken(ctx.GetStructToken())
 		structTokenText := ctx.GetStructToken().GetText()
@@ -231,6 +239,8 @@ func (v *ApiVisitor) VisitField(ctx *api.FieldContext) interface{} {
 func (v *ApiVisitor) VisitNormalField(ctx *api.NormalFieldContext) interface{} {
 	var field TypeField
 	field.Name = v.newExprWithToken(ctx.GetFieldName())
+	v.exportCheck(field.Name)
+
 	iDataTypeContext := ctx.DataType()
 	if iDataTypeContext != nil {
 		field.DataType = iDataTypeContext.Accept(v).(DataType)
@@ -255,13 +265,17 @@ func (v *ApiVisitor) VisitAnonymousFiled(ctx *api.AnonymousFiledContext) interfa
 	var field TypeField
 	field.IsAnonymous = true
 	if ctx.GetStar() != nil {
+		nameExpr := v.newExprWithTerminalNode(ctx.ID())
+		v.exportCheck(nameExpr)
 		field.DataType = &Pointer{
 			PointerExpr: v.newExprWithText(ctx.GetStar().GetText()+ctx.ID().GetText(), start.GetLine(), start.GetColumn(), start.GetStart(), stop.GetStop()),
 			Star:        v.newExprWithToken(ctx.GetStar()),
-			Name:        v.newExprWithTerminalNode(ctx.ID()),
+			Name:        nameExpr,
 		}
 	} else {
-		field.DataType = &Literal{Literal: v.newExprWithTerminalNode(ctx.ID())}
+		nameExpr := v.newExprWithTerminalNode(ctx.ID())
+		v.exportCheck(nameExpr)
+		field.DataType = &Literal{Literal: nameExpr}
 	}
 	field.DocExpr = v.getDoc(ctx)
 	field.CommentExpr = v.getComment(ctx)
@@ -270,7 +284,9 @@ func (v *ApiVisitor) VisitAnonymousFiled(ctx *api.AnonymousFiledContext) interfa
 
 func (v *ApiVisitor) VisitDataType(ctx *api.DataTypeContext) interface{} {
 	if ctx.ID() != nil {
-		return &Literal{Literal: v.newExprWithTerminalNode(ctx.ID())}
+		idExpr := v.newExprWithTerminalNode(ctx.ID())
+		v.exportCheck(idExpr)
+		return &Literal{Literal: idExpr}
 	}
 	if ctx.MapType() != nil {
 		t := ctx.MapType().Accept(v)
@@ -295,10 +311,12 @@ func (v *ApiVisitor) VisitDataType(ctx *api.DataTypeContext) interface{} {
 }
 
 func (v *ApiVisitor) VisitPointerType(ctx *api.PointerTypeContext) interface{} {
+	nameExpr := v.newExprWithTerminalNode(ctx.ID())
+	v.exportCheck(nameExpr)
 	return &Pointer{
 		PointerExpr: v.newExprWithText(ctx.GetText(), ctx.GetStar().GetLine(), ctx.GetStar().GetColumn(), ctx.GetStar().GetStart(), ctx.ID().GetSymbol().GetStop()),
 		Star:        v.newExprWithToken(ctx.GetStar()),
-		Name:        v.newExprWithTerminalNode(ctx.ID()),
+		Name:        nameExpr,
 	}
 }
 

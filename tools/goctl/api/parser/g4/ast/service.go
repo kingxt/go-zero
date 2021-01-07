@@ -202,6 +202,7 @@ func (v *ApiVisitor) VisitBody(ctx *api.BodyContext) interface{} {
 	if api.IsGolangKeyWord(idRxpr.Text()) {
 		v.panic(idRxpr, fmt.Sprintf("expecting 'ID', but found golang keyword '%s'", idRxpr.Text()))
 	}
+	v.exportCheck(idRxpr)
 
 	return &Body{
 		Lp:   v.newExprWithToken(ctx.GetLp()),

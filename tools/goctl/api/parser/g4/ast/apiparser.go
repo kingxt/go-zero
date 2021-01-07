@@ -8,12 +8,14 @@ import (
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"github.com/tal-tech/go-zero/tools/goctl/api/parser/g4/gen/api"
+	"github.com/tal-tech/go-zero/tools/goctl/util/console"
 )
 
 type (
 	Parser struct {
 		linePrefix string
 		debug      bool
+		log        console.Console
 		antlr.DefaultErrorListener
 	}
 
@@ -21,7 +23,9 @@ type (
 )
 
 func NewParser(options ...ParserOption) *Parser {
-	p := &Parser{}
+	p := &Parser{
+		log: console.NewColorConsole(),
+	}
 	for _, opt := range options {
 		opt(p)
 	}
@@ -383,7 +387,7 @@ func (p *Parser) readContent(filename string) (string, error) {
 func (p *Parser) SyntaxError(_ antlr.Recognizer, _ interface{}, line, column int, msg string, _ antlr.RecognitionException) {
 	str := fmt.Sprintf(`%s line %d:%d  %s`, p.linePrefix, line, column, msg)
 	if p.debug {
-		fmt.Println("[debug]", str)
+		p.log.Error(str)
 	}
 	panic(str)
 }

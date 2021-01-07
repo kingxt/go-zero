@@ -433,3 +433,35 @@ func TestTypeLit(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestTypeUnExported(t *testing.T) {
+	fn := func(p *api.ApiParserParser, visitor *ast.ApiVisitor) interface{} {
+		return p.TypeSpec().Accept(visitor)
+	}
+
+	t.Run("type", func(t *testing.T) {
+		_, err := parser.Accept(fn, `type foo {}`)
+		assert.Nil(t, err)
+	})
+
+	t.Run("field", func(t *testing.T) {
+		_, err := parser.Accept(fn, `type Foo {
+			name int
+		}`)
+		assert.Nil(t, err)
+
+		_, err = parser.Accept(fn, `type Foo {
+			Name int
+		}`)
+		assert.Nil(t, err)
+	})
+
+	t.Run("filedDataType", func(t *testing.T) {
+		_, err := parser.Accept(fn, `type Foo {
+			Foo *foo
+			Bar []bar
+			FooBar map[int]fooBar
+		}`)
+		assert.Nil(t, err)
+	})
+}
