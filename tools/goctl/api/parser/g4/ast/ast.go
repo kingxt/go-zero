@@ -319,6 +319,7 @@ func (v *ApiVisitor) exportCheck(expr Expr) {
 	}
 
 	if util.UnExport(expr.Text()) {
-		v.log.Warning("%s line %d:%d unexported declaration '%s'", expr.Prefix(), expr.Line(), expr.Column(), expr.Text())
+		v.log.Warning("%s line %d:%d unexported declaration '%s', use %s instead", expr.Prefix(), expr.Line(),
+			expr.Column(), expr.Text(), strings.Title(expr.Text()))
 	}
 }
