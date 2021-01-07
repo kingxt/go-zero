@@ -16,22 +16,22 @@ import (
 const getSetTemplate = `
 {{.indent}}{{.decorator}}
 {{.indent}}public {{.returnType}} get{{.property}}() {
-{{.indent}}	return this.{{.propertyValue}};
+{{.indent}}	return this.{{.tagValue}};
 {{.indent}}}
 
 {{.indent}}public void set{{.property}}({{.type}} {{.propertyValue}}) {
-{{.indent}}	this.{{.propertyValue}} = {{.propertyValue}};
+{{.indent}}	this.{{.tagValue}} = {{.propertyValue}};
 {{.indent}}}
 `
 
 const boolTemplate = `
 {{.indent}}{{.decorator}}
 {{.indent}}public {{.returnType}} is{{.property}}() {
-{{.indent}}	return this.{{.propertyValue}};
+{{.indent}}	return this.{{.tagValue}};
 {{.indent}}}
 
 {{.indent}}public void set{{.property}}({{.type}} {{.propertyValue}}) {
-{{.indent}}	this.{{.propertyValue}} = {{.propertyValue}};
+{{.indent}}	this.{{.tagValue}} = {{.propertyValue}};
 {{.indent}}}
 `
 
@@ -164,9 +164,15 @@ func genGetSet(writer io.Writer, defineStruct spec.DefineStruct, indent int) err
 			tyString = decorator + tyString
 		}
 
+		tagName, err := member.GetPropertyName()
+		if err != nil {
+			return err
+		}
+
 		err = t.Execute(&tmplBytes, map[string]string{
 			"property":      property,
 			"propertyValue": util.Untitle(member.Name),
+			"tagValue":      tagName,
 			"type":          tyString,
 			"decorator":     decorator,
 			"returnType":    javaType,
