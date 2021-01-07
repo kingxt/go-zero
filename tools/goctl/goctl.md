@@ -24,73 +24,69 @@
 
 info(
     title: doc title
-    desc: >
-    doc description first part,
-    doc description second part<
+    desc: "doc description first part,
+    doc description second part"
     version: 1.0
 )
 
-type int userType
-
-type user struct {
-	name string `json:"user"` // 用户姓名
+type User {
+	Name string `json:"user"` // 用户姓名
 }
 
-type student struct {
-	name string `json:"name"` // 学生姓名
+type Student {
+	Name string `json:"name"` // 学生姓名
 }
 
-type teacher struct {
+type Teacher {
 }
 
 type (
-	address struct {
-		city string `json:"city"` // 城市
+	Address {
+		City string `json:"city"` // 城市
 	}
 
-	innerType struct {
-		image string `json:"image"`
+	InnerType {
+		Image string `json:"image"`
 	}
 
-	createRequest struct {
-		innerType
-		name    string    `form:"name"`         // niha
-		age     int       `form:"age,optional"` // nihaod
-		address []address `json:"address,optional"`
+	CreateRequest {
+		InnerType
+		Name    string    `form:"name"`         // niha
+		Age     int       `form:"age,optional"` // nihaod
+		Address []Address `json:"address,optional"`
 	}
 
-	getRequest struct {
-		name string `path:"name"`
-		age  int    `form:"age,optional"`
+	GetRequest {
+		Name string `path:"name"`
+		Age  int    `form:"age,optional"`
 	}
 
-	getResponse struct {
-		code    int     `json:"code"`
-		desc    string  `json:"desc,omitempty"`
-		address address `json:"address"`
-		service int     `json:"service"`
+	GetResponse {
+		Code    int     `json:"code"`
+		Desc    string  `json:"desc,omitempty"`
+		Address Address `json:"address"`
+		Service int     `json:"service"`
 	}
 )
 
 service user-api {
     @doc(
         summary: user title
-        desc: >
-        user description first part,
+        desc: "user description first part,
         user description second part,
-        user description second line
+        user description second line"
     )
     @server(
         handler: GetUserHandler
         group: user
     )
-    get /api/user/:name(getRequest) returns(getResponse)
+    get /api/user/:name(GetRequest) returns(GetResponse)
 
     @server(
         handler: CreateUserHandler
         group: user
     )
-    post /api/users/create(createRequest)
+    post /api/users/create(CreateRequest)
 }
 
 @server(
@@ -98,20 +94,22 @@ service user-api {
     group: profile
 )
 service user-api {
-    @doc(summary: user title)
+    @doc(
+    	summary: user title
+    )
     @server(
         handler: GetProfileHandler
     )
-    get /api/profile/:name(getRequest) returns(getResponse)
+    get /api/profile/:name(GetRequest) returns(GetResponse)
 
     @server(
         handler: CreateProfileHandler
     )
-    post /api/profile/create(createRequest)
+    post /api/profile/create(CreateRequest)
 }
 
 service user-api {
-    @doc(summary: desc in one line)
+    @doc("desc in one line")
     @server(
         handler: PingHandler
     )
@@ -123,7 +121,7 @@ service user-api {
 2. type部分：type类型声明和golang语法兼容。
 3. service部分：service代表一组服务，一个服务可以由多组名称相同的service组成，可以针对每一组service配置group属性来指定service生成所在子目录。
    service里面包含api路由，比如上面第一组service的第一个路由，doc用来描述此路由的用途，GetProfileHandler表示处理这个路由的handler，
-   `get /api/profile/:name(getRequest) returns(getResponse)` 中get代表api的请求方式（get/post/put/delete）, `/api/profile/:name` 描述了路由path，`:name`通过
+   `get /api/profile/:name(GetRequest) returns(GetResponse)` 中get代表api的请求方式（get/post/put/delete）, `/api/profile/:name` 描述了路由path，`:name`通过
    请求getRequest里面的属性赋值，getResponse为返回的结构体，这两个类型都定义在2描述的类型中。
 
 #### api vscode插件
