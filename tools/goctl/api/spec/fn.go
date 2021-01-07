@@ -9,8 +9,9 @@ import (
 )
 
 const bodyTagKey = "json"
+const formTagKey = "form"
 
-var definedKeys = []string{"json", "form", "path"}
+var definedKeys = []string{bodyTagKey, formTagKey, "path"}
 
 func (s Service) Routes() []Route {
 	var result []Route
@@ -93,10 +94,34 @@ func (m Member) IsBodyMember() bool {
 	return false
 }
 
+func (m Member) IsFormMember() bool {
+	if m.IsInline {
+		return false
+	}
+
+	tags := m.Tags()
+	for _, tag := range tags {
+		if tag.Key == formTagKey {
+			return true
+		}
+	}
+	return false
+}
+
 func (t DefineStruct) GetBodyMembers() []Member {
 	var result []Member
 	for _, member := range t.Members {
 		if member.IsBodyMember() {
+			result = append(result, member)
+		}
+	}
+	return result
+}
+
+func (t DefineStruct) GetFormMembers() []Member {
+	var result []Member
+	for _, member := range t.Members {
+		if member.IsFormMember() {
 			result = append(result, member)
 		}
 	}

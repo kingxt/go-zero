@@ -26,7 +26,7 @@ public class {{.packetName}} extends HttpPacket<{{.responseType}}> {
 
 	public {{.packetName}}({{.params}}{{if .HasRequestBody}}{{.requestType}} request{{end}}) {
 		{{if .HasRequestBody}}super(request);{{else}}super(EmptyRequest.instance);{{end}}
-		{{if .HasRequestBody}}this.request = request;{{end}}{{.paramsSet}}
+		{{if .HasRequestBody}}this.request = request;{{end}}{{.paramsSetter}}
     }
 
 	@Override
@@ -72,7 +72,7 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 	var hasRequestBody = false
 	if route.RequestType != nil {
 		if defineStruct, ok := route.RequestType.(spec.DefineStruct); ok {
-			hasRequestBody = len(defineStruct.GetBodyMembers()) > 0
+			hasRequestBody = len(defineStruct.GetBodyMembers()) > 0 || len(defineStruct.GetFormMembers()) > 0
 		}
 	}
 
@@ -81,7 +81,7 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 		params += ", "
 	}
 	paramsDeclaration := declarationForRoute(route)
-	paramsSet := paramsSet(route)
+	paramsSetter := paramsSet(route)
 	imports := getImports(api, packetName)
 
 	if len(route.ResponseTypeName()) == 0 {
@@ -97,7 +97,7 @@ func createWith(dir string, api *spec.ApiSpec, route spec.Route, packetName stri
 		"responseType":      stringx.TakeOne(util.Title(route.ResponseTypeName()), "EmptyResponse"),
 		"params":            params,
 		"paramsDeclaration": strings.TrimSpace(paramsDeclaration),
-		"paramsSet":         paramsSet,
+		"paramsSetter":      paramsSetter,
 		"packet":            packetName,
 		"requestType":       util.Title(route.RequestTypeName()),
 		"HasRequestBody":    hasRequestBody,

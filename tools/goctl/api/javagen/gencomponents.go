@@ -71,7 +71,7 @@ func (c *componentsContext) createComponent(dir, packetName string, ty spec.Type
 		return errors.New("unsupported type %s" + ty.Name())
 	}
 
-	if len(defineStruct.GetBodyMembers()) == 0 && len(defineStruct.GetNonBodyMembers()) > 0 {
+	if len(defineStruct.Members) == 0 {
 		return nil
 	}
 
@@ -152,12 +152,10 @@ func (c *componentsContext) writeMembers(writer io.Writer, ty spec.DefineStruct,
 			return errors.New("unsupported inline type %s" + member.Type.Name())
 		}
 
-		if !member.IsBodyMember() {
-			continue
-		}
-
-		if err := writeProperty(writer, member, indent); err != nil {
-			return err
+		if member.IsBodyMember() || member.IsFormMember() {
+			if err := writeProperty(writer, member, indent); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

@@ -243,6 +243,12 @@ func (p parser) fillService() error {
 			if astRoute.Route.Reply != nil {
 				route.ResponseType = p.astTypeToSpec(astRoute.Route.Reply.Name)
 			}
+
+			err := p.fillRouteType(&route)
+			if err != nil {
+				return err
+			}
+
 			group.Routes = append(group.Routes, route)
 
 			name := item.ServiceApi.Name.Text()
@@ -254,5 +260,33 @@ func (p parser) fillService() error {
 		groups = append(groups, group)
 	}
 	p.spec.Service.Groups = groups
+
+	return nil
+}
+
+func (p parser) fillRouteType(route *spec.Route) error {
+	if route.RequestType != nil {
+		switch route.RequestType.(type) {
+		case spec.DefineStruct:
+			tp, err := p.findDefinedType(route.RequestType.Name())
+			if err != nil {
+				return err
+			}
+
+			route.RequestType = *tp
+		}
+	}
+
+	if route.ResponseType != nil {
+		switch route.ResponseType.(type) {
+		case spec.DefineStruct:
+			tp, err := p.findDefinedType(route.ResponseType.Name())
+			if err != nil {
+				return err
+			}
+
+			route.ResponseType = *tp
+		}
+	}
 	return nil
 }
