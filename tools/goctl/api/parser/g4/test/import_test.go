@@ -65,12 +65,14 @@ func TestImport(t *testing.T) {
 				CommentExpr: ast.NewTextExpr("/**foobar*/"),
 			},
 		}
+
 		sort.Slice(list, func(i, j int) bool {
 			return list[i].Value.Line() < list[j].Value.Line()
 		})
 		sort.Slice(expected, func(i, j int) bool {
 			return expected[i].Value.Line() < expected[j].Value.Line()
 		})
+
 		assert.True(t, len(list) == len(expected))
 		for index, each := range list {
 			assert.True(t, each.Equal(expected[index]))

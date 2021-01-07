@@ -563,6 +563,7 @@ func (s *TypeStruct) Equal(dt interface{}) bool {
 	sort.Slice(expectDoc, func(i, j int) bool {
 		return expectDoc[i].Line() < expectDoc[j].Line()
 	})
+
 	for index, each := range actualDoc {
 		if !each.Equal(actualDoc[index]) {
 			return false
@@ -584,6 +585,7 @@ func (s *TypeStruct) Equal(dt interface{}) bool {
 	var expected, acual []*TypeField
 	expected = append(expected, s.Fields...)
 	acual = append(acual, v.Fields...)
+
 	sort.Slice(expected, func(i, j int) bool {
 		return expected[i].DataType.Expr().Line() < expected[j].DataType.Expr().Line()
 	})
@@ -632,6 +634,7 @@ func (t *TypeField) Equal(v interface{}) bool {
 		if !t.Name.Equal(f.Name) {
 			return false
 		}
+
 		if t.Tag != nil {
 			if !t.Tag.Equal(f.Tag) {
 				return false

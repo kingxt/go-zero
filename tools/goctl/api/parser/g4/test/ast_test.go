@@ -26,6 +26,7 @@ func TestApi(t *testing.T) {
 		Rp:   ast.NewTextExpr(")"),
 		Name: &ast.Literal{Literal: ast.NewTextExpr("FooBar")},
 	}
+
 	returns := ast.NewTextExpr("returns")
 	assert.True(t, api.Equal(&ast.Api{
 		Syntax: &ast.SyntaxExpr{

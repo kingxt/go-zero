@@ -57,6 +57,7 @@ func (v *ApiVisitor) panic(expr Expr, msg string) {
 	if v.debug {
 		fmt.Println(errString)
 	}
+
 	panic(errString)
 }
 
@@ -65,8 +66,6 @@ func WithVisitorPrefix(prefix string) VisitorOption {
 		v.prefix = prefix
 	}
 }
-
-var VisitorDebug = WithVisitorDebug()
 
 func WithVisitorDebug() VisitorOption {
 	return func(v *ApiVisitor) {
@@ -98,6 +97,7 @@ func (v *ApiVisitor) newExprWithToken(token antlr.Token) *defaultExpr {
 	if token == nil {
 		return nil
 	}
+
 	instance := &defaultExpr{}
 	instance.prefix = v.prefix
 	instance.v = token.GetText()
@@ -124,6 +124,7 @@ func (e *defaultExpr) Prefix() string {
 	if e == nil {
 		return ""
 	}
+
 	return e.prefix
 }
 
@@ -131,6 +132,7 @@ func (e *defaultExpr) Line() int {
 	if e == nil {
 		return 0
 	}
+
 	return e.line
 }
 
@@ -138,6 +140,7 @@ func (e *defaultExpr) Column() int {
 	if e == nil {
 		return 0
 	}
+
 	return e.column
 }
 
@@ -145,6 +148,7 @@ func (e *defaultExpr) Text() string {
 	if e == nil {
 		return ""
 	}
+
 	return e.v
 }
 
@@ -152,6 +156,7 @@ func (e *defaultExpr) SetText(text string) {
 	if e == nil {
 		return
 	}
+
 	e.v = text
 }
 
@@ -159,6 +164,7 @@ func (e *defaultExpr) Start() int {
 	if e == nil {
 		return 0
 	}
+
 	return e.start
 }
 
@@ -166,6 +172,7 @@ func (e *defaultExpr) Stop() int {
 	if e == nil {
 		return 0
 	}
+
 	return e.stop
 }
 
@@ -174,6 +181,7 @@ func (e *defaultExpr) Equal(expr Expr) bool {
 		if expr != nil {
 			return false
 		}
+
 		return true
 	}
 
@@ -205,11 +213,13 @@ func EqualDoc(spec1, spec2 Spec) bool {
 		sort.Slice(expectDoc, func(i, j int) bool {
 			return expectDoc[i].Line() < expectDoc[j].Line()
 		})
+
 		for index, each := range actualDoc {
 			if !each.Equal(actualDoc[index]) {
 				return false
 			}
 		}
+
 		if spec1.Comment() != nil {
 			if spec2.Comment() == nil {
 				return false
@@ -236,13 +246,16 @@ func (v *ApiVisitor) getComment(t TokenStream) Expr {
 	if len(list) == 0 {
 		return nil
 	}
+
 	commentExpr := list[0]
 	stop := t.GetStop()
 	text := stop.GetText()
 	nlCount := strings.Count(text, "\n")
+
 	if commentExpr.Line() != stop.GetLine()+nlCount {
 		return nil
 	}
+
 	return commentExpr
 }
 
@@ -253,10 +266,12 @@ func (v *ApiVisitor) getHiddenTokensToLeft(t TokenStream, channel int, containsC
 	for _, each := range tokens {
 		tmp = append(tmp, each)
 	}
+
 	var list []Expr
 	for _, each := range tmp {
 		if !containsCommentOfDefaultChannel {
 			index := each.GetTokenIndex() - 1
+
 			if index > 0 {
 				allTokens := ct.GetAllTokens()
 				var flag = false
@@ -269,6 +284,7 @@ func (v *ApiVisitor) getHiddenTokensToLeft(t TokenStream, channel int, containsC
 						}
 					}
 				}
+
 				if flag {
 					continue
 				}

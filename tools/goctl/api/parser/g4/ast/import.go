@@ -42,6 +42,7 @@ func (v *ApiVisitor) VisitImportBlock(ctx *api.ImportBlockContext) interface{} {
 	importToken := v.newExprWithToken(ctx.GetImportToken())
 	values := ctx.AllImportBlockValue()
 	var list []*ImportExpr
+
 	for _, value := range values {
 		importExpr := value.Accept(v).(*ImportExpr)
 		importExpr.Import = importToken

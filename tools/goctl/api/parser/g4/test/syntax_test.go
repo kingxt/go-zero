@@ -71,19 +71,5 @@ func TestSyntax(t *testing.T) {
 			},
 			CommentExpr: ast.NewTextExpr("// line comment"),
 		}))
-
-		//v, err = parser.Accept(syntaxAccept, `
-		///**doc block*/
-		//syntax = "v1" /**comment block*/`)
-		//assert.Nil(t, err)
-		//
-		//syntax = v.(*ast.SyntaxExpr)
-		//assert.True(t, syntax.Equal(&ast.SyntaxExpr{
-		//	Syntax:      ast.NewTextExpr("syntax"),
-		//	Assign:      ast.NewTextExpr("="),
-		//	Version:     ast.NewTextExpr(`"v1"`),
-		//	DocExpr:     ast.NewTextExpr("/**doc block*/"),
-		//	CommentExpr: ast.NewTextExpr("/**comment block*/"),
-		//}))
 	})
 }

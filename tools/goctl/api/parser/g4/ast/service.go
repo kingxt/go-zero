@@ -72,6 +72,7 @@ func (v *ApiVisitor) VisitServiceSpec(ctx *api.ServiceSpecContext) interface{} {
 	if ctx.AtServer() != nil {
 		serviceSpec.AtServer = ctx.AtServer().Accept(v).(*AtServer)
 	}
+
 	serviceSpec.ServiceApi = ctx.ServiceApi().Accept(v).(*ServiceApi)
 	return &serviceSpec
 }
@@ -81,9 +82,11 @@ func (v *ApiVisitor) VisitAtServer(ctx *api.AtServerContext) interface{} {
 	atServer.AtServerToken = v.newExprWithTerminalNode(ctx.ATSERVER())
 	atServer.Lp = v.newExprWithToken(ctx.GetLp())
 	atServer.Rp = v.newExprWithToken(ctx.GetRp())
+
 	for _, each := range ctx.AllKvLit() {
 		atServer.Kv = append(atServer.Kv, each.Accept(v).(*KvExpr))
 	}
+
 	return &atServer
 }
 
@@ -94,9 +97,11 @@ func (v *ApiVisitor) VisitServiceApi(ctx *api.ServiceApiContext) interface{} {
 	serviceApi.Name = v.newExprWithText(serviceName.GetText(), serviceName.GetStart().GetLine(), serviceName.GetStart().GetColumn(), serviceName.GetStart().GetStart(), serviceName.GetStop().GetStop())
 	serviceApi.Lbrace = v.newExprWithToken(ctx.GetLbrace())
 	serviceApi.Rbrace = v.newExprWithToken(ctx.GetRbrace())
+
 	for _, each := range ctx.AllServiceRoute() {
 		serviceApi.ServiceRoute = append(serviceApi.ServiceRoute, each.Accept(v).(*ServiceRoute))
 	}
+
 	return &serviceApi
 }
 
@@ -105,11 +110,13 @@ func (v *ApiVisitor) VisitServiceRoute(ctx *api.ServiceRouteContext) interface{}
 	if ctx.AtDoc() != nil {
 		serviceRoute.AtDoc = ctx.AtDoc().Accept(v).(*AtDoc)
 	}
+
 	if ctx.AtServer() != nil {
 		serviceRoute.AtServer = ctx.AtServer().Accept(v).(*AtServer)
 	} else if ctx.AtHandler() != nil {
 		serviceRoute.AtHandler = ctx.AtHandler().Accept(v).(*AtHandler)
 	}
+
 	serviceRoute.Route = ctx.Route().Accept(v).(*Route)
 	return &serviceRoute
 }
@@ -117,6 +124,7 @@ func (v *ApiVisitor) VisitServiceRoute(ctx *api.ServiceRouteContext) interface{}
 func (v *ApiVisitor) VisitAtDoc(ctx *api.AtDocContext) interface{} {
 	var atDoc AtDoc
 	atDoc.AtDocToken = v.newExprWithTerminalNode(ctx.ATDOC())
+
 	if ctx.STRING() != nil {
 		atDoc.LineDoc = v.newExprWithTerminalNode(ctx.STRING())
 	} else {
@@ -124,6 +132,7 @@ func (v *ApiVisitor) VisitAtDoc(ctx *api.AtDocContext) interface{} {
 			atDoc.Kv = append(atDoc.Kv, each.Accept(v).(*KvExpr))
 		}
 	}
+
 	atDoc.Lp = v.newExprWithToken(ctx.GetLp())
 	atDoc.Rp = v.newExprWithToken(ctx.GetRp())
 	return &atDoc
@@ -145,12 +154,14 @@ func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 	methodExpr := v.newExprWithToken(ctx.GetHttpMethod())
 	route.Method = methodExpr
 	route.Path = v.newExprWithText(path.GetText(), path.GetStart().GetLine(), path.GetStart().GetColumn(), path.GetStart().GetStart(), path.GetStop().GetStop())
+
 	if ctx.GetRequest() != nil {
 		req := ctx.GetRequest().Accept(v)
 		if req != nil {
 			route.Req = req.(*Body)
 		}
 	}
+
 	if ctx.GetResponse() != nil {
 		reply := ctx.GetResponse().Accept(v)
 		if reply != nil {
@@ -164,6 +175,7 @@ func (v *ApiVisitor) VisitRoute(ctx *api.RouteContext) interface{} {
 		}
 		route.ReturnToken = returnExpr
 	}
+
 	route.DocExpr = v.getDoc(ctx)
 	route.CommentExpr = v.getComment(ctx)
 	return &route
@@ -173,10 +185,12 @@ func (v *ApiVisitor) VisitBody(ctx *api.BodyContext) interface{} {
 	if ctx.ID() == nil {
 		return nil
 	}
+
 	idRxpr := v.newExprWithTerminalNode(ctx.ID())
 	if api.IsGolangKeyWord(idRxpr.Text()) {
 		v.panic(idRxpr, fmt.Sprintf("expecting 'ID', but found golang keyword '%s'", idRxpr.Text()))
 	}
+
 	return &Body{
 		Lp:   v.newExprWithToken(ctx.GetLp()),
 		Rp:   v.newExprWithToken(ctx.GetRp()),
@@ -189,11 +203,12 @@ func (v *ApiVisitor) VisitReplybody(ctx *api.ReplybodyContext) interface{} {
 	if ctx.DataType() == nil {
 		return nil
 	}
-	//fmt.Printf("[warning] %s line %d:%d pointers or arrays are not recommended, the syntax will be removed in the feature\n", v.prefix, ctx.ID().GetSymbol().GetLine(), ctx.ID().GetSymbol().GetColumn())
+
 	dt := ctx.DataType().Accept(v).(DataType)
 	if dt == nil {
 		return nil
 	}
+
 	switch dataType := dt.(type) {
 	case *Array:
 		lit := dataType.Literal
@@ -216,6 +231,7 @@ func (v *ApiVisitor) VisitReplybody(ctx *api.ReplybodyContext) interface{} {
 	default:
 		v.panic(dt.Expr(), fmt.Sprintf("unsupport %s", dt.Expr().Text()))
 	}
+
 	return &Body{
 		Lp:   v.newExprWithToken(ctx.GetLp()),
 		Rp:   v.newExprWithToken(ctx.GetRp()),
@@ -231,6 +247,7 @@ func (b *Body) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	body, ok := v.(*Body)
 	if !ok {
 		return false
@@ -264,6 +281,7 @@ func (r *Route) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	route, ok := v.(*Route)
 	if !ok {
 		return false
@@ -315,6 +333,7 @@ func (a *AtHandler) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	atHandler, ok := v.(*AtHandler)
 	if !ok {
 		return false
@@ -340,6 +359,7 @@ func (a *AtDoc) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	atDoc, ok := v.(*AtDoc)
 	if !ok {
 		return false
@@ -362,6 +382,7 @@ func (a *AtDoc) Equal(v interface{}) bool {
 			return false
 		}
 	}
+
 	var expecting, actual []*KvExpr
 	expecting = append(expecting, a.Kv...)
 	actual = append(actual, atDoc.Kv...)
@@ -389,6 +410,7 @@ func (a *AtServer) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	atServer, ok := v.(*AtServer)
 	if !ok {
 		return false
@@ -435,6 +457,7 @@ func (s *ServiceRoute) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	sr, ok := v.(*ServiceRoute)
 	if !ok {
 		return false
@@ -537,6 +560,7 @@ func (s *Service) Equal(v interface{}) bool {
 	if v == nil {
 		return false
 	}
+
 	service, ok := v.(*Service)
 	if !ok {
 		return false

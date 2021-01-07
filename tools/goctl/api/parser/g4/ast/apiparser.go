@@ -79,14 +79,14 @@ func (p *Parser) ParseContent(content string) (*Api, error) {
 // parse is used to parse api from the content
 // filename is only used to mark the file where the error is located
 func (p *Parser) parse(filename, content string) (*Api, error) {
-	api, err := p.invoke(filename, content)
+	root, err := p.invoke(filename, content)
 	if err != nil {
 		return nil, err
 	}
 
 	var apiAstList []*Api
-	apiAstList = append(apiAstList, api)
-	for _, imp := range api.Import {
+	apiAstList = append(apiAstList, root)
+	for _, imp := range root.Import {
 		path := imp.Value.Text()
 		data, err := p.readContent(path)
 		if err != nil {
@@ -98,7 +98,7 @@ func (p *Parser) parse(filename, content string) (*Api, error) {
 			return nil, err
 		}
 
-		err = p.valid(api, nestedApi)
+		err = p.valid(root, nestedApi)
 		if err != nil {
 			return nil, err
 		}
@@ -127,9 +127,11 @@ func (p *Parser) invoke(linePrefix, content string) (v *Api, err error) {
 			}
 		}
 	}()
+
 	if linePrefix != "" {
 		p.linePrefix = linePrefix
 	}
+
 	inputStream := antlr.NewInputStream(content)
 	lexer := api.NewApiParserLexer(inputStream)
 	lexer.RemoveErrorListeners()
@@ -142,6 +144,7 @@ func (p *Parser) invoke(linePrefix, content string) (v *Api, err error) {
 	if p.debug {
 		visitorOptions = append(visitorOptions, WithVisitorDebug())
 	}
+
 	visitor := NewApiVisitor(visitorOptions...)
 	v = apiParser.Api().Accept(visitor).(*Api)
 	v.LinePrefix = p.linePrefix
@@ -242,28 +245,27 @@ func (p *Parser) valid(mainApi *Api, nestedApi *Api) error {
 }
 
 func (p *Parser) memberFill(apiList []*Api) *Api {
-	var api Api
-
+	var root Api
 	for index, each := range apiList {
 		if index == 0 {
-			api.Syntax = each.Syntax
-			api.Info = each.Info
-			api.Import = each.Import
+			root.Syntax = each.Syntax
+			root.Info = each.Info
+			root.Import = each.Import
 		}
 
-		api.Type = append(api.Type, each.Type...)
-		api.Service = append(api.Service, each.Service...)
+		root.Type = append(root.Type, each.Type...)
+		root.Service = append(root.Service, each.Service...)
 	}
 
-	return &api
+	return &root
 }
 
 // checkTypeDeclaration checks whether a struct type has been declared in context
 func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 	types := make(map[string]TypeExpr)
 
-	for _, api := range apiList {
-		for _, each := range api.Type {
+	for _, root := range apiList {
+		for _, each := range root.Type {
 			types[each.NameExpr().Text()] = each
 		}
 	}
@@ -275,6 +277,7 @@ func (p *Parser) checkTypeDeclaration(apiList []*Api) error {
 			if !ok {
 				continue
 			}
+
 			for _, member := range tp.Fields {
 				err := p.checkType(linePrefix, types, member.DataType)
 				if err != nil {
@@ -377,15 +380,13 @@ func (p *Parser) readContent(filename string) (string, error) {
 	return string(data), nil
 }
 
-func (p *Parser) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
+func (p *Parser) SyntaxError(_ antlr.Recognizer, _ interface{}, line, column int, msg string, _ antlr.RecognitionException) {
 	str := fmt.Sprintf(`%s line %d:%d  %s`, p.linePrefix, line, column, msg)
 	if p.debug {
 		fmt.Println("[debug]", str)
 	}
 	panic(str)
 }
-
-var ParserDebug = WithParserDebug()
 
 func WithParserDebug() ParserOption {
 	return func(p *Parser) {

@@ -211,6 +211,7 @@ func TestApiParser(t *testing.T) {
 		if err != nil {
 			return
 		}
+
 		_, err = parser.ParseContent(fmt.Sprintf(`
 		import "%s"
 		service bar-api{
@@ -239,6 +240,7 @@ func TestApiParser(t *testing.T) {
 		if err != nil {
 			return
 		}
+
 		_, err = parser.ParseContent(fmt.Sprintf(`
 		import "%s"
 		service bar-api{
@@ -262,6 +264,7 @@ func TestApiParser(t *testing.T) {
 		if err != nil {
 			return
 		}
+
 		_, err = parser.ParseContent(fmt.Sprintf(`
 		import "%s"
 		

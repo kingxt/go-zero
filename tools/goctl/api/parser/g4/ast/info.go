@@ -21,9 +21,11 @@ func (v *ApiVisitor) VisitInfoSpec(ctx *api.InfoSpecContext) interface{} {
 		kvExpr := each.Accept(v).(*KvExpr)
 		expr.Kvs = append(expr.Kvs, kvExpr)
 	}
+
 	if v.infoFlag {
 		v.panic(expr.Info, "duplicate declaration 'info'")
 	}
+
 	return &expr
 }
 

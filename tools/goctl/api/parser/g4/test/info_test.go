@@ -19,6 +19,7 @@ func TestInfo(t *testing.T) {
 				title: foo
 			)
 		`)
+
 		assert.Nil(t, err)
 		info := v.(*ast.InfoExpr)
 		assert.True(t, info.Equal(&ast.InfoExpr{
