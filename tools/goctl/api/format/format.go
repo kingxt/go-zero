@@ -208,5 +208,9 @@ func mayInsertStructKeyword(line string, token *int) string {
 	if strings.HasSuffix(noCommentLine, leftParenthesis) {
 		*token++
 	}
+
+	if strings.Contains(noCommentLine, "`") {
+		return util.UpperFirst(strings.TrimSpace(line))
+	}
 	return line
 }
