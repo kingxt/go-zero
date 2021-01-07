@@ -232,9 +232,17 @@ func TestAtDoc(t *testing.T) {
 		return p.AtDoc().Accept(v)
 	}
 	t.Run("normal", func(t *testing.T) {
-		v, err := parser.Accept(fn, `@doc("foo")`)
+		v, err := parser.Accept(fn, `@doc "foo"`)
 		assert.Nil(t, err)
 		atDoc := v.(*ast.AtDoc)
+		assert.True(t, atDoc.Equal(&ast.AtDoc{
+			AtDocToken: ast.NewTextExpr("@doc"),
+			LineDoc:    ast.NewTextExpr(`"foo"`),
+		}))
+
+		v, err = parser.Accept(fn, `@doc("foo")`)
+		assert.Nil(t, err)
+		atDoc = v.(*ast.AtDoc)
 		assert.True(t, atDoc.Equal(&ast.AtDoc{
 			AtDocToken: ast.NewTextExpr("@doc"),
 			Lp:         ast.NewTextExpr("("),
@@ -280,6 +288,14 @@ func TestAtDoc(t *testing.T) {
 				},
 			},
 		}))
+	})
+
+	t.Run("wrong", func(t *testing.T) {
+		_, err := parser.Accept(fn, `@doc("foo"`)
+		assert.Error(t, err)
+
+		_, err = parser.Accept(fn, `@doc "foo")`)
+		assert.Error(t, err)
 	})
 }
 

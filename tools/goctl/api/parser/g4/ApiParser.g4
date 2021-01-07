@@ -61,7 +61,7 @@ serviceSpec:    atServer? serviceApi;
 atServer:       ATSERVER lp='(' kvLit+ rp=')';
 serviceApi:     {match(p,"service")}serviceToken=ID serviceName lbrace='{' serviceRoute* rbrace='}';
 serviceRoute:   atDoc? (atServer|atHandler) route;
-atDoc:          ATDOC lp='(' ((kvLit+)|STRING) rp=')';
+atDoc:          ATDOC lp='('? ((kvLit+)|STRING) rp=')'?;
 atHandler:      ATHANDLER ID;
 route:          {checkHttpMethod(p)}httpMethod=ID path request=body? returnToken=ID? response=replybody?;
 body:           lp='(' (ID)? rp=')';

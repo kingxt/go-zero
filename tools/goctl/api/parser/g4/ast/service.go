@@ -132,9 +132,21 @@ func (v *ApiVisitor) VisitAtDoc(ctx *api.AtDocContext) interface{} {
 			atDoc.Kv = append(atDoc.Kv, each.Accept(v).(*KvExpr))
 		}
 	}
-
 	atDoc.Lp = v.newExprWithToken(ctx.GetLp())
 	atDoc.Rp = v.newExprWithToken(ctx.GetRp())
+
+	if ctx.GetLp() != nil {
+		if ctx.GetRp() == nil {
+			v.panic(atDoc.Lp, "mismatched ')'")
+		}
+	}
+
+	if ctx.GetRp() != nil {
+		if ctx.GetLp() == nil {
+			v.panic(atDoc.Rp, "mismatched '('")
+		}
+	}
+
 	return &atDoc
 }
 
@@ -369,12 +381,16 @@ func (a *AtDoc) Equal(v interface{}) bool {
 		return false
 	}
 
-	if !a.Lp.Equal(atDoc.Lp) {
-		return false
+	if a.Lp.IsNotNil() {
+		if !a.Lp.Equal(atDoc.Lp) {
+			return false
+		}
 	}
 
-	if !a.Rp.Equal(atDoc.Rp) {
-		return false
+	if a.Rp.IsNotNil() {
+		if !a.Rp.Equal(atDoc.Rp) {
+			return false
+		}
 	}
 
 	if a.LineDoc != nil {
