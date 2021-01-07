@@ -235,9 +235,9 @@ func formString(route spec.Route) string {
 			if item.Type.Name() == "bool" {
 				name = strings.TrimPrefix(name, "Is")
 				name = strings.TrimPrefix(name, "is")
-				keyValues = append(keyValues, fmt.Sprintf(`"%s%s="request.is%s()`, strcat, name, strings.Title(name)))
+				keyValues = append(keyValues, fmt.Sprintf(`"%s%s=" + request.is%s()`, strcat, name, strings.Title(name)))
 			} else {
-				keyValues = append(keyValues, fmt.Sprintf(`"%s%s="request.get%s()`, strcat, name, strings.Title(name)))
+				keyValues = append(keyValues, fmt.Sprintf(`"%s%s=" + request.get%s()`, strcat, name, strings.Title(name)))
 			}
 		}
 		if len(keyValues) > 0 {
