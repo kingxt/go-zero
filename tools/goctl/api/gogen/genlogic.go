@@ -82,7 +82,7 @@ func genLogicByRoute(dir string, cfg *config.Config, group spec.Group, route spe
 	var returnString string
 	var requestString string
 	if len(route.ResponseTypeName()) > 0 {
-		resp := route.ResponseGoTypeName(typesPacket)
+		resp := responseGoTypeName(route, typesPacket)
 		responseString = "(" + resp + ", error)"
 		if strings.HasPrefix(resp, "*") {
 			returnString = fmt.Sprintf("return &%s{}, nil", strings.TrimPrefix(resp, "*"))
@@ -94,7 +94,7 @@ func genLogicByRoute(dir string, cfg *config.Config, group spec.Group, route spe
 		returnString = "return nil"
 	}
 	if len(route.RequestTypeName()) > 0 {
-		requestString = "req " + route.RequestGoTypeName(typesPacket)
+		requestString = "req " + requestGoTypeName(route, typesPacket)
 	}
 
 	text, err := ctlutil.LoadTemplate(category, logicTemplateFile, logicTemplate)
