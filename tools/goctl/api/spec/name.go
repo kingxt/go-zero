@@ -23,7 +23,3 @@ func (t PointerType) Name() string {
 func (t InterfaceType) Name() string {
 	return t.RawName
 }
-
-func (t InterfaceType) GolangExpr(_ ...string) string {
-	return t.RawName
-}
