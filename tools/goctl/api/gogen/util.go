@@ -136,6 +136,8 @@ func golangExpr(ty spec.Type, pkg ...string) string {
 		}
 
 		return fmt.Sprintf("*%s", golangExpr(v.Type, pkg...))
+	case spec.InterfaceType:
+		return v.RawName
 	}
 
 	return ""
